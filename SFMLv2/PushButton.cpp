@@ -11,8 +11,20 @@ void PushButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 void PushButton::setTextPosition()
 {
+	// Scale for better visual effect
+	float newScale = scale;
+	newScale += addScale(displayed_text.getString());
+
 	displayed_text.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - displayed_text.getGlobalBounds().width / 2,
-		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - displayed_text.getGlobalBounds().height / 1.1);
+		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - displayed_text.getGlobalBounds().height / newScale);
+}
+
+float PushButton::addScale(const std::string & str)
+{
+	float tmp = 0;
+	if (str.find('y') != std::string::npos || str.find('g') != std::string::npos || str.find('j') != std::string::npos || str.find('p') != std::string::npos)
+		tmp = 0.18;
+	return tmp;
 }
 
 PushButton::PushButton(const std::string& text, int char_size, const sf::Font& font, sf::Vector2f size, const sf::Color& bounds_color,
@@ -89,8 +101,11 @@ void PushButton::updateWithAnimations(const sf::Time & time)
 
 void PushButton::updatePosition()
 {
+	float newScale = scale;
+	newScale += addScale(displayed_text.getString());
+
 	bound_rectangle.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
-	displayed_text.setPosition(pos.x - displayed_text.getGlobalBounds().width / 2, pos.y - displayed_text.getGlobalBounds().height / 1.1f);
+	displayed_text.setPosition(pos.x - displayed_text.getGlobalBounds().width / 2, pos.y - displayed_text.getGlobalBounds().height / newScale);
 }
 
 void PushButton::setScale(float x, float y)
@@ -98,3 +113,5 @@ void PushButton::setScale(float x, float y)
 	bound_rectangle.setScale(x, y);
 	displayed_text.setScale(x, y);
 }
+
+

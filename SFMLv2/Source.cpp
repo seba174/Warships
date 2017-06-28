@@ -23,6 +23,7 @@
 
 #include "INI_Reader.h"
 #include "OptionNameWithButton.h"
+#include "OptionsSubMenu.h"
 
 
 int main()
@@ -131,6 +132,15 @@ int main()
 
 	OptionNameWithButton but("Testowa", fonthandler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "test,test2", fonthandler.font_handler["Mecha"], 35);
 	but.setPosition(StandardWindowDimensions.x/2, screenDimensions.y - 100);
+
+	OptionsSubMenu newsub(sf::Vector2f(StandardWindowDimensions.x / 2, 200), 100);
+	newsub.addOptionNameWithButton("Testowa", fonthandler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "test,test2", fonthandler.font_handler["Mecha"], 35);
+	newsub.addOptionNameWithButton("Testowa2", fonthandler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "test,test2", fonthandler.font_handler["Mecha"], 35);
+	newsub.addOptionNameWithButton("Testowa3", fonthandler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "test,test2", fonthandler.font_handler["Mecha"], 35);
+	newsub.setAdditionalSpaceBetweenOptionsAndPushButtons(50);
+	newsub.addPushButton("Back", 24, fonthandler.font_handler["Mecha"], sf::Vector2f(200,45));
+	newsub.addPushButton("Apply changes", 24, fonthandler.font_handler["Mecha"], sf::Vector2f(200, 45));
+	newsub.addPushButton("Load defaults", 24, fonthandler.font_handler["Mecha"], sf::Vector2f(200, 45));
 
 	INI_Reader reader("Config/config.ini");
 
@@ -452,12 +462,23 @@ int main()
 		but.setAnimationScale(1.2);
 
 
-		Window.draw(button);
-		Window.draw(but);
+	//	Window.draw(button);
+		//Window.draw(but);
+		
+		newsub.highlightButtonContaining(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
+		if (input.isMouseLeftButtonPressed())
+			newsub.clickArrowContaining(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
+		
+		// texturerect cos nie dziala
+	//	newsub.updateWithAnimations(dt);
+
+		Window.clear();
+		Window.draw(newsub);
+
 
 		Window.draw(Additionalmenu);
 		Window.display();
-		Window.clear();
+		
 	}
 
 }

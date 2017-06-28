@@ -11,6 +11,7 @@
 class OptionButton :
 	public sf::Drawable, public sf::Transformable
 {
+	const float scale = 0.95;
 
 	// number of options in options array
 	int number_of_options;
@@ -52,6 +53,8 @@ class OptionButton :
 
 	// sets displayed_text in the center of button (bound_rectangle)
 	void setTextPosition();
+
+	float addScale(const std::string& str);
 
 public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!

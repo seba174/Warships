@@ -9,6 +9,7 @@
 class PushButton :
 	public sf::Drawable, public sf::Transformable
 {
+	const float scale = 0.94;
 
 	sf::RectangleShape bound_rectangle;
 	sf::Text displayed_text;
@@ -31,6 +32,8 @@ class PushButton :
 
 	// sets displayed_text in the center of button (bound_rectangle)
 	void setTextPosition();
+
+	float addScale(const std::string& str);
 
 public:
 
@@ -67,5 +70,8 @@ public:
 
 	// set scale for button
 	void setScale(float x, float y);
+
+	// returns size of a button
+	sf::Vector2f getSize() { return bound_rectangle.getSize(); }
 };
 

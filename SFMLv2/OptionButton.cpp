@@ -70,12 +70,25 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 
 	bound_rectangle.setOutlineThickness(3);
 	bound_rectangle.setOutlineColor(bounds_color);
+
+	bound_rectangle.setOutlineColor(sf::Color::Red);
 }
 
 void OptionButton::setTextPosition()
 {
+	float newScale = scale;
+	newScale += addScale(current_displayed_option.getString());
+
 	current_displayed_option.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - current_displayed_option.getGlobalBounds().width / 2,
-		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - current_displayed_option.getGlobalBounds().height / 1.2);
+		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - current_displayed_option.getGlobalBounds().height / newScale);
+}
+
+float OptionButton::addScale(const std::string & str)
+{
+	float tmp = 0;
+	if (str.find('y') != std::string::npos || str.find('g') != std::string::npos || str.find('j') != std::string::npos || str.find('p') != std::string::npos)
+		tmp = 0.18;
+	return tmp;
 }
 
 void OptionButton::setPosition(float x, float y)
@@ -98,9 +111,15 @@ void OptionButton::setPosition(const sf::Vector2f & position)
 
 void OptionButton::updatePosition()
 {
+	float newScale = scale;
+	newScale += addScale(current_displayed_option.getString());
+
 	bound_rectangle.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
-	current_displayed_option.setPosition(pos.x - current_displayed_option.getGlobalBounds().width / 2, pos.y - current_displayed_option.getGlobalBounds().height / 1.2f);
+	current_displayed_option.setPosition(pos.x - current_displayed_option.getGlobalBounds().width / 2, pos.y - current_displayed_option.getGlobalBounds().height / newScale);
 	leftbutton.setPosition(bound_rectangle.getPosition());
+
+	leftbutton.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
+
 	rightbutton.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getGlobalBounds().width - rightbutton.getGlobalBounds().width,
 		bound_rectangle.getPosition().y);
 }
@@ -149,6 +168,7 @@ void OptionButton::updateWithAnimations(const sf::Time & time)
 		isPressed = false;
 		setScale(animationScale, animationScale);
 		shouldUpdateAnimations = true;
+		bound_rectangle.setOutlineColor(sf::Color::Cyan);
 	}
 	else
 	{
@@ -165,6 +185,8 @@ void OptionButton::updateWithAnimations(const sf::Time & time)
 			usableTime = sf::milliseconds(100);
 			shouldUpdateAnimations = false;
 		}
+
+		bound_rectangle.setOutlineColor(sf::Color::Red);
 	}
 	updatePosition();
 }
