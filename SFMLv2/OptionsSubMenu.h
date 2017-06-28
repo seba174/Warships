@@ -8,7 +8,7 @@ class OptionsSubMenu :
 	public sf::Drawable
 {
 	std::vector<OptionNameWithButton> buttons;
-	//PushButton back, apply_changes, load_default;
+	//PushButton back, apply_changes, load_default.
 
 		// FUNCTIONS
 
