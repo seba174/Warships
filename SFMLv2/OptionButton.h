@@ -11,7 +11,7 @@
 class OptionButton :
 	public sf::Drawable, public sf::Transformable
 {
-	const float scale = 0.95;
+	const float scale = 0.95f;
 
 	// number of options in options array
 	int number_of_options;

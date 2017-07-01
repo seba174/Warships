@@ -1,5 +1,6 @@
 #pragma once
 #include "SubMenu.h"
+#include "OptionsSubMenu.h"
 #include "enumGamestate.h"
 #include "enumAdditionalVisualInformation.h"
 #include "enumLevelsDifficulty.h"
@@ -8,7 +9,7 @@
 class Menu :
 	public sf::Drawable
 {
-	enum menustates { DEFAULT, CHOOSE_GAMETYPE, CHOOSE_MAPSIZE, CHOOSE_AILEVEL, LOADING_GAME_VARIABLES, OPTIONS };
+	enum menustates { DEFAULT, CHOOSE_GAMETYPE, CHOOSE_MAPSIZE, CHOOSE_AILEVEL, LOADING_GAME_VARIABLES, OPTIONS, OPT_GENERAL, OPT_GRAPHICS, OPT_AUDIO };
 
 	sf::Text MainTitle;
 	
@@ -18,6 +19,7 @@ class Menu :
 	
 	// SubMenus which Standard Menu contains
 	SubMenu Home, ChooseGametype, ChooseMapSize, ChooseAILevel, Options;
+	OptionsSubMenu General, Graphics, Audio;
 
 		// FUNCTIONS
 

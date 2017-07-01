@@ -7,26 +7,26 @@
 using std::list;
 using std::string;
 
+struct SettingLine
+{
+	string name;
+	string value;
+};
+
+struct SettingGroup
+{
+	string groupName;
+	list<SettingLine> lines;
+};
+
+struct SettingFile
+{
+	string filePath;
+	list<SettingGroup> groups;
+};
 
 class INI_Reader
 {
-	struct SettingLine
-	{
-		string name;
-		string value;
-	};
-
-	struct SettingGroup
-	{
-		string groupName; 
-		list<SettingLine> lines;
-	};
-
-	struct SettingFile
-	{
-		string filePath;
-		list<SettingGroup> groups;
-	};
 
 	//SettingFile settings;
 	bool isEmpty;
@@ -41,9 +41,10 @@ class INI_Reader
 	// loads default config is config file is missing
 	void loadDefaultConfig();
 
-public:
 	SettingFile settings;
 
+public:
+	
 	INI_Reader(const string& filePath);
 	
 	// returns value from section "groupName" assigned to "optionName"
@@ -54,8 +55,14 @@ public:
 	// if section or option does not exists, the function does nothing
 	void changeValue(const string& groupName, const string& optionName, const string& newValue);
 
+	// changes value from setction "groupName" assigned to "optionName"
+	// if section or option does not exists, the function creates it
+	void insertValue(const string& groupName, const string& optionName, const string& Value);
+
 	// returns false if Constructor could not open file
 	bool isInitialized() const { return !isEmpty; }
+
+	const SettingFile& getSettings() const { return settings; }
 	
 	~INI_Reader();
 	

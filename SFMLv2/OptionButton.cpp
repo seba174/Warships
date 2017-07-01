@@ -48,7 +48,7 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 	} while (end != options_list.size());
 
 	bound_rectangle.setSize(size);
-	bound_rectangle.setFillColor(sf::Color::Transparent);
+	bound_rectangle.setFillColor(sf::Color(255,255,255,200));
 	
 	// default part which left or right button occupies in whole button
 	float scale = 0.15f;
@@ -57,7 +57,7 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 	rightbutton.setSize(sf::Vector2f(size.x*scale, size.y));
 	rightbutton.setTexture(&texture.texture_handler["rightarrow"]);
 	leftbutton.setTexture(&texture.texture_handler["leftarrow"]);
-	
+
 	sf::IntRect rect = rightbutton.getTextureRect();
 	leftbutton.setTextureRect(sf::IntRect(rect.left + rect.width / 2, rect.top, rect.width / 2, rect.height));
 	rightbutton.setTextureRect(sf::IntRect(rect.left + rect.width / 2, rect.top, rect.width / 2, rect.height));
@@ -68,10 +68,11 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 	current_displayed_option.setString(options[0]);
 	setTextPosition();
 
-	bound_rectangle.setOutlineThickness(3);
+	bound_rectangle.setOutlineThickness(2);
 	bound_rectangle.setOutlineColor(bounds_color);
 
-	bound_rectangle.setOutlineColor(sf::Color::Red);
+	//bound_rectangle.setOutlineColor(sf::Color::Red);
+	bound_rectangle.setTexture(&texture.texture_handler["test"]);
 }
 
 void OptionButton::setTextPosition()
@@ -118,10 +119,8 @@ void OptionButton::updatePosition()
 	current_displayed_option.setPosition(pos.x - current_displayed_option.getGlobalBounds().width / 2, pos.y - current_displayed_option.getGlobalBounds().height / newScale);
 	leftbutton.setPosition(bound_rectangle.getPosition());
 
-	leftbutton.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
-
-	rightbutton.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getGlobalBounds().width - rightbutton.getGlobalBounds().width,
-		bound_rectangle.getPosition().y);
+	rightbutton.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getGlobalBounds().width - 2 * bound_rectangle.getOutlineThickness()
+		- rightbutton.getGlobalBounds().width, pos.y - bound_rectangle.getGlobalBounds().height / 2);
 }
 
 void OptionButton::updateArrows()
@@ -168,7 +167,7 @@ void OptionButton::updateWithAnimations(const sf::Time & time)
 		isPressed = false;
 		setScale(animationScale, animationScale);
 		shouldUpdateAnimations = true;
-		bound_rectangle.setOutlineColor(sf::Color::Cyan);
+		//bound_rectangle.setFillColor(sf::Color(4, 183, 219, 150));
 	}
 	else
 	{
@@ -186,7 +185,7 @@ void OptionButton::updateWithAnimations(const sf::Time & time)
 			shouldUpdateAnimations = false;
 		}
 
-		bound_rectangle.setOutlineColor(sf::Color::Red);
+		//bound_rectangle.setFillColor(sf::Color::Transparent);
 	}
 	updatePosition();
 }

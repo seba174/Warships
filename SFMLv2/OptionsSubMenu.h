@@ -16,6 +16,8 @@ class OptionsSubMenu :
 	sf::Vector2f position;
 	int spaceBetweenButtons;
 
+	bool isConstructed;
+
 		// FUNCTIONS
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -24,7 +26,14 @@ class OptionsSubMenu :
 	void updatePushButtons();
 
 public:
-	OptionsSubMenu(const sf::Vector2f& position, int spaceBetweenButtons);
+	OptionsSubMenu(const sf::Vector2f& position_of_first_button, int spaceBetweenButtons);
+
+	//Default constructor
+	// You have to call Construct() function in order to have OptionsSubMenu working properly!
+	OptionsSubMenu();
+
+	// May be run only once;
+	void Construct(const sf::Vector2f& position, int spaceBetweenButtons);
 
 	void addPushButton(const std::string& displayed_text, int char_size, const sf::Font& font, sf::Vector2f size = sf::Vector2f(240, 50),
 		const sf::Color& bounds_color = sf::Color::White, int line_thickness = 3);

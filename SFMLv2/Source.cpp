@@ -24,38 +24,27 @@
 #include "INI_Reader.h"
 #include "OptionNameWithButton.h"
 #include "OptionsSubMenu.h"
+#include "Options.h"
 
 
 int main()
 {
-	const int bar = 1;            //rozmiar paska wyswietlanych wiadomosci
-	int ships_number = 0, map_size = 0;
-	string ships_count = "";
+	INI_Reader reader("Config/config.ini");
+	Options options(reader);
 
-	int font_size_1 = 20;
-	int font_size_2 = 25;
-	
+	const int interfaceScale = options.Resolution.x / 1920;
+	const int barSize = 50;
+	const int line_thicknessSize = 10;
+
+	int bar = barSize * interfaceScale;            //rozmiar paska wyswietlanych wiadomosci
+	int line_thickness = line_thicknessSize*interfaceScale;  // rozmiar przerwy miedzy planszami
+	int  map_size = 0;
+
 	FontHandler& fonthandler = FontHandler::getInstance();
-
-	//map_size = 10;
-	//ships_count = "10";
-	//ships_number = stoi(ships_count);
-	//if (map_size == 10 && ships_number > 100)  // kontrola czy nie za duzo statkow
-	//	ships_number = 100;
-	//else if (map_size == 20 && ships_number > 400)
-	//	ships_number = 400;
-	//else if (map_size == 40 && ships_number > 1600)
-	//	ships_number = 1600;
-
-
-	int line_thickness = 10;  // rozmiar przerwy miedzy planszami
-
-	 // TEKSTURY
 	TextureHandler& textures = TextureHandler::getInstance();
 
-	sf::RectangleShape bImage(sf::Vector2f(textures.texture_handler["nowefalev5"].getSize().x, textures.texture_handler["nowefalev5"].getSize().y)), 
-		bImage2(sf::Vector2f(textures.texture_handler["nowefalev5"].getSize().x, textures.texture_handler["nowefalev5"].getSize().y));
 
+	sf::RectangleShape bImage, bImage2;
 	bImage.setTexture(&textures.texture_handler["nowefalev5"]);
 	bImage2.setTexture(&textures.texture_handler["nowefalev5"]);
 
@@ -65,49 +54,27 @@ int main()
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	
-	sf::Vector2i screenDimensions(textures.texture_handler["nowefalev5"].getSize().x, textures.texture_handler["nowefalev5"].getSize().y);
+	sf::Vector2i screenDimensions(options.Resolution.x / 2 - line_thickness / 2, options.Resolution.y / 2 - bar / 2);
 	sf::RenderWindow Window;
-	sf::Vector2i StandardWindowDimensions(2 * screenDimensions.x + line_thickness, screenDimensions.y + bar);
-	Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Ships", sf::Style::Default );
-	Window.setPosition(sf::Vector2i(desktop.width / 2 - Window.getSize().x / 2, desktop.height / 33));
+	sf::Vector2i StandardWindowDimensions(options.Resolution);
+	
+	//Window.create(sf::VideoMode(bImage.getTexture()->getSize().x*2+line_thicknessSize, bImage.getTexture()->getSize().y+barSize), "Warships", sf::Style::Default);
+	Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Warships", sf::Style::Default);
+	//Window.setSize(sf::Vector2u(StandardWindowDimensions.x, StandardWindowDimensions.y));
+	Window.setVerticalSyncEnabled(options.VerticalSyncEnabled);
 
-	Window.setVerticalSyncEnabled(true);
-
-	bImage.setPosition(sf::Vector2f(0, (float)bar));	// mapa gry
-	bImage2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, (float)bar));
-
-	//Window.setKeyRepeatEnabled(false);
-	//Window.setMouseCursorGrabbed(true);
-	//Window.requestFocus();
 
 	// PASEK MIEDZY PLANSZAMI
-
-	sf::ConvexShape line(4);
-	line.setPoint(0, sf::Vector2f(screenDimensions.x, 0));
-	line.setPoint(1, sf::Vector2f(screenDimensions.x, screenDimensions.y + bar));
-	line.setPoint(2, sf::Vector2f(screenDimensions.x + line_thickness, screenDimensions.y + bar));
-	line.setPoint(3, sf::Vector2f(screenDimensions.x + line_thickness, 0));
-	line.setOutlineColor(sf::Color::White);
+	sf::ConvexShape* line = nullptr;
 
 	sf::Vector2f* square_size = nullptr;
 	sf::RectangleShape **square_tab = nullptr, **square_tab_2 = nullptr;	// tablice kwadratow do rysowania
 	sf::RectangleShape* rect = nullptr, *trafienie = nullptr, *pudlo = nullptr;     // kwadraty pudla, trafienia, i kwadratu do przesuwania
 
-	// WYSWIETLANE INFORMACJE DLA GRACZA
-
-	//string pozostalo = "Pozostalo statkow: ";
-	//int pozostalo_len = pozostalo.size();
-	//pozostalo += to_string(ships_number);
-	//string uderzano = "Pudla: 0";
-	//int uderzano_len = uderzano.size() - 1;
-	//sf::Text ships_left(pozostalo, font, font_size_2);
-	//sf::Text moves_done(uderzano, font, font_size_2);
-	//ships_left.setPosition(sf::Vector2f(40, (bar - ships_left.getCharacterSize()) / 2.0f));
-	//moves_done.setPosition(sf::Vector2f((float)screenDimensions.x - 300, (bar - moves_done.getCharacterSize()) / 2.0f));
 
 	sf::Clock clock;	// czas klatki
 
-	Mouse_S mouse(sf::Vector2f(screenDimensions.x + line_thickness, 2 * screenDimensions.x + line_thickness), sf::Vector2f(bar, screenDimensions.y + bar), &Window);
+	Mouse_S *mouse = nullptr;
 
 	// TABLICA STATKOW DO STAWIANIA PRZEZ GRACZA
 
@@ -127,30 +94,6 @@ int main()
 	AdditionalMenu Additionalmenu(sf::Vector2f(200, 0), 80, sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
 		sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info);
 
-	OptionButton button("Pierwsza, Druga, Trzecia",fonthandler.font_handler["Mecha"], 35, sf::Vector2f(280, 40), sf::Color::Transparent);
-	button.setPosition(200, 200);
-
-	OptionNameWithButton but("Testowa", fonthandler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "test,test2", fonthandler.font_handler["Mecha"], 35);
-	but.setPosition(StandardWindowDimensions.x/2, screenDimensions.y - 100);
-
-	OptionsSubMenu newsub(sf::Vector2f(StandardWindowDimensions.x / 2, 200), 100);
-	newsub.addOptionNameWithButton("Testowa", fonthandler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "test,test2", fonthandler.font_handler["Mecha"], 35);
-	newsub.addOptionNameWithButton("Testowa2", fonthandler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "test,test2", fonthandler.font_handler["Mecha"], 35);
-	newsub.addOptionNameWithButton("Testowa3", fonthandler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "test,test2", fonthandler.font_handler["Mecha"], 35);
-	newsub.setAdditionalSpaceBetweenOptionsAndPushButtons(50);
-	newsub.addPushButton("Back", 24, fonthandler.font_handler["Mecha"], sf::Vector2f(200,45));
-	newsub.addPushButton("Apply changes", 24, fonthandler.font_handler["Mecha"], sf::Vector2f(200, 45));
-	newsub.addPushButton("Load defaults", 24, fonthandler.font_handler["Mecha"], sf::Vector2f(200, 45));
-
-	INI_Reader reader("Config/config.ini");
-
-	auto it = reader.settings.groups.begin();
-	advance(it, 1);
-	auto tmp = (it)->lines.begin();
-	advance(tmp, 0);
-	std::cout << (it)->groupName << std::endl;
-	std::cout << tmp->name << std::endl;
-	std::cout << tmp->value << std::endl;
 
 	sf::Event Event;
 	while (Window.isOpen())
@@ -185,10 +128,10 @@ int main()
 		{
 			std::cout << "PlvsAI" << std::endl;
 
-			if (input.isMouseLeftButtonPressed() && mouse.isMouseWithinArea() && !game->get_ships_set_up())
+			if (input.isMouseLeftButtonPressed() && mouse->isMouseWithinArea() && !game->get_ships_set_up())
 				game->set_player_placeships();
 
-			if (input.isMouseRightButtonPressed() && mouse.isMouseWithinArea() && !game->get_ships_set_up())
+			if (input.isMouseRightButtonPressed() && mouse->isMouseWithinArea() && !game->get_ships_set_up())
 				game->rotate_player_ship();
 
 			if (input.isKeyboardReturnKeyPressed() && AI_set)
@@ -197,8 +140,8 @@ int main()
 
 			if (!game->get_ships_set_up())
 			{
-				if (mouse.isMouseWithinArea())
-					game->Player_set_ships(mouse.returnPositionInBounds(), vect_ship_to_draw);
+				if (mouse->isMouseWithinArea())
+					game->Player_set_ships(mouse->returnPositionInBounds(), vect_ship_to_draw);
 			}
 			else if (!AI_set)
 			{
@@ -226,7 +169,7 @@ int main()
 		case loadGameVariables:
 		{
 			std::cout << "loadGameVariables" << std::endl;
-			square_size = new sf::Vector2f((float)textures.texture_handler["nowefalev5"].getSize().x / map_size, (float)textures.texture_handler["nowefalev5"].getSize().y / map_size); // rozmiar 1 kwadratu mapy)
+			square_size = new sf::Vector2f(bImage.getSize().x / map_size, bImage.getSize().y/ map_size); // rozmiar 1 kwadratu mapy)
 
 			rect = new sf::RectangleShape(*square_size);
 			trafienie = new sf::RectangleShape(*square_size);
@@ -236,6 +179,18 @@ int main()
 			rect->setPosition(sf::Vector2f(0, (float)bar));
 			trafienie->setFillColor(sf::Color::Red);
 			pudlo->setFillColor(sf::Color(128, 128, 128));
+
+			line = new sf::ConvexShape(4);
+			line->setPoint(0, sf::Vector2f(screenDimensions.x, 0));
+			line->setPoint(1, sf::Vector2f(screenDimensions.x, screenDimensions.y + bar));
+			line->setPoint(2, sf::Vector2f(screenDimensions.x + line_thickness, screenDimensions.y + bar));
+			line->setPoint(3, sf::Vector2f(screenDimensions.x + line_thickness, 0));
+			line->setOutlineColor(sf::Color::White);
+
+			bImage.setPosition(sf::Vector2f(0, (float)bar));
+			bImage2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, (float)bar));
+
+			mouse = new Mouse_S(sf::Vector2f(screenDimensions.x + line_thickness, 2 * screenDimensions.x + line_thickness), sf::Vector2f(bar, screenDimensions.y + bar), &Window);
 
 			square_tab = new sf::RectangleShape*[map_size];
 			square_tab_2 = new sf::RectangleShape*[map_size];
@@ -385,7 +340,7 @@ int main()
 
 			//drawing
 			Window.draw(bImage2);
-			Window.draw(line);
+			Window.draw(*line);
 			Window.draw(bImage);
 
 			if (!AI_set)
@@ -412,8 +367,6 @@ int main()
 					Window.draw(square_tab_2[i][j]);
 				}
 			game->Draw(Window);
-			//Window.draw(ships_left);
-			//Window.draw(moves_done);
 		}
 		break;
 
@@ -424,61 +377,10 @@ int main()
 		break;
 		}
 		 
-		if (button.buttonContains(Window.mapPixelToCoords(sf::Mouse::getPosition(Window))))
-			button.highlightButton();
-
-		if (button.leftButtonContains(Window.mapPixelToCoords(sf::Mouse::getPosition(Window))))
-		{
-			button.highlightLeftButton();
-			if (input.isMouseLeftButtonPressed())
-				button.clickLeftButton();
-		}
-		else if (button.rightButtonContains(Window.mapPixelToCoords(sf::Mouse::getPosition(Window))))
-		{
-			button.highlightRightButton();
-			if (input.isMouseLeftButtonPressed())
-				button.clickRightButton();
-		}
-		button.updateArrows();
-		button.updateWithAnimations(dt);
-
-		if (but.buttonContains(Window.mapPixelToCoords(sf::Mouse::getPosition(Window))))
-			but.highlightButton();
-
-		if (but.leftButtonContains(Window.mapPixelToCoords(sf::Mouse::getPosition(Window))))
-		{
-			but.highlightLeftButton();
-			if (input.isMouseLeftButtonPressed())
-				but.clickLeftButton();
-		}
-		else if (but.rightButtonContains(Window.mapPixelToCoords(sf::Mouse::getPosition(Window))))
-		{
-			but.highlightRightButton();
-			if (input.isMouseLeftButtonPressed())
-				but.clickRightButton();
-		}
-		but.updateArrows();
-		but.updateWithAnimations(dt);
-		but.setAnimationScale(1.2);
-
-
-	//	Window.draw(button);
-		//Window.draw(but);
 		
-		newsub.highlightButtonContaining(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
-		if (input.isMouseLeftButtonPressed())
-			newsub.clickArrowContaining(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
-		
-		// texturerect cos nie dziala
-	//	newsub.updateWithAnimations(dt);
-
-		Window.clear();
-		Window.draw(newsub);
-
-
 		Window.draw(Additionalmenu);
 		Window.display();
-		
+		Window.clear();
 	}
 
 }

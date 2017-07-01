@@ -140,6 +140,52 @@ void INI_Reader::changeValue(const string & groupName, const string & optionName
 	}
 }
 
+void INI_Reader::insertValue(const string & groupName, const string & optionName, const string & Value)
+{
+	// Do not accept empty options
+	if (Value == "")
+		return;
+
+	bool foundGroup = false;
+	bool foundOption = false;
+	list<SettingGroup>::iterator iter;
+
+	for (auto it = settings.groups.begin(); it != settings.groups.end(); ++it)
+	{
+		if (it->groupName == groupName)
+		{
+			for (auto tmp = it->lines.begin(); tmp != it->lines.end(); ++tmp)
+			{
+				if (tmp->name == optionName)
+				{
+					tmp->value = Value;
+					foundOption = true;
+				}
+			}
+			foundGroup = true;
+			iter = it;
+		}
+	}
+
+	if (!foundGroup)
+	{
+		SettingGroup group;
+		SettingLine line;
+		group.groupName = groupName;
+		line.name = optionName;
+		line.value = Value;
+		group.lines.push_back(line);
+		settings.groups.push_back(group);
+	}
+	else if (!foundOption)
+	{
+		SettingLine line;
+		line.name = optionName;
+		line.value = Value;
+		iter->lines.push_back(line);
+	}
+}
+
 INI_Reader::~INI_Reader()
 {
 	saveToFile(settings.filePath);

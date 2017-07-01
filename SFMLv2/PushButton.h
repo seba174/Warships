@@ -9,7 +9,7 @@
 class PushButton :
 	public sf::Drawable, public sf::Transformable
 {
-	const float scale = 0.94;
+	const float scale = 0.94f;
 
 	sf::RectangleShape bound_rectangle;
 	sf::Text displayed_text;

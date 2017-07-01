@@ -35,6 +35,9 @@ TextureHandler & TextureHandler::getInstance()
 		if (!tmp.loadFromFile("Textures/leftArrowOutlined.png")) std::cout << "NIE UDALO SIE ZALADOWAC!" << std::endl;
 		else instance.texture_handler.insert(make_pair("leftarrow", tmp));
 
+		if (!tmp.loadFromFile("Textures/Untitled.png"))std::cout << "nie ma!";
+		else instance.texture_handler.insert(make_pair("test", tmp));
+
 		initialize = false;
 	}
 	return instance;

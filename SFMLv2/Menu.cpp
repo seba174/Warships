@@ -16,6 +16,12 @@ void Menu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		target.draw(ChooseAILevel, states); break;
 	case OPTIONS:
 		target.draw(Options, states); break;
+	case OPT_GENERAL:
+		target.draw(General, states); break;
+	case OPT_GRAPHICS:
+		target.draw(Graphics, states); break;
+	case OPT_AUDIO:
+		target.draw(Audio, states); break;
 	}
 }
 
@@ -65,6 +71,13 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y - 1.8f*submenuCharacterSize),
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons / 1.5f - submenuCharacterSize),
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
+
+	Graphics.Construct(title_or1st_button_position, space_between_buttons);
+	Graphics.addOptionNameWithButton("Resolution", handler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "1920x1080,1600x900", handler.font_handler["Mecha"], 35);
+	Graphics.addOptionNameWithButton("Vertical Sync", handler.font_handler["Mecha"], 35, sf::Vector2f(800, 100), "On,Off", handler.font_handler["Mecha"], 35);
+	Graphics.addPushButton("Back", 24, handler.font_handler["Mecha"], sf::Vector2f(200, 45));
+	Graphics.addPushButton("Apply changes", 24, handler.font_handler["Mecha"], sf::Vector2f(200, 45));
+	Graphics.addPushButton("Load defaults", 24, handler.font_handler["Mecha"], sf::Vector2f(200, 45));
 }
 
 void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty& level, bool leftButtonPressed)
@@ -92,14 +105,29 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 		if (leftButtonPressed)
 		{
 			if (Home.contains(0, mousepos)) // General button
-				;
+				menustate = OPT_GENERAL;
 			else if (Home.contains(1, mousepos)) // Graphics button
-				;
+				menustate = OPT_GRAPHICS;
 			else if (Home.contains(2, mousepos)) // Sounds button
-				;
+				menustate = OPT_AUDIO;
 			else if (Home.contains(3, mousepos)) // Back button
 				menustate = previousMenustate;
 		}
+	} break;
+
+	case OPT_GRAPHICS: {
+		previousMenustate = menustates::OPTIONS;
+		if (leftButtonPressed)
+		{
+			Graphics.clickArrowContaining(mousepos);
+			if (Graphics.PushButtonContains(0, mousepos))
+				menustate = previousMenustate; // Back button
+			if (Graphics.PushButtonContains(1, mousepos))
+				; // Apply Changes
+			if (Graphics.PushButtonContains(2, mousepos))
+				; // Reset Defaults
+		}
+
 	} break;
 	
 	case CHOOSE_GAMETYPE: {
@@ -239,6 +267,9 @@ void Menu::updateMenuWithAnimates(const sf::Time & time, const sf::Vector2f& mou
 	ChooseMapSize.updateButtonsWithAnimations(time);
 	ChooseGametype.updateButtonsWithAnimations(time);
 	Options.updateButtonsWithAnimations(time);
+
+	Graphics.highlightButtonContaining(mousepos);
+	Graphics.updateWithAnimations(time);
 }
 
 void Menu::Reset()

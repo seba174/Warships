@@ -23,11 +23,28 @@ void OptionsSubMenu::updatePushButtons()
 	}
 }
 
-OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position, int spaceBetweenButtons)
+OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int spaceBetweenButtons)
 {
-	this->position = position;
+	this->position = position_of_first;
 	this->spaceBetweenButtons = spaceBetweenButtons;
 	additionalSpaceBetweenOptionsAndPushButtons = 0;
+	isConstructed = true;
+}
+
+OptionsSubMenu::OptionsSubMenu()
+{
+	additionalSpaceBetweenOptionsAndPushButtons = 0;
+	isConstructed = false;
+}
+
+void OptionsSubMenu::Construct(const sf::Vector2f & position_of_first, int spaceBetweenButtons)
+{
+	if (isConstructed)
+		return;
+
+	this->position = position_of_first;
+	this->spaceBetweenButtons = spaceBetweenButtons;
+	isConstructed = true;
 }
 
 void OptionsSubMenu::addPushButton(const std::string & displayed_text, int char_size, const sf::Font & font, sf::Vector2f size, 
