@@ -154,6 +154,7 @@
     <ClInclude Include="enumAdditionalVisualInformation.h" />
     <ClInclude Include="enumGamestate.h" />
     <ClInclude Include="enumLevelsDifficulty.h" />
+    <ClInclude Include="enumMenustate.h" />
     <ClInclude Include="FontHandler.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="INI_Reader.h" />

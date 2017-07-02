@@ -97,6 +97,13 @@ void OptionsSubMenu::highlightButtonContaining(const sf::Vector2f & mousepos)
 			but.highlightButton();
 }
 
+std::string OptionsSubMenu::getDisplayedOption(int number)
+{
+	if (number >= 0 && number < options_buttons.size())
+		return options_buttons[number].getDisplayedOption();
+	return "";
+}
+
 void OptionsSubMenu::updateWithAnimations(const sf::Time & time)
 {
 	for (OptionNameWithButton& but : options_buttons)

@@ -170,5 +170,8 @@
     <ClInclude Include="OptionNameWithButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="enumMenustate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

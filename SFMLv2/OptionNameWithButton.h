@@ -27,6 +27,8 @@ public:
 		const std::string& options_list, const sf::Font& buttonFont, int buttonCharacterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
 		const sf::Color& bounds_color = sf::Color::Transparent);
 
+	std::string getDisplayedOption() const { return button.getDisplayedOption(); }
+
 	// sets position of a CENTER of the object
 	void setPosition(float x, float y);
 

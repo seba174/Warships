@@ -19,7 +19,7 @@ class AdditionalMenu :
 public:
 	// title_or1st_button_position non used
 	AdditionalMenu(const sf::Vector2f& title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize, 
-		const sf::Vector2f& backgroundForSubMenuPosition, AdditionalVisualInformations& additionalvsinfo);
+		const sf::Vector2f& backgroundForSubMenuPosition, AdditionalVisualInformations& additionalvsinfo, float interfaceScale);
 
 	// updates information about OutlineColor for every SubMenu
 	void updateAdditionalMenu();

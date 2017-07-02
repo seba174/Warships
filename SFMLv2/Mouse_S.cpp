@@ -4,7 +4,8 @@
 using namespace std;
 
 
-Mouse_S::Mouse_S(sf::Vector2f bounds_x, sf::Vector2f bounds_y, sf::RenderWindow *window): bounds_x(bounds_x), bounds_y(bounds_y),window(window)
+Mouse_S::Mouse_S(sf::Vector2f bounds_x, sf::Vector2f bounds_y, sf::RenderWindow *window)
+	: bounds_x(bounds_x), bounds_y(bounds_y),window(window)
 {
 }
 

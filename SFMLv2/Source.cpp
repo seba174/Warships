@@ -1,5 +1,6 @@
 ﻿#include <vld.h>
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <cstring>
 #include <SFML/Graphics.hpp>
@@ -32,17 +33,18 @@ int main()
 	INI_Reader reader("Config/config.ini");
 	Options options(reader);
 
-	const int interfaceScale = options.Resolution.x / 1920;
+	int map_size = 0;
 	const int barSize = 50;
 	const int line_thicknessSize = 10;
 
-	int bar = barSize * interfaceScale;            //rozmiar paska wyswietlanych wiadomosci
-	int line_thickness = line_thicknessSize*interfaceScale;  // rozmiar przerwy miedzy planszami
-	int  map_size = 0;
+	std::cout << options.Resolution.x << "  " << options.Resolution.y << std::endl;
+	
+	float interfaceScale = options.Resolution.x / 1920.0f;
+	int bar = barSize * interfaceScale;            
+	int line_thickness = line_thicknessSize * interfaceScale;  
 
 	FontHandler& fonthandler = FontHandler::getInstance();
 	TextureHandler& textures = TextureHandler::getInstance();
-
 
 	sf::RectangleShape bImage, bImage2;
 	bImage.setTexture(&textures.texture_handler["nowefalev5"]);
@@ -50,57 +52,48 @@ int main()
 
 	std::vector<Board*> vect_ship_to_draw;
 
-	// OKNO GRY
-
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	
-	sf::Vector2i screenDimensions(options.Resolution.x / 2 - line_thickness / 2, options.Resolution.y / 2 - bar / 2);
-	sf::RenderWindow Window;
+	sf::Vector2i screenDimensions(options.Resolution.x / 2 - line_thickness / 2, options.Resolution.y - bar);
 	sf::Vector2i StandardWindowDimensions(options.Resolution);
-	
-	//Window.create(sf::VideoMode(bImage.getTexture()->getSize().x*2+line_thicknessSize, bImage.getTexture()->getSize().y+barSize), "Warships", sf::Style::Default);
-	Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Warships", sf::Style::Default);
-	//Window.setSize(sf::Vector2u(StandardWindowDimensions.x, StandardWindowDimensions.y));
-	Window.setVerticalSyncEnabled(options.VerticalSyncEnabled);
 
+	sf::RenderWindow Window;
+	Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Warships",  sf::Style::Close);
 
 	// PASEK MIEDZY PLANSZAMI
-	sf::ConvexShape* line = nullptr;
+	sf::ConvexShape line(4);
+	sf::Vector2f square_size;
 
-	sf::Vector2f* square_size = nullptr;
 	sf::RectangleShape **square_tab = nullptr, **square_tab_2 = nullptr;	// tablice kwadratow do rysowania
-	sf::RectangleShape* rect = nullptr, *trafienie = nullptr, *pudlo = nullptr;     // kwadraty pudla, trafienia, i kwadratu do przesuwania
-
+	sf::RectangleShape rect, trafienie, pudlo;     // kwadraty pudla, trafienia, i kwadratu do przesuwania
 
 	sf::Clock clock;	// czas klatki
 
-	Mouse_S *mouse = nullptr;
+	Input input;
+	std::unique_ptr<Mouse_S> mouse;
 
 	// TABLICA STATKOW DO STAWIANIA PRZEZ GRACZA
 
 	int count_of_ships = 6;
 	Board** AI_set_ships = nullptr;
-
 	bool AI_set = false;
+
 	LevelsDifficulty level = LevelsDifficulty::EASY;
-
-	Gamestates Gamestate = MENU, drawnGamestate = MENU;
+	Gamestates Gamestate = RELOAD_GRAPHICS, drawnGamestate = MENU;
 	AdditionalVisualInformations additional_vs_info = NONE;
-	Game* game = nullptr;
+	
+	std::unique_ptr<Game> game;
+
+	std::unique_ptr<Menu> MainMenu;
+	std::unique_ptr<AdditionalMenu> Additionalmenu;
 	bool menureset = false;
-
-	Input input;
-	Menu MainMenu("Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20), sf::Vector2f(StandardWindowDimensions.x / 2, 290), 130);
-	AdditionalMenu Additionalmenu(sf::Vector2f(200, 0), 80, sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
-		sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info);
-
 
 	sf::Event Event;
 	while (Window.isOpen())
 	{
 		sf::Time dt = clock.restart();		// czas klatki
 		input.ResetKeys();
-		
+
 		while (Window.pollEvent(Event))
 		{
 			//Wciśnięcie ESC lub przycisk X
@@ -116,10 +109,12 @@ int main()
 			else if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Return)
 				input.setKeyboardReturnKeyPressed();
 		}
-
-		Additionalmenu.runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input.isMouseLeftButtonPressed(), input);
-		Additionalmenu.updateAdditionalMenuWithAnimations(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
-		Additionalmenu.updateGamestate(Gamestate);
+		if (Additionalmenu)
+		{
+			Additionalmenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input.isMouseLeftButtonPressed(), input);
+			Additionalmenu->updateAdditionalMenuWithAnimations(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
+			Additionalmenu->updateGamestate(Gamestate);
+		}
 
 		// Handling 
 		switch (Gamestate)
@@ -150,7 +145,7 @@ int main()
 			}
 			else
 			{
-				sf::Vector2i tmp_vec((int)round(rect->getPosition().x / square_size->x), (int)round((rect->getPosition().y - bar) / square_size->y));
+				sf::Vector2i tmp_vec(static_cast<int>(round(rect.getPosition().x / square_size.x)), static_cast<int>(round((rect.getPosition().y - bar) / square_size.y)));
 				game->play(dt, tmp_vec);
 				if (game->getGameState() == AI_win)
 				{
@@ -169,28 +164,32 @@ int main()
 		case loadGameVariables:
 		{
 			std::cout << "loadGameVariables" << std::endl;
-			square_size = new sf::Vector2f(bImage.getSize().x / map_size, bImage.getSize().y/ map_size); // rozmiar 1 kwadratu mapy)
 
-			rect = new sf::RectangleShape(*square_size);
-			trafienie = new sf::RectangleShape(*square_size);
-			pudlo = new sf::RectangleShape(*square_size);
+			bImage.setSize(sf::Vector2f(screenDimensions.x, screenDimensions.y));
+			bImage2.setSize(sf::Vector2f(screenDimensions.x, screenDimensions.y));
 
-			rect->setFillColor(sf::Color::Black);
-			rect->setPosition(sf::Vector2f(0, (float)bar));
-			trafienie->setFillColor(sf::Color::Red);
-			pudlo->setFillColor(sf::Color(128, 128, 128));
+			square_size = sf::Vector2f(static_cast<float>(screenDimensions.x) / map_size, static_cast<float>(screenDimensions.y) / map_size); // rozmiar 1 kwadratu mapy)
 
-			line = new sf::ConvexShape(4);
-			line->setPoint(0, sf::Vector2f(screenDimensions.x, 0));
-			line->setPoint(1, sf::Vector2f(screenDimensions.x, screenDimensions.y + bar));
-			line->setPoint(2, sf::Vector2f(screenDimensions.x + line_thickness, screenDimensions.y + bar));
-			line->setPoint(3, sf::Vector2f(screenDimensions.x + line_thickness, 0));
-			line->setOutlineColor(sf::Color::White);
+			rect.setSize(square_size);
+			trafienie.setSize(square_size);
+			pudlo.setSize(square_size);
 
-			bImage.setPosition(sf::Vector2f(0, (float)bar));
-			bImage2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, (float)bar));
+			rect.setFillColor(sf::Color::Black);
+			rect.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
+			trafienie.setFillColor(sf::Color::Red);
+			pudlo.setFillColor(sf::Color(128, 128, 128));
 
-			mouse = new Mouse_S(sf::Vector2f(screenDimensions.x + line_thickness, 2 * screenDimensions.x + line_thickness), sf::Vector2f(bar, screenDimensions.y + bar), &Window);
+			line.setPoint(0, sf::Vector2f(screenDimensions.x, 0));
+			line.setPoint(1, sf::Vector2f(screenDimensions.x, screenDimensions.y + bar));
+			line.setPoint(2, sf::Vector2f(screenDimensions.x + line_thickness, screenDimensions.y + bar));
+			line.setPoint(3, sf::Vector2f(screenDimensions.x + line_thickness, 0));
+			line.setOutlineColor(sf::Color::Red);
+
+			bImage.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
+			bImage2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, static_cast<float>(bar)));
+
+			mouse = std::make_unique<Mouse_S>(sf::Vector2f(screenDimensions.x + line_thickness, 2 * screenDimensions.x + line_thickness),
+				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
 
 			square_tab = new sf::RectangleShape*[map_size];
 			square_tab_2 = new sf::RectangleShape*[map_size];
@@ -200,17 +199,16 @@ int main()
 				square_tab[i] = new sf::RectangleShape[map_size];
 				square_tab_2[i] = new sf::RectangleShape[map_size];
 			}
-	
+
 			drawnGamestate = Gamestates::NOTHING;
 
-			switch (MainMenu.getChoosedGamemode())
+			switch (MainMenu->getChoosedGamemode())
 			{
 			case PlvsAI:
 				Gamestate = loadPlvsAI; break;
 			case PlvsPl:
 				Gamestate = loadPlvsPl; break;
 			}
-
 		}
 		break;
 
@@ -219,15 +217,15 @@ int main()
 			std::cout << "loadPlvsAI" << std::endl;
 
 			AI_set_ships = new Board*[count_of_ships];
-			AI_set_ships[0] = new Ships(5, *square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[1] = new Ships(4, *square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[2] = new Ships(3, *square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[3] = new Ships(2, *square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[4] = new IrregularShip2(*square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["irregular2"]);
-			AI_set_ships[5] = new IrregularShip3(*square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["irregular3"]);
+			AI_set_ships[0] = new Ships(5, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
+			AI_set_ships[1] = new Ships(4, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
+			AI_set_ships[2] = new Ships(3, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
+			AI_set_ships[3] = new Ships(2, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
+			AI_set_ships[4] = new IrregularShip2(square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["irregular2"]);
+			AI_set_ships[5] = new IrregularShip3(square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["irregular3"]);
 
-			game = new Game(screenDimensions, *square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar), *pudlo,
-				*trafienie, square_tab, square_tab_2, bar, *rect, level);
+			game = std::make_unique<Game>(screenDimensions, square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar),
+				pudlo, trafienie, square_tab, square_tab_2, bar, rect, level);
 
 			additional_vs_info = AdditionalVisualInformations::NONE;
 			Gamestate = PlvsAI;
@@ -246,9 +244,9 @@ int main()
 
 		case MENU:
 		{
-			MainMenu.runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), map_size, level, input.isMouseLeftButtonPressed());
-			MainMenu.updateGamestate(Gamestate, additional_vs_info);
-			MainMenu.updateMenuWithAnimates(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
+			MainMenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), map_size, level, input.isMouseLeftButtonPressed(), options);
+			MainMenu->updateGamestate(Gamestate, additional_vs_info);
+			MainMenu->updateMenuWithAnimates(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
 			drawnGamestate = MENU;
 		}
 		break;
@@ -256,17 +254,6 @@ int main()
 		case BREAK_AND_GO_TO_MENU:
 		{
 			std::cout << "END" << std::endl;
-			delete square_size;
-			delete pudlo;
-			delete rect;
-			delete trafienie;
-			delete game;
-
-			square_size = nullptr;
-			pudlo = nullptr;
-			rect = nullptr;
-			trafienie = nullptr;
-			game = nullptr;
 
 			AI_set = false;
 			vect_ship_to_draw.clear();
@@ -290,20 +277,37 @@ int main()
 			square_tab = nullptr;
 			square_tab_2 = nullptr;
 
-			MainMenu.Reset();
+			MainMenu->Reset();
 			Gamestate = MENU;
 			drawnGamestate = Gamestates::NOTHING;
 		}
 		break;
 
+		case RELOAD_GRAPHICS:
+		{
+			interfaceScale = options.Resolution.x / 1920.0f;
+			bar = barSize * interfaceScale;
+			line_thickness = line_thicknessSize * interfaceScale;
+
+			screenDimensions = sf::Vector2i(options.Resolution.x / 2 - line_thickness / 2, options.Resolution.y - bar);
+			StandardWindowDimensions = sf::Vector2i(options.Resolution);
+			Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Warships", sf::Style::Close);
+			Window.setVerticalSyncEnabled(options.VerticalSyncEnabled);
+
+			MainMenu = std::make_unique<Menu>("Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20 * interfaceScale),
+				sf::Vector2f(StandardWindowDimensions.x / 2, 290 * interfaceScale), 130 * interfaceScale, interfaceScale);
+			MainMenu->setMenustate(Menustates::OPT_GRAPHICS);
+
+			Additionalmenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+				sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
+				sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info, interfaceScale);
+
+			Gamestate = MENU;
+		}
+		break;
+
 		case EXIT:
 		{
-			delete square_size;
-			delete pudlo;
-			delete rect;
-			delete trafienie;
-			delete game;
-
 			if (AI_set_ships)
 				for (int i = 0; i < count_of_ships; i++)
 				{
@@ -340,7 +344,7 @@ int main()
 
 			//drawing
 			Window.draw(bImage2);
-			Window.draw(*line);
+			Window.draw(line);
 			Window.draw(bImage);
 
 			if (!AI_set)
@@ -372,17 +376,18 @@ int main()
 
 		case MENU:
 		{
-			Window.draw(MainMenu);
+			if (MainMenu)
+				Window.draw(*MainMenu);
 		}
 		break;
 		}
-		 
-		
-		Window.draw(Additionalmenu);
+
+		if (Additionalmenu)
+			Window.draw(*Additionalmenu);
+
 		Window.display();
 		Window.clear();
 	}
-
 }
 
 

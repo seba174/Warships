@@ -61,6 +61,8 @@ public:
 	OptionButton(const std::string& options_list, const sf::Font& font, int characterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40), 
 		const sf::Color& bounds_color = sf::Color::Transparent);
 
+	std::string getDisplayedOption() const { return current_displayed_option.getString(); }
+
 	// sets position of a CENTER of a button 
 	void setPosition(float x, float y);
 

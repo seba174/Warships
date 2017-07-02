@@ -57,6 +57,8 @@ public:
 	// sets additional space between OptionsButtons and PushButtons
 	void setAdditionalSpaceBetweenOptionsAndPushButtons(int add) { this->additionalSpaceBetweenOptionsAndPushButtons = add; }
 
+	std::string getDisplayedOption(int number);
+
 	// function animates and updates all buttons
 	void updateWithAnimations(const sf::Time& time);
 
