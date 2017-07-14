@@ -37,9 +37,9 @@ int main()
 	const int barSize = 50;
 	const int line_thicknessSize = 10;
 
-	std::cout << options.Resolution.x << "  " << options.Resolution.y << std::endl;
+	std::cout << options.getResolution().x << "  " << options.getResolution().y << std::endl;
 	
-	float interfaceScale = options.Resolution.x / 1920.0f;
+	float interfaceScale = options.getResolution().x / 1920.0f;
 	int bar = barSize * interfaceScale;            
 	int line_thickness = line_thicknessSize * interfaceScale;  
 
@@ -52,13 +52,19 @@ int main()
 
 	std::vector<Board*> vect_ship_to_draw;
 
-	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	
-	sf::Vector2i screenDimensions(options.Resolution.x / 2 - line_thickness / 2, options.Resolution.y - bar);
-	sf::Vector2i StandardWindowDimensions(options.Resolution);
+	sf::Vector2i screenDimensions(options.getResolution().x / 2 - line_thickness / 2, options.getResolution().y - bar);
+	sf::Vector2i StandardWindowDimensions(options.getResolution());
 
 	sf::RenderWindow Window;
-	Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Warships",  sf::Style::Close);
+	Window.create(sf::VideoMode(0,0), "Warships",  sf::Style::Close);
+	Window.setVerticalSyncEnabled(options.isVerticalSyncEnabled());
+
+	std::cout << options.getResolutionScale() << std::endl;
+
+	sf::View view;
+	view = Window.getDefaultView();
+	view.zoom(100.0f / options.getResolutionScale());
+	Window.setView(view);
 
 	// PASEK MIEDZY PLANSZAMI
 	sf::ConvexShape line(4);
@@ -84,8 +90,9 @@ int main()
 	
 	std::unique_ptr<Game> game;
 
-	std::unique_ptr<Menu> MainMenu;
-	std::unique_ptr<AdditionalMenu> Additionalmenu;
+	std::unique_ptr<Menu> MainMenu = nullptr;
+	std::unique_ptr<AdditionalMenu> Additionalmenu = nullptr;
+
 	bool menureset = false;
 
 	sf::Event Event;
@@ -285,24 +292,48 @@ int main()
 
 		case RELOAD_GRAPHICS:
 		{
-			interfaceScale = options.Resolution.x / 1920.0f;
+			static bool first = true;
+			bool wasResolutionChanged = options.wasResolutionChanged();
+			bool wasFullScreenChanged = options.wasFullScreenChanged();
+
+			if ((wasFullScreenChanged && options.isFullScreenEnabled()) || (options.isFullScreenEnabled() && first))
+			{
+				sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+				interfaceScale = desktop.width / 1920.0f;
+				screenDimensions = sf::Vector2i(desktop.width / 2 - line_thickness / 2, desktop.height - bar);
+				StandardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);
+				Window.create(desktop, "Warships", sf::Style::Fullscreen);
+			}
+			else if ((wasResolutionChanged || first || wasFullScreenChanged) && !options.isFullScreenEnabled())
+			{
+				interfaceScale = options.getResolution().x / 1920.0f;
+				screenDimensions = sf::Vector2i(options.getResolution().x / 2 - line_thickness / 2, options.getResolution().y - bar);
+				StandardWindowDimensions = sf::Vector2i(options.getResolution());
+				Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Warships", sf::Style::Close);
+			}
+
 			bar = barSize * interfaceScale;
 			line_thickness = line_thicknessSize * interfaceScale;
 
-			screenDimensions = sf::Vector2i(options.Resolution.x / 2 - line_thickness / 2, options.Resolution.y - bar);
-			StandardWindowDimensions = sf::Vector2i(options.Resolution);
-			Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Warships", sf::Style::Close);
-			Window.setVerticalSyncEnabled(options.VerticalSyncEnabled);
+			Window.setVerticalSyncEnabled(options.isVerticalSyncEnabled());
 
-			MainMenu = std::make_unique<Menu>("Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20 * interfaceScale),
-				sf::Vector2f(StandardWindowDimensions.x / 2, 290 * interfaceScale), 130 * interfaceScale, interfaceScale);
-			MainMenu->setMenustate(Menustates::OPT_GRAPHICS);
+			view = Window.getDefaultView();
+			view.zoom(100.0f / options.getResolutionScale());
+			Window.setView(view);
 
-			Additionalmenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-				sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
-				sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info, interfaceScale);
+			if (wasFullScreenChanged || (wasResolutionChanged && !options.isFullScreenEnabled()) || first)
+			{
+				MainMenu = std::make_unique<Menu>("Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20 * interfaceScale),
+					sf::Vector2f(StandardWindowDimensions.x / 2, 290 * interfaceScale), 130 * interfaceScale, interfaceScale, options);
+				Additionalmenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+					sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
+					sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info, interfaceScale);
+			}
+			if (!first)
+				MainMenu->setMenustate(Menustates::OPT_GRAPHICS);
 
 			Gamestate = MENU;
+			first = false;
 		}
 		break;
 

@@ -115,5 +115,7 @@ public:
 
 	// sets duration of animation
 	void setAnimationDuration(const sf::Time& time) { animationTime = time; }
+
+	void setDisplayedOption(const std::string& newDisplayedOption);
 };
 

@@ -32,7 +32,8 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 		if (end == std::string::npos) end = options_list.size();
 		++number;
 		beg = end + 1;
-	} while (end != options_list.size());	
+	} 
+	while (end != options_list.size());	
 	
 	options = std::make_unique<std::string[]>(number);
 	
@@ -45,7 +46,8 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 		if (end == std::string::npos) end = options_list.size();
 		options[number++] = options_list.substr(beg, end - beg);
 		beg = end + 1;
-	} while (end != options_list.size());
+	} 
+	while (end != options_list.size());
 
 	bound_rectangle.setSize(size);
 	bound_rectangle.setFillColor(sf::Color(255,255,255,200));
@@ -196,5 +198,18 @@ void OptionButton::setScale(float x, float y)
 	current_displayed_option.setScale(x, y);
 	leftbutton.setScale(x, y);
 	rightbutton.setScale(x, y);
+}
+
+void OptionButton::setDisplayedOption(const std::string & newDisplayedOption)
+{
+	for (int i = 0; i < number_of_options; ++i)
+	{
+		if (newDisplayedOption == options[i])
+		{
+			current_displayed_option.setString(newDisplayedOption);
+			current_option_number = i;
+			return;
+		}
+	}
 }
 

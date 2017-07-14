@@ -126,3 +126,11 @@ void OptionsSubMenu::clickArrowContaining(const sf::Vector2f & mousepos)
 			but.clickRightButton();
 	}
 }
+
+void OptionsSubMenu::setDisplayedOption(int number, std::string newDisplayedOption)
+{
+	if (number >= 0 && number < options_buttons.size())
+	{
+		options_buttons[number].setDisplayedOption(newDisplayedOption);
+	}
+}

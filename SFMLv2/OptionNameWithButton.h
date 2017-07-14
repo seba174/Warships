@@ -75,5 +75,7 @@ public:
 
 	// sets duration of animation
 	void setAnimationDuration(const sf::Time& time) { button.setAnimationDuration(time); }
+
+	void setDisplayedOption(const std::string& newDisplayedOption) { button.setDisplayedOption(newDisplayedOption); }
 };
 
