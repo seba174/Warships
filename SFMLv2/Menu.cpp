@@ -29,14 +29,13 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 	int space_between_buttons, float interfaceScale, const Options& opt)
 {
 	// MainTitle character size
-	const int titleCharacterSize = 100*interfaceScale;
+	const int titleCharacterSize = 100 * interfaceScale;
 
 	// SubMenu titles and character size
-	const int submenuCharacterSize = 65*interfaceScale;
+	const int submenuCharacterSize = 65 * interfaceScale;
 
 	// Standard Menu Button size
-	//sf::Vector2f button_size(480, 110);
-	sf::Vector2f button_size(550*interfaceScale, 110*interfaceScale);
+	sf::Vector2f button_size(550 * interfaceScale, 110 * interfaceScale);
 
 	// Bounds color
 	sf::Color bounds_color = sf::Color::White;
@@ -44,14 +43,16 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 	// Whole Option Name with Button size
 	sf::Vector2f opt_name_with_button(1000 * interfaceScale, 100 * interfaceScale);
 
-	// Option button size
+	// Option button in Options size
 	sf::Vector2f options_butt_size(312 * interfaceScale, 52 * interfaceScale);
 
-	// PushButton in options size
+	// PushButton in Options size
 	sf::Vector2f push_in_opt_size(230 * interfaceScale, 55 * interfaceScale);
 
+	// Size of character in Options in Option button
 	const int options_name_with_button_char = 40 * interfaceScale;
 
+	// Size of character in Options in PushButton
 	const int options_push_button_char = 28 * interfaceScale;
 
 	FontHandler& handler = FontHandler::getInstance();
@@ -89,7 +90,6 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 
 	SubGraphics.Construct(title_or1st_button_position, space_between_buttons);
 
-	// wyrzucic domyslny rodzaj przycikskow
 	SubGraphics.addOptionNameWithButton("Resolution", handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, AvaliableResolutions::getResolutionString(), handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
@@ -164,11 +164,17 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 				opt.setFullScreen(SubGraphics.getDisplayedOption(2));
 				opt.setResolutionScale(SubGraphics.getDisplayedOption(3));
 
-				newGamestate = RELOAD_GRAPHICS;
+				if (opt.hasAnyOptionChanged())
+				{
+					newGamestate = RELOAD_GRAPHICS;
+				}
 			} // Apply Changes
 
 			if (SubGraphics.PushButtonContains(2, mousepos))
-				; // Reset Defaults
+			{
+				opt.loadDefaults();
+				newGamestate = RESTORE_GRAPHICS;
+			} // Reset Defaults
 		}
 
 	} break;

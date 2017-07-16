@@ -3,12 +3,13 @@
 #include "enumAdditionalVisualInformation.h"
 #include "enumGamestate.h"
 #include "Input.h"
+#include "Options.h"
 
-class AdditionalMenu :
-	public sf::Drawable
+class AdditionalMenu
+	: public sf::Drawable
 {
 	AdditionalVisualInformations& state;
-	AdditionalSubMenu Exit, Loading;
+	AdditionalSubMenu Exit, Loading, ApplyChanges;
 
 	Gamestates newGamestate;
 
@@ -30,7 +31,7 @@ public:
 	// function deals with running AdditionalMenu 
 	// check if user clicks on buttons and does appropriate actions
 	// in order to updateGamestates, use updateGamestate() function
-	void runMenu(const sf::Vector2f& mousepos, bool leftButtonPressed, Input& input);
+	void runMenu(const sf::Vector2f& mousepos, bool leftButtonPressed, Input& input, Options& options);
 
 	// updates Gamestate
 	void updateGamestate(Gamestates& gamestate);

@@ -13,6 +13,11 @@ const std::array<res, 7> AvaliableResolutions::avaliableRes =
 	res("2560x1440",sf::Vector2i(2560, 1440))
 };
 
+const sf::Vector2i Options::defaultResolution(AvaliableResolutions::avaliableRes[0].resolution_number);
+const bool Options::defaultFullScreen = false;
+const bool Options::defaultVerticalSyncEnabled = false;
+const int Options::defaultResolutionScale = 100;
+
 const string Options::s_yes = "Yes";
 const string Options::s_no = "No";
 const string Options::s_verticalsyncenabled = "VerticalSyncEnabled";
@@ -80,6 +85,16 @@ Options::Options(INI_Reader & reader)
 		reader.insertValue(s_graphics, s_resolutionscale, std::to_string(ResolutionScale));
 	}
 
+	// Managing creating copy
+	// copyTemp value stops executing constructor over and over (it allows it only for 1 copy)
+	static bool copyTemp = true;
+	if (copyTemp)
+	{
+		copyTemp = false;
+		previousOptions = std::make_unique<Options>(Options(reader));
+	}
+	else
+		copyTemp = true;
 }
 
 bool Options::isResolutionSupported(const sf::Vector2i & Resolution) const
@@ -113,7 +128,6 @@ void Options::setResolution(const string & res)
 		{
 			Resolution = newResolution;
 			hasResolutionChanged = true;
-			std::cout << "rozdzielczosc" << std::endl;
 		}
 		reader.insertValue(s_graphics, s_resolution, res);
 	}
@@ -121,9 +135,6 @@ void Options::setResolution(const string & res)
 
 void Options::setVerticalSyncEnabled(const std::string& isEnabled)
 {
-	if (isEnabled == "")
-		return;
-
 	if (isEnabled == s_yes)
 	{
 		VerticalSyncEnabled = true;
@@ -138,14 +149,10 @@ void Options::setVerticalSyncEnabled(const std::string& isEnabled)
 
 void Options::setFullScreen(const std::string& isEnabled)
 {
-	if (isEnabled == "")
-		return;
-
 	if (isEnabled == s_yes)
 	{
 		if (!FullScreen)
 		{
-			std::cout << "fullscreen" << std::endl;
 			hasFullScreenChanged = true;
 		}
 		FullScreen = true;
@@ -196,9 +203,49 @@ std::string Options::isFullScreenEnabled_string() const
 		return s_no;
 }
 
-Options::~Options()
+void Options::saveToPreviousOptions()
 {
+	previousOptions->FullScreen = FullScreen;
+	previousOptions->Resolution = Resolution;
+	previousOptions->ResolutionScale = ResolutionScale;
+	previousOptions->VerticalSyncEnabled = VerticalSyncEnabled;
+	previousOptions->hasFullScreenChanged = hasFullScreenChanged;
+	previousOptions->hasResolutionChanged = hasResolutionChanged;
+	previousOptions->hasResolutionScaleChanged = hasResolutionScaleChanged;
+	previousOptions->hasVerticalSyncChanged = hasVerticalSyncChanged;
 }
+
+void Options::restorePreviousOptions()
+{
+	FullScreen = previousOptions->FullScreen;
+	Resolution = previousOptions->Resolution;
+	ResolutionScale = previousOptions->ResolutionScale;
+	VerticalSyncEnabled = previousOptions->VerticalSyncEnabled;
+	hasFullScreenChanged = previousOptions->hasFullScreenChanged;
+	hasResolutionChanged = previousOptions->hasResolutionChanged;
+	hasResolutionScaleChanged = previousOptions->hasResolutionScaleChanged;
+	hasVerticalSyncChanged = previousOptions->hasVerticalSyncChanged;
+}
+
+bool Options::hasAnyOptionChanged() const
+{
+	if (FullScreen == previousOptions->FullScreen
+		&& Resolution == previousOptions->Resolution
+		&& ResolutionScale == previousOptions->ResolutionScale
+		&& VerticalSyncEnabled == previousOptions->VerticalSyncEnabled)
+		return false;
+	return true;
+}
+
+void Options::loadDefaults()
+{ 
+	Resolution = defaultResolution;
+	VerticalSyncEnabled = defaultVerticalSyncEnabled;
+	ResolutionScale = defaultResolutionScale;
+	FullScreen = defaultFullScreen;
+	saveToPreviousOptions();
+}
+
 
 std::string AvaliableResolutions::getResolutionString()
 {
@@ -209,9 +256,7 @@ std::string AvaliableResolutions::getResolutionString()
 		// if it is the last resolution option, do not put ','
 		if ((++it) == AvaliableResolutions::avaliableRes.end());
 		else
-		{
 			res += ',';
-		}
 		--it;
 	}
 	return res;
@@ -220,16 +265,12 @@ std::string AvaliableResolutions::getResolutionString()
 std::string AvaliableResolutionScales::getScaleString()
 {
 	std::string tmp;
-	int i = 0;
-	int add = 5;
+	int i = minScale;
 	while (i <= maxScale)
 	{
-		if (i >= minScale)
-		{
-			tmp += std::to_string(i);
-			if (i + add <= maxScale)
-				tmp += ',';
-		}
+		tmp += std::to_string(i);
+		if (i + add <= maxScale)
+			tmp += ',';
 		i += add;
 	}
 	return tmp;
