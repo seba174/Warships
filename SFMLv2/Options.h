@@ -49,6 +49,7 @@ class Options
 	sf::Vector2i Resolution;
 	bool FullScreen;
 	int ResolutionScale;
+	sf::Vector2i desktopResolution;
 
 	// stores previous options
 	std::unique_ptr<Options> previousOptions = nullptr;
@@ -135,5 +136,14 @@ public:
 	// function load default settings
 	void loadDefaults();
 
+	// sets Desktop Resolution
+	void setDesktopResolution(const sf::Vector2i& desktopRes) { desktopResolution = desktopRes; }
+
+	// returns Desktop Resolution
+	sf::Vector2i getDesktopResolution() const { return desktopResolution; }
+
+	// returns desktop resolution as a string with Options::s_x value bewtween X and Y coords
+	std::string getDesktopResolution_string() const { return std::to_string(desktopResolution.x) + s_x + std::to_string(desktopResolution.y); }
+	
 };
 

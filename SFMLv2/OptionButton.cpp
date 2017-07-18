@@ -14,7 +14,7 @@ void OptionButton::draw(sf::RenderTarget & target, sf::RenderStates states) cons
 
 OptionButton::OptionButton(const std::string & options_list, const sf::Font& font, int characterSize, const sf::Vector2f& size, 
 	const sf::Color& bounds_color)
-	: isPressed(false), isLeftButtonHighlighted(false), isRightButtonHighlighted(false), shouldUpdateAnimations(false)
+	: isPressed(false), isLeftButtonHighlighted(false), isRightButtonHighlighted(false), shouldUpdateAnimations(false), areArrowsBlocked(false)
 {
 	current_option_number = 0;
 	usableTime = sf::milliseconds(100);
@@ -146,6 +146,8 @@ void OptionButton::updateArrows()
 
 void OptionButton::clickLeftButton()
 {
+	if (areArrowsBlocked)
+		return;
 	--current_option_number;
 	if (current_option_number < 0)
 		current_option_number = number_of_options - 1;
@@ -155,6 +157,8 @@ void OptionButton::clickLeftButton()
 
 void OptionButton::clickRightButton()
 {
+	if (areArrowsBlocked)
+		return;
 	++current_option_number;
 	if (current_option_number == number_of_options)
 		current_option_number = 0;
@@ -211,5 +215,22 @@ void OptionButton::setDisplayedOption(const std::string & newDisplayedOption)
 			return;
 		}
 	}
+}
+
+void OptionButton::handleAdditionalRectangleColor(bool shouldApplyColor, const sf::Color & color)
+{
+	if (shouldApplyColor)
+		additionalEffects.setFillColor(color);
+	else
+		additionalEffects.setFillColor(sf::Color::Transparent);
+}
+
+void OptionButton::setArrowsBlockAndDisplayedString(bool arrowsBlocked, const std::string & displayed)
+{
+	areArrowsBlocked = arrowsBlocked;
+	if (areArrowsBlocked)
+		current_displayed_option.setString(displayed);
+	else
+		current_displayed_option.setString(options[current_option_number]);
 }
 

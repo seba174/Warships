@@ -32,6 +32,7 @@ int main()
 {
 	INI_Reader reader("Config/config.ini");
 	Options options(reader);
+	options.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
 
 	int map_size = 0;
 	const int barSize = 50;
@@ -281,6 +282,7 @@ int main()
 			if ((wasFullScreenChanged && options.isFullScreenEnabled()) || (options.isFullScreenEnabled() && first))
 			{
 				sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+				options.setDesktopResolution(sf::Vector2i(desktop.width, desktop.height));
 				interfaceScale = desktop.width / 1920.0f;
 				screenDimensions = sf::Vector2i(desktop.width / 2 - line_thickness / 2, desktop.height - bar);
 				StandardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);

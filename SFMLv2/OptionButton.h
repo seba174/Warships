@@ -23,6 +23,7 @@ class OptionButton :
 	std::unique_ptr<std::string[]> options;
 
 	sf::RectangleShape bound_rectangle;
+	sf::RectangleShape additionalEffects;
 	sf::RectangleShape leftbutton;
 	sf::RectangleShape rightbutton;
 
@@ -43,6 +44,8 @@ class OptionButton :
 	sf::Time usableTime;
 	float animationScale;
 	sf::Time animationTime;
+
+	bool areArrowsBlocked;
 
 	// information if mouse is within bound_rectagle (it is used in animation)
 	bool isPressed;
@@ -119,5 +122,9 @@ public:
 	// Sets new displayed option
 	// Fucntion sets it only when new displayed option is included in option list
 	void setDisplayedOption(const std::string& newDisplayedOption);
+
+	void handleAdditionalRectangleColor(bool shouldApplyColor, const sf::Color& color);
+
+	void setArrowsBlockAndDisplayedString(bool arrowsBlocked,const std::string& displayed);
 };
 

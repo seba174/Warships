@@ -30,7 +30,8 @@ const string Options::s_x = "x";
 
 Options::Options(INI_Reader & reader)
 	: Resolution(sf::Vector2i(0, 0)), ResolutionScale(100), VerticalSyncEnabled(false), FullScreen(false), reader(reader),
-	hasFullScreenChanged(false), hasResolutionChanged(false), hasResolutionScaleChanged(false), hasVerticalSyncChanged(false)
+	hasFullScreenChanged(false), hasResolutionChanged(false), hasResolutionScaleChanged(false), hasVerticalSyncChanged(false),
+	desktopResolution(0,0)
 {
 	const SettingFile& config = reader.getSettings();
 

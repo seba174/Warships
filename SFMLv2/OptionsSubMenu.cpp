@@ -25,6 +25,7 @@ void OptionsSubMenu::updatePushButtons()
 
 OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int spaceBetweenButtons)
 {
+	spaceBetweenVertically = 0;
 	this->position = position_of_first;
 	this->spaceBetweenButtons = spaceBetweenButtons;
 	additionalSpaceBetweenOptionsAndPushButtons = 0;
@@ -33,6 +34,7 @@ OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int space
 
 OptionsSubMenu::OptionsSubMenu()
 {
+	spaceBetweenVertically = 0;
 	additionalSpaceBetweenOptionsAndPushButtons = 0;
 	isConstructed = false;
 }
@@ -132,5 +134,27 @@ void OptionsSubMenu::setDisplayedOption(int number, std::string newDisplayedOpti
 	if (number >= 0 && number < options_buttons.size())
 	{
 		options_buttons[number].setDisplayedOption(newDisplayedOption);
+	}
+}
+
+void OptionsSubMenu::handleAdditionalRectangleColor(int number, bool shouldApplyColor, const sf::Color & color)
+{
+	if (number >= 0 && number < push_buttons.size())
+	{
+		push_buttons[number].handleAdditionalRectangleColor(shouldApplyColor,color);
+	}
+}
+
+void OptionsSubMenu::setSpaceBetweenPushButtons(int space)
+{
+	spaceBetweenVertically = space;
+	updatePushButtons();
+}
+
+void OptionsSubMenu::setArrowsBlockAndDisplayedString(int number, bool arrowsBlocked, const std::string & displayed)
+{
+	if (number >= 0 && number < options_buttons.size())
+	{
+		options_buttons[number].setArrowsBlockAndDisplayedString(arrowsBlocked, displayed);
 	}
 }

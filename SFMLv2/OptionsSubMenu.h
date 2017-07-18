@@ -7,7 +7,7 @@
 class OptionsSubMenu :
 	public sf::Drawable
 {
-	const int spaceBetweenVertically = 15;
+	int spaceBetweenVertically;
 	int additionalSpaceBetweenOptionsAndPushButtons;
 
 	std::vector<OptionNameWithButton> options_buttons;
@@ -70,5 +70,11 @@ public:
 	// function sets new displayed option for button of given number
 	// fucntion sets it only when new displayed option is included in option list
 	void setDisplayedOption(int number, std::string newDisplayedOption);
+
+	void handleAdditionalRectangleColor(int number, bool shouldApplyColor, const sf::Color& color);
+
+	void setSpaceBetweenPushButtons(int space);
+
+	void setArrowsBlockAndDisplayedString(int number, bool arrowsBlocked, const std::string& displayed);
 };
 

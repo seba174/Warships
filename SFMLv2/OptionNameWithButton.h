@@ -79,5 +79,7 @@ public:
 	// Sets new displayed option for OptionButton
 	// Fucntion sets it only when new displayed option is included in option list
 	void setDisplayedOption(const std::string& newDisplayedOption) { button.setDisplayedOption(newDisplayedOption); }
+
+	void setArrowsBlockAndDisplayedString(bool arrowsBlocked, const std::string& displayed) { button.setArrowsBlockAndDisplayedString(arrowsBlocked, displayed); }
 };
 

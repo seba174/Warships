@@ -25,6 +25,17 @@ void Menu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	}
 }
 
+bool Menu::hasVisibleOptionChanged(const Options & options)
+{
+	// Numbers of buttons represents current menu and have to be changed when the order of button changes
+	return
+		((std::to_string(options.getResolution().x) + Options::s_x + std::to_string(options.getResolution().y)) != SubGraphics.getDisplayedOption(0)
+			&& options.getResolution()!=options.getDesktopResolution())
+		|| options.isVerticalSyncEnabled_string() != SubGraphics.getDisplayedOption(1)
+		|| options.isFullScreenEnabled_string() != SubGraphics.getDisplayedOption(2)
+		|| std::to_string(options.getResolutionScale()) != SubGraphics.getDisplayedOption(3);
+}
+
 Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_position, const sf::Vector2f & title_or1st_button_position, 
 	int space_between_buttons, float interfaceScale, const Options& opt)
 {
@@ -54,6 +65,8 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 
 	// Size of character in Options in PushButton
 	const int options_push_button_char = 28 * interfaceScale;
+
+	const int space_between_push_buttons = 20 * interfaceScale;
 
 	FontHandler& handler = FontHandler::getInstance();
 
@@ -106,8 +119,13 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 	SubGraphics.addPushButton("Back", options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGraphics.addPushButton("Apply changes", options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGraphics.addPushButton("Load defaults", options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
+	SubGraphics.setSpaceBetweenPushButtons(space_between_push_buttons);
+	
+	if (!opt.isFullScreenEnabled())
+		SubGraphics.setDisplayedOption(0, std::to_string(opt.getResolution().x) + Options::s_x + std::to_string(opt.getResolution().y));
+	else
+		SubGraphics.setArrowsBlockAndDisplayedString(0, true, opt.getDesktopResolution_string());
 
-	SubGraphics.setDisplayedOption(0, std::to_string(opt.getResolution().x) + Options::s_x + std::to_string(opt.getResolution().y));
 	SubGraphics.setDisplayedOption(1, opt.isVerticalSyncEnabled_string());
 	SubGraphics.setDisplayedOption(2, opt.isFullScreenEnabled_string());
 	SubGraphics.setDisplayedOption(3, std::to_string(opt.getResolutionScale()));
@@ -176,6 +194,9 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 				newGamestate = RESTORE_GRAPHICS;
 			} // Reset Defaults
 		}
+
+		SubGraphics.handleAdditionalRectangleColor(1, hasVisibleOptionChanged(opt), sf::Color(0,0,0,127));
+		SubGraphics.setArrowsBlockAndDisplayedString(0, opt.isFullScreenEnabled(), opt.getDesktopResolution_string());
 
 	} break;
 	

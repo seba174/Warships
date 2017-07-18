@@ -20,13 +20,18 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	: state(additionalvsinfo)
 {
 	// SubMenu title character size
-	const int title_size = 55 * interfaceScale;
+	int title_size_1 = 55 * interfaceScale;
+	int title_size_2 = 50 * interfaceScale;
+
 
 	// SubMenu character size
-	const int submenu_size = 38 * interfaceScale;
+	int submenu_size = 35 * interfaceScale;
 
-	// Background for SubMenu size
-	sf::Vector2f backgroundForSubmenuSize(550 * interfaceScale, 360 * interfaceScale);
+	// Background for SubMenu Exit size
+	sf::Vector2f backgroundForSubmenuExitSize(550 * interfaceScale, 370 * interfaceScale);
+
+	// Background for SubMenu Exit size
+	sf::Vector2f backgroundForSubmenuApplyChangesSize(600 * interfaceScale, 320 * interfaceScale);
 
 	// Background for SubMenu Color
 	sf::Color backgroundForSubMenuColor = sf::Color::Red;
@@ -35,7 +40,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	sf::Color backgroundExitColor = sf::Color(0, 0, 0, 200);
 
 	// Button size
-	sf::Vector2f button_size(330 * interfaceScale, 70 * interfaceScale);
+	sf::Vector2f button_size(340 * interfaceScale, 70 * interfaceScale);
 
 	// Bounds color
 	sf::Color bounds_color = sf::Color::White;
@@ -47,17 +52,17 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 
 	// Position of title and button is based on backgroundForSubMenuPosition!
 
-	Exit.construct(backgroundSize, backgroundForSubmenuSize, backgroundForSubMenuPosition, backgroundForSubMenuColor, backgroundExitColor, sf::Vector2f(0, 0),
-		"What do you want to do?", "Resume,Return to Main Menu,Quit the game", title_size, submenu_size, title_or1st_button_position,
+	Exit.construct(backgroundSize, backgroundForSubmenuExitSize, backgroundForSubMenuPosition, backgroundForSubMenuColor, backgroundExitColor, sf::Vector2f(0, 0),
+		"What do you want to do?", "Resume,Return to Main Menu,Quit the game", title_size_1, submenu_size, title_or1st_button_position,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons), button_size, space_between_buttons,
 		bounds_color, handler.font_handler["Mecha"], interfaceScale);
 
-	Loading.construct(backgroundSize, backgroundForSubmenuSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size),
-		sf::Color::Transparent, sf::Color::Black, sf::Vector2f(0, 0), "Loading...", "", title_size, submenu_size,
+	Loading.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_1),
+		sf::Color::Transparent, sf::Color::Black, sf::Vector2f(0, 0), "Loading...", "", title_size_1, submenu_size,
 		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
 
-	ApplyChanges.construct(backgroundSize, backgroundForSubmenuSize, backgroundForSubMenuPosition, backgroundForSubMenuColor, backgroundExitColor, sf::Vector2f(0, 0),
-		"Do you wish to save changes?", "Yes,No", title_size, submenu_size, title_or1st_button_position,
+	ApplyChanges.construct(backgroundSize, backgroundForSubmenuApplyChangesSize, backgroundForSubMenuPosition, backgroundForSubMenuColor, backgroundExitColor, sf::Vector2f(0, 0),
+		"Do you wish to save changes?", "Yes,No", title_size_2, submenu_size, title_or1st_button_position,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons), button_size, space_between_buttons,
 		bounds_color, handler.font_handler["Mecha"], interfaceScale);
 	

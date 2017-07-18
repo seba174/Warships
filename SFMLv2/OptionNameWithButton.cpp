@@ -39,3 +39,5 @@ void OptionNameWithButton::setPosition(const sf::Vector2f & position)
 	setTextPosition(position.x, position.y);
 	setButtonPosition(position.x, position.y);
 }
+
+

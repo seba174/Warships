@@ -12,6 +12,7 @@ class PushButton :
 	const float scale = 0.94f;
 
 	sf::RectangleShape bound_rectangle;
+	sf::RectangleShape additionalEffects;
 	sf::Text displayed_text;
 	
 	// information if mouse is within bound_rectagle (it is used in animation)
@@ -73,5 +74,7 @@ public:
 
 	// returns size of a button
 	sf::Vector2f getSize() { return bound_rectangle.getSize(); }
+
+	void handleAdditionalRectangleColor(bool shouldApplyColor, const sf::Color& color);
 };
 

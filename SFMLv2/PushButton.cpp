@@ -7,6 +7,7 @@ void PushButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	states.transform *= getTransform();
 	target.draw(bound_rectangle, states);
 	target.draw(displayed_text, states);
+	target.draw(additionalEffects, states);
 }
 
 void PushButton::setTextPosition()
@@ -37,7 +38,11 @@ PushButton::PushButton(const std::string& text, int char_size, const sf::Font& f
 	animationTime = sf::milliseconds(100);
 
 	bound_rectangle.setSize(size);
+	additionalEffects = bound_rectangle;
+	additionalEffects.setFillColor(sf::Color::Transparent);
+
 	bound_rectangle.setTexture(&texutreHandler.texture_handler["buttonFrame"]);
+
 
 	displayed_text.setFont(font);
 	displayed_text.setCharacterSize(char_size);
@@ -52,6 +57,7 @@ void PushButton::setPosition(float x, float y)
 {
 	pos = sf::Vector2f(x, y);
 	bound_rectangle.setPosition(x - bound_rectangle.getSize().x / 2, y - bound_rectangle.getSize().y / 2);
+	additionalEffects.setPosition(bound_rectangle.getPosition());
 	setTextPosition();
 }
 
@@ -59,6 +65,7 @@ void PushButton::setPosition(const sf::Vector2f & position)
 {
 	pos = position;
 	bound_rectangle.setPosition(position.x - bound_rectangle.getSize().x / 2, position.y - bound_rectangle.getSize().y / 2);
+	additionalEffects.setPosition(bound_rectangle.getPosition());
 	setTextPosition();
 }
 
@@ -105,6 +112,7 @@ void PushButton::updatePosition()
 	newScale += addScale(displayed_text.getString());
 
 	bound_rectangle.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
+	additionalEffects.setPosition(bound_rectangle.getPosition());
 	displayed_text.setPosition(pos.x - displayed_text.getGlobalBounds().width / 2, pos.y - displayed_text.getGlobalBounds().height / newScale);
 }
 
@@ -112,6 +120,15 @@ void PushButton::setScale(float x, float y)
 {
 	bound_rectangle.setScale(x, y);
 	displayed_text.setScale(x, y);
+	additionalEffects.setScale(x, y);
+}
+
+void PushButton::handleAdditionalRectangleColor(bool shouldApplyColor, const sf::Color & color)
+{
+	if (!shouldApplyColor)
+		additionalEffects.setFillColor(color);
+	else
+		additionalEffects.setFillColor(sf::Color::Transparent);
 }
 
 
