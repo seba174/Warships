@@ -1,20 +1,19 @@
 #include "IrregularShip3.h"
 
 
-IrregularShip3::IrregularShip3(sf::Vector2f squaresize, sf::Vector2i boarddimensions, sf::Vector2f setPoints, sf::Texture * texture)
+IrregularShip3::IrregularShip3(const sf::Vector2f& squaresize, const sf::Vector2i& boarddimensions, const sf::Vector2f& setPoints, sf::Texture * texture)
 	:Board(boarddimensions, squaresize, setPoints), placeShip(false)
 {
 	shipv2 = sf::RectangleShape(sf::Vector2f(2 * squaresize.x, 4 * squaresize.y));
 	shipv2.setTexture(texture);
 	shipv2.setTextureRect(sf::IntRect(counter * (shipv2.getTexture()->getSize().x / 5), 0, shipv2.getTexture()->getSize().x / 5, shipv2.getTexture()->getSize().y));
-	//shipv2.setFillColor(sf::Color::Green);
 	shipv2.setPosition(SetPoints.x, SetPoints.y);
 }
 
-bool IrregularShip3::CanChangePositionX(const sf::Vector2f newposition) const
+bool IrregularShip3::CanChangePositionX(const sf::Vector2f& newposition) const
 {
 	float rotation = shipv2.getRotation();
-	switch ((int)rotation)
+	switch (static_cast<int>(rotation))
 	{
 	case 0:
 		if (newposition.x >= 0 && newposition.x + shipv2.getSize().x <= BoardDimensions.x)
@@ -36,10 +35,10 @@ bool IrregularShip3::CanChangePositionX(const sf::Vector2f newposition) const
 	return false;
 }
 
-bool IrregularShip3::CanChangePositionY(const sf::Vector2f newposition) const
+bool IrregularShip3::CanChangePositionY(const sf::Vector2f& newposition) const
 {
 	float rotation = shipv2.getRotation();
-	switch ((int)rotation)
+	switch (static_cast<int>(rotation))
 	{
 	case 0:
 		if (newposition.y >= 0 && newposition.y + shipv2.getSize().y <= BoardDimensions.y)
@@ -61,7 +60,7 @@ bool IrregularShip3::CanChangePositionY(const sf::Vector2f newposition) const
 	return false;
 }
 
-void IrregularShip3::setPosition(const sf::Vector2f mousepos)
+void IrregularShip3::setPosition(const sf::Vector2f& mousepos)
 {
 	sf::Vector2f newposition = sf::Vector2f(floor(mousepos.x / SquareSize.x)*SquareSize.x, floor(mousepos.y / SquareSize.y)*SquareSize.y);
 	int rotation = shipv2.getRotation();
@@ -131,31 +130,11 @@ void IrregularShip3::setPosition(const sf::Vector2f mousepos)
 	}
 }
 
-void IrregularShip3::setPositionWithoutCheck(const sf::Vector2f newposition)
-{
-	shipv2.setPosition(newposition);
-}
-
-sf::RectangleShape & IrregularShip3::return_ship()
-{
-	return shipv2;
-}
-
-bool IrregularShip3::getplaceShip() const
-{
-	return placeShip;
-}
-
-void IrregularShip3::setplaceShip(bool set)
-{
-	placeShip = set;
-}
-
 void IrregularShip3::rotate_ship()
 {
 	float rotation = shipv2.getRotation();
 
-	switch ((int)rotation)
+	switch (static_cast<int>(rotation))
 	{
 	case 0:
 		if (!CanChangePositionX(sf::Vector2f(shipv2.getPosition().x - SetPoints.x - shipv2.getSize().y, shipv2.getPosition().y - SetPoints.y)))
@@ -182,7 +161,8 @@ void IrregularShip3::rotate_ship()
 
 bool IrregularShip3::placePlayerShip(int ** ships, int tabs_size, std::vector<Board*>&VectRect, sf::Texture * texture)
 {
-	sf::Vector2i pos(floor((shipv2.getPosition().x - SetPoints.x) / SquareSize.x), floor((shipv2.getPosition().y - SetPoints.y) / SquareSize.y));
+	float accuracy = 0.98;
+	sf::Vector2i pos(floor((shipv2.getPosition().x - SetPoints.x) / (accuracy*SquareSize.x)), floor((shipv2.getPosition().y - SetPoints.y) / (accuracy*SquareSize.y)));
 	placeShip = false;
 
 	int rotation = shipv2.getRotation();
@@ -213,7 +193,6 @@ bool IrregularShip3::placePlayerShip(int ** ships, int tabs_size, std::vector<Bo
 			ships[pos.x - 1][pos.y + 1] = 11;
 			ships[pos.x - 2][pos.y + 1] = 11;
 			ships[pos.x - 3][pos.y + 1] = 11;
-
 
 			VectRect.push_back(this);
 			return true;

@@ -1,7 +1,6 @@
 #include "OptionNameWithButton.h"
 
 
-
 void OptionNameWithButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(optionName, states);

@@ -1,5 +1,4 @@
 #include "OptionButton.h"
-#include <iostream>
 
 
 void OptionButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -73,7 +72,6 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 	bound_rectangle.setOutlineThickness(2);
 	bound_rectangle.setOutlineColor(bounds_color);
 
-	//bound_rectangle.setOutlineColor(sf::Color::Red);
 	bound_rectangle.setTexture(&texture.texture_handler["test"]);
 }
 
@@ -173,7 +171,6 @@ void OptionButton::updateWithAnimations(const sf::Time & time)
 		isPressed = false;
 		setScale(animationScale, animationScale);
 		shouldUpdateAnimations = true;
-		//bound_rectangle.setFillColor(sf::Color(4, 183, 219, 150));
 	}
 	else
 	{
@@ -190,8 +187,6 @@ void OptionButton::updateWithAnimations(const sf::Time & time)
 			usableTime = sf::milliseconds(100);
 			shouldUpdateAnimations = false;
 		}
-
-		//bound_rectangle.setFillColor(sf::Color::Transparent);
 	}
 	updatePosition();
 }

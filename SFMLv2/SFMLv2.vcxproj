@@ -123,10 +123,10 @@
     <ClCompile Include="AdditionalMenu.cpp" />
     <ClCompile Include="AdditionalSubMenu.cpp" />
     <ClCompile Include="AI.cpp" />
-    <ClCompile Include="Board.cpp" />
     <ClCompile Include="DVector2i.cpp" />
     <ClCompile Include="FontHandler.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GamePlayers.cpp" />
     <ClCompile Include="INI_Reader.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="IrregularShip2.cpp" />
@@ -157,6 +157,7 @@
     <ClInclude Include="enumMenustate.h" />
     <ClInclude Include="FontHandler.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GamePlayers.h" />
     <ClInclude Include="INI_Reader.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="IrregularShip2.h" />
@@ -169,7 +170,6 @@
     <ClInclude Include="OptionsSubMenu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PushButton.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Ships.h" />
     <ClInclude Include="Ships_HP.h" />
     <ClInclude Include="SubMenu.h" />
