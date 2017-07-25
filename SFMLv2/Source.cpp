@@ -37,10 +37,10 @@ int main()
 	int map_size = 0;
 	const int barSize = 50;
 	const int line_thicknessSize = 10;
-
 	float interfaceScale = options.getResolution().x / 1920.0f;
-	int bar = barSize * interfaceScale;            
-	int line_thickness = line_thicknessSize * interfaceScale;  
+
+	int bar = static_cast<int>(barSize * interfaceScale);
+	int line_thickness = static_cast<int>(line_thicknessSize * interfaceScale);
 
 	FontHandler& fonthandler = FontHandler::getInstance();
 	TextureHandler& textures = TextureHandler::getInstance();
@@ -69,7 +69,7 @@ int main()
 	sf::Clock clock;	// czas klatki
 
 	Input input;
-	std::unique_ptr<Mouse_S> mouse;
+	std::unique_ptr<Mouse_S> mouse, mouse_pl;
 
 	// TABLICA STATKOW DO STAWIANIA PRZEZ GRACZA
 
@@ -129,7 +129,7 @@ int main()
 			if (input.isMouseRightButtonPressed() && mouse->isMouseWithinArea() && !game->get_ships_set_up())
 				game->rotate_player_ship();
 
-			if (input.isKeyboardReturnKeyPressed() && AI_set)
+			if (input.isMouseLeftButtonPressed() && AI_set)
 				game->setplmoved() = true;
 
 			if (!game->get_ships_set_up())
@@ -145,7 +145,7 @@ int main()
 			else
 			{
 				sf::Vector2i tmp_vec(static_cast<int>(round(rect.getPosition().x / square_size.x)), static_cast<int>(round((rect.getPosition().y - bar) / square_size.y)));
-				game->play(dt, tmp_vec);
+				game->play(dt, tmp_vec, mouse_pl->returnPositionInBounds());
 				if (game->getGameState() == AI_win)
 				{
 					additional_vs_info = AdditionalVisualInformations::AI_WON;
@@ -155,7 +155,6 @@ int main()
 					additional_vs_info = AdditionalVisualInformations::PLAYER_WON;
 				}
 			}
-
 			drawnGamestate = PlvsAI;
 		}
 		break;
@@ -186,6 +185,8 @@ int main()
 			bImage2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, static_cast<float>(bar)));
 
 			mouse = std::make_unique<Mouse_S>(sf::Vector2f(screenDimensions.x + line_thickness, 2 * screenDimensions.x + line_thickness),
+				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
+			mouse_pl = std::make_unique<Mouse_S>(sf::Vector2f(0, screenDimensions.x + line_thickness),
 				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
 
 			square_tab = new sf::RectangleShape*[map_size];

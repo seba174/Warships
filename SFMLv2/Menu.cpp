@@ -36,7 +36,7 @@ bool Menu::hasVisibleOptionChanged(const Options & options)
 		|| std::to_string(options.getResolutionScale()) != SubGraphics.getDisplayedOption(3);
 }
 
-Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_position, const sf::Vector2f & title_or1st_button_position, 
+Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_position, const sf::Vector2f & title_or1st_button_position,
 	int space_between_buttons, float interfaceScale, const Options& opt)
 {
 	// MainTitle character size
@@ -81,7 +81,7 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 	MainTitle.setCharacterSize(titleCharacterSize);
 	MainTitle.setPosition(main_title_position.x - MainTitle.getGlobalBounds().width / 2, main_title_position.y);
 
-	SubHome.construct("", "Play,Options,Credits,Exit", submenuCharacterSize, submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, button_size, 
+	SubHome.construct("", "Play,Options,Credits,Exit", submenuCharacterSize, submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, button_size,
 		space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 
 	SubChooseGametype.construct("", "Solo Game,Player vs Player,Back", submenuCharacterSize, submenuCharacterSize, title_or1st_button_position, title_or1st_button_position,
@@ -107,10 +107,10 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 		opt_name_with_button, AvaliableResolutions::getResolutionString(), handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
 	SubGraphics.addOptionNameWithButton("Vertical Sync", handler.font_handler["Mecha"], options_name_with_button_char,
-		opt_name_with_button, Options::s_yes + ',' + Options::s_no, handler.font_handler["Mecha"], 
+		opt_name_with_button, Options::s_yes + ',' + Options::s_no, handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
 	SubGraphics.addOptionNameWithButton("Full Screen", handler.font_handler["Mecha"], options_name_with_button_char,
-		opt_name_with_button, Options::s_yes + ',' + Options::s_no, handler.font_handler["Mecha"], 
+		opt_name_with_button, Options::s_yes + ',' + Options::s_no, handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
 	SubGraphics.addOptionNameWithButton("Resolution Scale", handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, AvaliableResolutionScales::getScaleString(), handler.font_handler["Mecha"],
@@ -120,7 +120,7 @@ Menu::Menu(const std::string & main_title, const sf::Vector2f & main_title_posit
 	SubGraphics.addPushButton("Apply changes", options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGraphics.addPushButton("Load defaults", options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGraphics.setSpaceBetweenPushButtons(space_between_push_buttons);
-	
+
 	if (!opt.isFullScreenEnabled())
 		SubGraphics.setDisplayedOption(0, std::to_string(opt.getResolution().x) + Options::s_x + std::to_string(opt.getResolution().y));
 	else

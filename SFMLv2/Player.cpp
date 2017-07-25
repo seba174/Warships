@@ -1,10 +1,9 @@
 #include "Player.h"
 
 
-
-Player::Player(const sf::Vector2i dim, const sf::Vector2f SquareSize, const sf::Vector2f enemy_setpoints, int ** enemy_ships,
-	const sf::Vector2f player_setpoints, const sf::RectangleShape pudlo, const sf::RectangleShape trafienie, sf::RectangleShape ** square_tab_2, 
-	const int bar,  sf::RectangleShape& rect)
+Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, int ** enemy_ships,
+	const sf::Vector2f& player_setpoints, const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape ** square_tab_2, 
+	int bar,  sf::RectangleShape& rect)
 	: BoardDimensions(dim), SquareSize(SquareSize), Enemy_SetPoints(enemy_setpoints),Player_setPoints(player_setpoints), enemy_ships(enemy_ships),
 	pudlo(pudlo), trafienie(trafienie), square_tab_2(square_tab_2), bar(bar), rect(rect)
 {
@@ -42,8 +41,12 @@ Player::Player(const sf::Vector2i dim, const sf::Vector2f SquareSize, const sf::
 	this->ships_set_up = false;
 }
 
-bool Player::Player_moves(sf::Vector2i & position)
+bool Player::Player_moves(const sf::Vector2i & position)
 {
+	// chcecks if player has clicked button
+	if (!getplmoved())
+		return false;
+
 	if (enemy_ships[position.x][position.y] == -2)
 	{
 	}
@@ -54,7 +57,6 @@ bool Player::Player_moves(sf::Vector2i & position)
 		enemy_ships[position.x][position.y] = -2;
 		plmoved = false;
 		return true;
-
 	}
 	else if (enemy_ships[position.x][position.y])
 	{
@@ -336,7 +338,17 @@ void Player::Player_input(const sf::Time& dt)
 	}
 }
 
-void Player::Player_Set_ships(sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw)
+void Player::PlayerMouseInput(const sf::Time & dt, const sf::Vector2f & mousepos)
+{
+	sf::Vector2f cords(floor(mousepos.x / SquareSize.x), floor(mousepos.y / SquareSize.y));
+
+	if (cords.x >= 0 && cords.y >= 0 && cords.x < number && cords.y < number)
+	{
+		rect.setPosition(sf::Vector2f(cords.x*SquareSize.x + Enemy_SetPoints.x, cords.y*SquareSize.y + Enemy_SetPoints.y));
+	}
+}
+
+void Player::Player_Set_ships(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw)
 {
 	if (!ships_set_up)
 	{
@@ -359,7 +371,6 @@ void Player::Player_Set_ships(sf::Vector2f & position, std::vector<Board*>& vect
 				if (set_ships[counter]->placePlayerShip(player_ships, number, vect_ship_to_draw, nullptr))
 					counter_to_set = true;
 			}
-
 			break;
 		}
 
@@ -375,26 +386,11 @@ void Player::Player_Set_ships(sf::Vector2f & position, std::vector<Board*>& vect
 	}
 }
 
-void Player::setplaceship()
-{
-	set_ships[counter]->setplaceShip(true);
-}
-
-void Player::Draw(sf::RenderWindow & Window)
+void Player::Draw(sf::RenderWindow & Window) const
 {
 	Window.draw(rect);
 	if (!ships_set_up)
 		Window.draw(set_ships[counter]->return_ship());
-}
-
-bool & Player::getplmoved()
-{
-	return plmoved;
-}
-
-void Player::rotate()
-{
-	set_ships[counter]->rotate_ship();
 }
 
 Player::~Player()

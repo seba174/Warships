@@ -1,17 +1,16 @@
 #include "Ships.h"
 
 
-Ships::Ships(int size, sf::Vector2f squaresize, sf::Vector2i boarddimensions, sf::Vector2f setPoints, sf::Texture* texture) 
+Ships::Ships(int size, const sf::Vector2f& squaresize, const sf::Vector2i& boarddimensions, const sf::Vector2f& setPoints, sf::Texture* texture)
 	:rotation_horizontally(false), Board(boarddimensions, squaresize, setPoints), size(size), placeShip(false)
 {
 	shipv2 = sf::RectangleShape(sf::Vector2f(squaresize.x, size*squaresize.y));
 	shipv2.setTexture(texture);
 	shipv2.setTextureRect(sf::IntRect(counter * (shipv2.getTexture()->getSize().x / 5), 0, shipv2.getTexture()->getSize().x / 5, shipv2.getTexture()->getSize().y));
-	//shipv2.setFillColor(sf::Color::Green);
 	shipv2.setPosition(SetPoints.x, SetPoints.y);
 }
 
-void Ships::setPosition(const sf::Vector2f mousepos)
+void Ships::setPosition(const sf::Vector2f& mousepos)
 {
 	sf::Vector2f newposition = sf::Vector2f(floor(mousepos.x / SquareSize.x)*SquareSize.x, floor(mousepos.y / SquareSize.y)*SquareSize.y);
 	
@@ -31,12 +30,7 @@ void Ships::setPosition(const sf::Vector2f mousepos)
 		shipv2.setPosition(sf::Vector2f(shipv2.getPosition().x, SetPoints.y + BoardDimensions.y - size*SquareSize.y));
 }
 
-void Ships::setPositionWithoutCheck(const sf::Vector2f newposition)
-{
-	shipv2.setPosition(newposition);
-}
-
-bool Ships::CanChangePositionX(const sf::Vector2f newposition) const
+bool Ships::CanChangePositionX(const sf::Vector2f& newposition) const
 {
 	sf::Vector2f PixelSize;
 	if (!rotation_horizontally)
@@ -50,7 +44,7 @@ bool Ships::CanChangePositionX(const sf::Vector2f newposition) const
 	return false;
 }
 
-bool Ships::CanChangePositionY(const sf::Vector2f newposition) const
+bool Ships::CanChangePositionY(const sf::Vector2f& newposition) const
 {
 	sf::Vector2f PixelSize;
 	if (!rotation_horizontally)
@@ -62,21 +56,6 @@ bool Ships::CanChangePositionY(const sf::Vector2f newposition) const
 		return true;
 
 	return false;
-}
-
-sf::RectangleShape& Ships::return_ship()
-{
-	return shipv2;
-}
-
-bool Ships::getplaceShip() const
-{
-	return placeShip;
-}
-
-void Ships::setplaceShip(bool set)
-{
-	placeShip = set;
 }
 
 void Ships::rotate_ship()
@@ -103,13 +82,14 @@ void Ships::rotate_ship()
 
 bool Ships::placePlayerShip(int **ships, int tabs_size, std::vector<Board*>& VectRect, sf::Texture* texture)
 {
-	int x = floor((shipv2.getPosition().x - SetPoints.x) / SquareSize.x);
+	float accuracy = 0.98;
+	int x = floor((shipv2.getPosition().x - SetPoints.x) / (accuracy*SquareSize.x));
 	int y;
 	placeShip = false;
 	
 	if (!rotation_horizontally)
 	{
-		y = floor((shipv2.getPosition().y - SetPoints.y) / SquareSize.y);
+		y = floor((shipv2.getPosition().y - SetPoints.y) / (accuracy*SquareSize.y));
 		for (int i = y; i < y + size; i++)
 			if (ships[x][i])
 				return false;
@@ -120,7 +100,7 @@ bool Ships::placePlayerShip(int **ships, int tabs_size, std::vector<Board*>& Vec
 	}
 	else
 	{
-		y = floor((shipv2.getPosition().y - SetPoints.y - SquareSize.y) / SquareSize.y);
+		y = floor((shipv2.getPosition().y - SetPoints.y - SquareSize.y) / (accuracy*SquareSize.y));
 		for (int i = x; i < x + size; i++)
 			if (ships[i][y])
 				return false;
