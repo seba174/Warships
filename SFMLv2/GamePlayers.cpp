@@ -22,6 +22,7 @@ bool GamePlayers::checkForFinish() const
 
 GamePlayers::GamePlayers()
 {
+#test
 }
 
 void GamePlayers::play(const sf::Time & dt, sf::Vector2i & position, const sf::Vector2f & mousepos, const Input& input)
