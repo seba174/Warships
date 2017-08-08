@@ -23,6 +23,7 @@ class OptionButton :
 	std::unique_ptr<std::string[]> options;
 
 	sf::RectangleShape bound_rectangle;
+	sf::RectangleShape additionalEffects;
 	sf::RectangleShape leftbutton;
 	sf::RectangleShape rightbutton;
 
@@ -44,10 +45,12 @@ class OptionButton :
 	float animationScale;
 	sf::Time animationTime;
 
+	bool areArrowsBlocked;
+
 	// information if mouse is within bound_rectagle (it is used in animation)
 	bool isPressed;
 
-		// FUNCTIONS
+	// FUNCTIONS
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -58,7 +61,7 @@ class OptionButton :
 
 public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!
-	OptionButton(const std::string& options_list, const sf::Font& font, int characterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40), 
+	OptionButton(const std::string& options_list, const sf::Font& font, int characterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
 		const sf::Color& bounds_color = sf::Color::Transparent);
 
 	std::string getDisplayedOption() const { return current_displayed_option.getString(); }
@@ -115,5 +118,13 @@ public:
 
 	// sets duration of animation
 	void setAnimationDuration(const sf::Time& time) { animationTime = time; }
+
+	// Sets new displayed option
+	// Fucntion sets it only when new displayed option is included in option list
+	void setDisplayedOption(const std::string& newDisplayedOption);
+
+	void handleAdditionalRectangleColor(bool shouldApplyColor, const sf::Color& color);
+
+	void setArrowsBlockAndDisplayedString(bool arrowsBlocked,const std::string& displayed);
 };
 

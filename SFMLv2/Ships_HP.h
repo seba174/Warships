@@ -10,6 +10,7 @@ public:
 	int size_ir2 = 3;
 	int size_ir3 = 6;
 
-	bool chceckhp();	
+	// returns true if any of ships has HP left
+	bool chceckhp() const;	
 };
 

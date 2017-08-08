@@ -26,9 +26,12 @@ class Menu :
 	// You need to use updateMenu() function before drawing
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+	bool hasVisibleOptionChanged(const Options& options);
+
+
 public:
 	Menu(const std::string& main_title, const sf::Vector2f& main_title_position, const sf::Vector2f& title_or1st_button_position, int space_between_buttons,
-		float interfaceScale);
+		float interfaceScale, const Options& opt);
 
 	// function deals with running menu 
 	// check if user clicks on buttons and does appropriate acctions

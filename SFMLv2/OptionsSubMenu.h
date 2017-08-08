@@ -7,7 +7,7 @@
 class OptionsSubMenu :
 	public sf::Drawable
 {
-	const int spaceBetweenVertically = 10;
+	int spaceBetweenVertically;
 	int additionalSpaceBetweenOptionsAndPushButtons;
 
 	std::vector<OptionNameWithButton> options_buttons;
@@ -57,6 +57,8 @@ public:
 	// sets additional space between OptionsButtons and PushButtons
 	void setAdditionalSpaceBetweenOptionsAndPushButtons(int add) { this->additionalSpaceBetweenOptionsAndPushButtons = add; }
 
+	// gets string with current displayed option of given button number
+	// if button does not exists, function returns empty string
 	std::string getDisplayedOption(int number);
 
 	// function animates and updates all buttons
@@ -65,5 +67,14 @@ public:
 	// function checks if any arrow of Options Buttons contains mousepos and if so, clicks it
 	void clickArrowContaining(const sf::Vector2f& mousepos);
 
+	// function sets new displayed option for button of given number
+	// fucntion sets it only when new displayed option is included in option list
+	void setDisplayedOption(int number, std::string newDisplayedOption);
+
+	void handleAdditionalRectangleColor(int number, bool shouldApplyColor, const sf::Color& color);
+
+	void setSpaceBetweenPushButtons(int space);
+
+	void setArrowsBlockAndDisplayedString(int number, bool arrowsBlocked, const std::string& displayed);
 };
 

@@ -123,10 +123,12 @@
     <ClCompile Include="AdditionalMenu.cpp" />
     <ClCompile Include="AdditionalSubMenu.cpp" />
     <ClCompile Include="AI.cpp" />
-    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="DestroyedShips.cpp" />
+    <ClCompile Include="DestroyedShipsWithBackground.cpp" />
     <ClCompile Include="DVector2i.cpp" />
     <ClCompile Include="FontHandler.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GamePlayers.cpp" />
     <ClCompile Include="INI_Reader.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="IrregularShip2.cpp" />
@@ -150,6 +152,8 @@
     <ClInclude Include="AdditionalSubMenu.h" />
     <ClInclude Include="AI.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="DestroyedShips.h" />
+    <ClInclude Include="DestroyedShipsWithBackground.h" />
     <ClInclude Include="DVector2i.h" />
     <ClInclude Include="enumAdditionalVisualInformation.h" />
     <ClInclude Include="enumGamestate.h" />
@@ -157,6 +161,7 @@
     <ClInclude Include="enumMenustate.h" />
     <ClInclude Include="FontHandler.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GamePlayers.h" />
     <ClInclude Include="INI_Reader.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="IrregularShip2.h" />

@@ -1,9 +1,7 @@
 #pragma once
-#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <map>
 
-using std::make_pair;
  
 class TextureHandler
 {

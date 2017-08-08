@@ -1,52 +1,34 @@
 #include "INI_Reader.h"
+#include <iostream>
 
+using std::string;
+using std::list;
 
 void INI_Reader::saveToFile(const string & filePath)
 {
-	// save only if file does not exist or any changes in settings have been made
-	if (isEmpty || shouldUpdateFile)
+	std::ofstream out;
+	out.open(filePath);
+
+	out << "% Do NOT change any information in this file manually!" << std::endl;
+	out << "% If line has '%' inside, it is treated like an comment!" << std::endl << std::endl;
+	for (auto it = settings.groups.begin(); it != settings.groups.end(); ++it)
 	{
-		std::ofstream out;
-		out.open(filePath);
-
-		out << "% Do NOT change any information in this file manually!" << std::endl;
-		out << "% If line has '%' inside, it is treated like an comment!" << std::endl << std::endl;
-		for (auto it = settings.groups.begin(); it != settings.groups.end(); ++it)
+		string tmp;
+		tmp += '[' + it->groupName + ']';
+		out << tmp << std::endl;
+		for (auto it2 = it->lines.begin(); it2 != it->lines.end(); ++it2)
 		{
-			string tmp;
-			tmp += '[' + it->groupName + ']';
+			tmp = it2->name + '=' + it2->value;
 			out << tmp << std::endl;
-			for (auto it2 = it->lines.begin(); it2 != it->lines.end(); ++it2)
-			{
-				tmp = it2->name + '=' + it2->value;
-				out << tmp << std::endl;
-			}
-			out << std::endl;
 		}
-		out.close();
+		out << std::endl;
 	}
+	out.close();
 }
 
-void INI_Reader::loadDefaultConfig()
-{
-	const int bufferSize = 10;
-	SettingGroup graphics;
-	graphics.groupName = "Graphics";
-	SettingLine tmp;
-	
-	tmp.name = "Resolution";
-	tmp.value = "1980x1080";
-	graphics.lines.push_back(tmp);
-
-	tmp.name = "VerticalSyncEnabled";
-	tmp.value = "true";
-	graphics.lines.push_back(tmp);
-
-	settings.groups.push_back(graphics);
-}
 
 INI_Reader::INI_Reader(const string& filePath)
-	: isEmpty(false), shouldUpdateFile(false)
+	: isEmpty(false)
 {
 	settings.filePath = filePath;
 
@@ -55,7 +37,6 @@ INI_Reader::INI_Reader(const string& filePath)
 	{
 		std::cout << "Can't find config file!" << std::endl;
 		isEmpty = true;
-		loadDefaultConfig();
 		return;
 	}
 	

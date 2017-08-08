@@ -12,7 +12,6 @@ class OptionNameWithButton :
 
 	OptionButton button;
 
-
 		// FUNCTIONS
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -75,5 +74,11 @@ public:
 
 	// sets duration of animation
 	void setAnimationDuration(const sf::Time& time) { button.setAnimationDuration(time); }
+
+	// Sets new displayed option for OptionButton
+	// Fucntion sets it only when new displayed option is included in option list
+	void setDisplayedOption(const std::string& newDisplayedOption) { button.setDisplayedOption(newDisplayedOption); }
+
+	void setArrowsBlockAndDisplayedString(bool arrowsBlocked, const std::string& displayed) { button.setArrowsBlockAndDisplayedString(arrowsBlocked, displayed); }
 };
 

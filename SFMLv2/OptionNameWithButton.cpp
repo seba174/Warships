@@ -1,7 +1,6 @@
 #include "OptionNameWithButton.h"
 
 
-
 void OptionNameWithButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(optionName, states);
@@ -39,3 +38,5 @@ void OptionNameWithButton::setPosition(const sf::Vector2f & position)
 	setTextPosition(position.x, position.y);
 	setButtonPosition(position.x, position.y);
 }
+
+
