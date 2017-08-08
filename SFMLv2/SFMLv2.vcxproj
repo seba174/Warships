@@ -169,7 +169,6 @@
     <ClInclude Include="OptionsSubMenu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PushButton.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Ships.h" />
     <ClInclude Include="Ships_HP.h" />
     <ClInclude Include="SubMenu.h" />
