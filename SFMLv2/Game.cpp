@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "Ships_HP.h"
+#include "DVector2i.h"
 
 
 Game::Game(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& ai_setpoints, const sf::Vector2f& player_setpoints,

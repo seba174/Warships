@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <string>
 #include <list>
 #include <fstream>
@@ -25,7 +24,6 @@ struct SettingFile
 
 class INI_Reader
 {
-
 	//SettingFile settings;
 	bool isEmpty;
 
@@ -59,6 +57,5 @@ public:
 	const SettingFile& getSettings() const { return settings; }
 	
 	~INI_Reader();
-	
 };
 

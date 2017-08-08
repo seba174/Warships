@@ -1,12 +1,12 @@
 #pragma once
 #include <cstring>
+#include <SFML/Graphics.hpp>
 #include "AI.h"
-#include "Ships_HP.h"
 #include "Player.h"
-#include "DVector2i.h"
 #include "enumLevelsDifficulty.h"
 
 using std::string;
+class DVector2i;
 
 const int ShipNumber = 6;
 enum PlayervsAistates {None, Player_move, AI_move, Player_win, AI_win};
@@ -63,7 +63,7 @@ public:
 
 	bool& setplmoved() { return player.getplmoved(); }
 
-	void rotate_player_ship() { player.rotate(); }
+	void rotate_player_ship() { player.rotateShip(); }
 
 	void set_player_placeships() { player.setplaceship(); }
 

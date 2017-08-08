@@ -26,6 +26,9 @@
 #include "OptionNameWithButton.h"
 #include "OptionsSubMenu.h"
 #include "Options.h"
+#include "GamePlayers.h"
+#include "DestroyedShips.h"
+#include "DestroyedShipsWithBackground.h"
 
 
 int main()
@@ -55,7 +58,7 @@ int main()
 	sf::Vector2i StandardWindowDimensions;
 
 	sf::RenderWindow Window;
-	Window.create(sf::VideoMode(0,0), "",  sf::Style::None);
+	Window.create(sf::VideoMode(0, 0), "", sf::Style::None);
 
 	sf::View view;
 
@@ -64,7 +67,7 @@ int main()
 	sf::Vector2f square_size;
 
 	sf::RectangleShape **square_tab = nullptr, **square_tab_2 = nullptr;	// tablice kwadratow do rysowania
-	sf::RectangleShape rect, trafienie, pudlo;     // kwadraty pudla, trafienia, i kwadratu do przesuwania
+	sf::RectangleShape rect, rect2, trafienie, pudlo;     // kwadraty pudla, trafienia, i kwadratu do przesuwania
 
 	sf::Clock clock;	// czas klatki
 
@@ -80,8 +83,9 @@ int main()
 	LevelsDifficulty level = LevelsDifficulty::EASY;
 	Gamestates Gamestate = RELOAD_GRAPHICS, drawnGamestate = MENU;
 	AdditionalVisualInformations additional_vs_info = NONE;
-	
+
 	std::unique_ptr<Game> game;
+	std::unique_ptr<GamePlayers> gamePlayers;
 
 	std::unique_ptr<Menu> MainMenu = nullptr;
 	std::unique_ptr<AdditionalMenu> Additionalmenu = nullptr;
@@ -167,11 +171,14 @@ int main()
 			square_size = sf::Vector2f(static_cast<float>(screenDimensions.x) / map_size, static_cast<float>(screenDimensions.y) / map_size); // rozmiar 1 kwadratu mapy)
 
 			rect.setSize(square_size);
+			rect2.setSize(square_size);
 			trafienie.setSize(square_size);
 			pudlo.setSize(square_size);
 
 			rect.setFillColor(sf::Color::Black);
+			rect2.setFillColor(sf::Color::Black);
 			rect.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
+			rect2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, static_cast<float>(bar)));
 			trafienie.setFillColor(sf::Color::Red);
 			pudlo.setFillColor(sf::Color(128, 128, 128));
 
@@ -186,7 +193,7 @@ int main()
 
 			mouse = std::make_unique<Mouse_S>(sf::Vector2f(screenDimensions.x + line_thickness, 2 * screenDimensions.x + line_thickness),
 				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
-			mouse_pl = std::make_unique<Mouse_S>(sf::Vector2f(0, screenDimensions.x + line_thickness),
+			mouse_pl = std::make_unique<Mouse_S>(sf::Vector2f(0, screenDimensions.x),
 				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
 
 			square_tab = new sf::RectangleShape*[map_size];
@@ -207,6 +214,7 @@ int main()
 			case PlvsPl:
 				Gamestate = loadPlvsPl; break;
 			}
+
 		}
 		break;
 
@@ -231,8 +239,20 @@ int main()
 
 		case loadPlvsPl:
 		{
+			std::cout << "loadplvspl" << std::endl;
+			gamePlayers = std::make_unique<GamePlayers>(screenDimensions, square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar),
+				pudlo, trafienie, square_tab, square_tab_2, bar, rect, rect2, *mouse_pl, *mouse);
+
 			additional_vs_info = AdditionalVisualInformations::NONE;
+			Gamestate = PlvsPl;
 			drawnGamestate = Gamestates::NOTHING;
+		}
+		break;
+
+		case PlvsPl:
+		{
+			gamePlayers->play(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input);
+			drawnGamestate = PlvsPl;
 		}
 		break;
 
@@ -398,6 +418,23 @@ int main()
 					Window.draw(square_tab_2[i][j]);
 				}
 			game->Draw(Window);
+		}
+		break;
+
+		case PlvsPl:
+		{
+			Window.draw(bImage2);
+			Window.draw(line);
+			Window.draw(bImage);
+
+			for (int i = 0; i < map_size; i++)
+				for (int j = 0; j < map_size; j++)
+				{
+					Window.draw(square_tab[i][j]);
+					Window.draw(square_tab_2[i][j]);
+				}
+
+			Window.draw(*gamePlayers);
 		}
 		break;
 

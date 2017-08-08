@@ -21,6 +21,7 @@ class Player
 {
 public:
 	Ships_HP HP;
+
 protected:
 	sf::Vector2i BoardDimensions;
 	sf::Vector2f SquareSize;
@@ -40,6 +41,7 @@ protected:
 	sf::RectangleShape trafienie;
 	bool plmoved = false;
 	int number;
+	sf::Vector2i cursorPosition;
 
 	float speed_ratio;	// mnoznik szybkosci ruchu w zaleznosci od mapy
 	int where_move = pos::Hold;  // w ktora strone rusza sie kwadrat
@@ -61,7 +63,7 @@ public:
 	void PlayerMouseInput(const sf::Time& dt, const sf::Vector2f& mousepos);
 	void Player_Set_ships(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw);
 	
-	void Draw(sf::RenderWindow& Window) const;
+	void Draw(sf::RenderTarget& Window) const;
 	
 	void setplaceship() { set_ships[counter]->setplaceShip(true); }
 
@@ -73,8 +75,19 @@ public:
 
 	bool& getplmoved() { return plmoved; }
 
-	void rotate() { set_ships[counter]->rotate_ship(); }
+	void rotateShip() { set_ships[counter]->rotate_ship(); }
+
+	sf::Vector2i getRectPositionInGame() const 
+	{
+		return sf::Vector2i(static_cast<int>(round((rect.getPosition().x - Enemy_SetPoints.x) / SquareSize.x)), static_cast<int>(round((rect.getPosition().y - Enemy_SetPoints.y) / SquareSize.y)));
+	}
+
+	void setPlayersCursorPositon(const sf::Vector2i& newPos) { cursorPosition = newPos; }
+
+	sf::Vector2i getPlayersCursorPosition() const { return cursorPosition; }
+
+	bool isMouseInEnemyBounds(const sf::Vector2f& mousepos) const;
 	
-	virtual ~Player();
+	 ~Player();
 };
 

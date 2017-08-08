@@ -2,11 +2,12 @@
 
 
 Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, int ** enemy_ships,
-	const sf::Vector2f& player_setpoints, const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape ** square_tab_2, 
-	int bar,  sf::RectangleShape& rect)
-	: BoardDimensions(dim), SquareSize(SquareSize), Enemy_SetPoints(enemy_setpoints),Player_setPoints(player_setpoints), enemy_ships(enemy_ships),
+	const sf::Vector2f& player_setpoints, const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape ** square_tab_2,
+	int bar, sf::RectangleShape& rect)
+	: BoardDimensions(dim), SquareSize(SquareSize), Enemy_SetPoints(enemy_setpoints), Player_setPoints(player_setpoints), enemy_ships(enemy_ships),
 	pudlo(pudlo), trafienie(trafienie), square_tab_2(square_tab_2), bar(bar), rect(rect)
 {
+	rect.setPosition(Enemy_SetPoints);
 	number = BoardDimensions.x / SquareSize.x;
 	switch (number)
 	{
@@ -340,9 +341,9 @@ void Player::Player_input(const sf::Time& dt)
 
 void Player::PlayerMouseInput(const sf::Time & dt, const sf::Vector2f & mousepos)
 {
-	sf::Vector2f cords(floor(mousepos.x / SquareSize.x), floor(mousepos.y / SquareSize.y));
+	sf::Vector2f cords(floor((mousepos.x - Enemy_SetPoints.x) / SquareSize.x), floor((mousepos.y - Enemy_SetPoints.y) / SquareSize.y));
 
-	if (cords.x >= 0 && cords.y >= 0 && cords.x < number && cords.y < number)
+	if (isMouseInEnemyBounds(mousepos))
 	{
 		rect.setPosition(sf::Vector2f(cords.x*SquareSize.x + Enemy_SetPoints.x, cords.y*SquareSize.y + Enemy_SetPoints.y));
 	}
@@ -386,11 +387,19 @@ void Player::Player_Set_ships(const sf::Vector2f & position, std::vector<Board*>
 	}
 }
 
-void Player::Draw(sf::RenderWindow & Window) const
-{
-	Window.draw(rect);
-	if (!ships_set_up)
+void Player::Draw(sf::RenderTarget & Window) const
+{	
+	if (ships_set_up)
+		Window.draw(rect);
+	else
 		Window.draw(set_ships[counter]->return_ship());
+}
+
+bool Player::isMouseInEnemyBounds(const sf::Vector2f& mousepos) const
+{
+	if (mousepos.x >= Enemy_SetPoints.x && mousepos.x < Enemy_SetPoints.x + number*SquareSize.x && mousepos.y >= Enemy_SetPoints.y && mousepos.y < Enemy_SetPoints.y + number*SquareSize.y)
+		return true;
+	return false;
 }
 
 Player::~Player()
@@ -398,7 +407,7 @@ Player::~Player()
 	for (int i = 0; i < count_of_ships; i++)
 		delete set_ships[i];
 	delete[] set_ships;
-
+	
 	for (int i = 0; i < number; i++)
 		delete[] player_ships[i];
 	delete[] player_ships;
