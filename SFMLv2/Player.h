@@ -1,9 +1,8 @@
 #pragma once
 #include "Ships_HP.h"
 #include "Ships.h"
-#include "IrregularShip2.h"
-#include "IrregularShip3.h"
-#include "TextureHandler.h"
+
+
 
 enum pos { Left, Up, Right, Down, Hold };
 
@@ -42,6 +41,7 @@ protected:
 	bool plmoved = false;
 	int number;
 	sf::Vector2i cursorPosition;
+	std::string name;
 
 	float speed_ratio;	// mnoznik szybkosci ruchu w zaleznosci od mapy
 	int where_move = pos::Hold;  // w ktora strone rusza sie kwadrat
@@ -52,6 +52,7 @@ protected:
 	int min_speed = 90;
 	int bar;
 	sf::RectangleShape& rect;
+
 	
 public:
 	Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, int** enemy_ships, const sf::Vector2f& player_setpoints,
@@ -87,7 +88,15 @@ public:
 	sf::Vector2i getPlayersCursorPosition() const { return cursorPosition; }
 
 	bool isMouseInEnemyBounds(const sf::Vector2f& mousepos) const;
+
+	void resetSquareTab(int num, sf::RectangleShape** newSquareTab);
 	
+	sf::RectangleShape** returnSquareTab() { return square_tab_2; }
+
+	void setPlayerName(const std::string& newName) { name = newName; }
+
+	std::string getPlayerName() const { return name; }
+
 	 ~Player();
 };
 

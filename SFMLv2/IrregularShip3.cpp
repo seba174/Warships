@@ -247,3 +247,7 @@ void IrregularShip3::updateTexture(const sf::Time& timen)
 		shipv2.setTextureRect(sf::IntRect(counter * (shipv2.getTexture()->getSize().x / 5), 0, shipv2.getTexture()->getSize().x / 5, shipv2.getTexture()->getSize().y));
 	}
 }
+
+void IrregularShip3::setDestroyedTexture()
+{
+}

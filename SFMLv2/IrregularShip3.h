@@ -30,5 +30,7 @@ public:
 	bool placePlayerShip(int **ships, int tabs_size, std::vector<Board*>&, sf::Texture* texture);
 
 	void updateTexture(const sf::Time&);
+
+	void setDestroyedTexture();
 };
 

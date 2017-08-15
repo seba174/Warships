@@ -1,4 +1,7 @@
 #include "Player.h"
+#include "IrregularShip2.h"
+#include "IrregularShip3.h"
+#include "TextureHandler.h"
 
 
 Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, int ** enemy_ships,
@@ -400,6 +403,17 @@ bool Player::isMouseInEnemyBounds(const sf::Vector2f& mousepos) const
 	if (mousepos.x >= Enemy_SetPoints.x && mousepos.x < Enemy_SetPoints.x + number*SquareSize.x && mousepos.y >= Enemy_SetPoints.y && mousepos.y < Enemy_SetPoints.y + number*SquareSize.y)
 		return true;
 	return false;
+}
+
+void Player::resetSquareTab(int num, sf::RectangleShape** newSquareTab)
+{
+	for (int i = 0; i < number; ++i)
+		for (int j = 0; j < number; ++j)
+		{
+			if (set_ships[num]->return_ship().getGlobalBounds().contains(Player_setPoints.x + SquareSize.x / 2 + SquareSize.x*j, Player_setPoints.y + SquareSize.y / 2 + SquareSize.y*i))
+				if (newSquareTab[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
+					newSquareTab[j][i] = sf::RectangleShape();
+		}
 }
 
 Player::~Player()

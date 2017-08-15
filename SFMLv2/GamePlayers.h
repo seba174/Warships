@@ -2,7 +2,9 @@
 #include <vector>
 #include "Player.h"
 #include "DestroyedShipsWithBackground.h"
+#include "AdditionalSubMenu.h"
 #include "Mouse_S.h"
+#include "SetShipsAd.h"
 
 
 class Input;
@@ -16,10 +18,15 @@ class GamePlayers
 	Mouse_S mouse_player1, mouse_player2;
 	std::vector<Board*> vect_ship_to_draw_player1, vect_ship_to_draw_player2;
 	DestroyedShipsWithBackground player1Background, player2Background;
+	AdditionalSubMenu menuPlayer1SetShipsInfo, menuPlayer2SetShipsInfo;
+	bool shoudlDrawMenuPlayer1SetShipsInfo, shoudlDrawMenuPlayer2SetShipsInfo;
+	SetShipsAd advertPlayer1, advertPlayer2;
 
 	gamestate currentState;
 
-	sf::Time lastFrameTime;
+	sf::Time lastFrameTime, utilityTime;
+
+	sf::Time PausedSetShipsTime = sf::seconds(2.5);
 
 		// FUNCTIONS
 	int whoStarts() const;
@@ -36,7 +43,9 @@ public:
 
 	GamePlayers(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& player1_setpoints, const sf::Vector2f& player2_setpoints,
 		const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape** player1Square_tab_2, sf::RectangleShape** player2Square_tab_2,
-		int bar, sf::RectangleShape& player1Rect, sf::RectangleShape& player2Rect, const Mouse_S& pl1Mouse, const Mouse_S& pl2Mouse);
+		int bar, sf::RectangleShape& player1Rect, sf::RectangleShape& player2Rect, const Mouse_S& pl1Mouse, const Mouse_S& pl2Mouse,
+		const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
+		const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale);
 
 };
 

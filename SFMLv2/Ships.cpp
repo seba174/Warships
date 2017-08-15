@@ -1,4 +1,5 @@
 #include "Ships.h"
+#include "TextureHandler.h"
 
 
 Ships::Ships(int size, const sf::Vector2f& squaresize, const sf::Vector2i& boarddimensions, const sf::Vector2f& setPoints, sf::Texture* texture)
@@ -124,4 +125,10 @@ void Ships::updateTexture(const sf::Time& timen)
 			counter = 0;
 		shipv2.setTextureRect(sf::IntRect(counter * 122, 0 , shipv2.getTexture()->getSize().x/5, shipv2.getTexture()->getSize().y));
 	}
+}
+
+void Ships::setDestroyedTexture()
+{
+	TextureHandler &text = TextureHandler::getInstance();
+	shipv2.setTexture(&text.texture_handler["Destroyed"]);
 }

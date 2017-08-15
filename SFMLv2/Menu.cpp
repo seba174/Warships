@@ -28,7 +28,6 @@ void Menu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 bool Menu::hasVisibleOptionChanged(const Options & options)
 {
-	std::cout << options.getResolution().x << "x" << options.getResolution().y << std::endl << SubGraphics.getDisplayedOption(0);
 	// Numbers of buttons represents current menu and have to be changed when the order of button changes
 	return
 		((std::to_string(options.getResolution().x) + Options::s_x + std::to_string(options.getResolution().y)) != SubGraphics.getDisplayedOption(0)

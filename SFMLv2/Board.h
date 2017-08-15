@@ -9,8 +9,13 @@ protected:
 	sf::Vector2f SetPoints; 
 	int counter;
 	sf::Time time;
+	bool shouldDraw;
 public:
-	Board(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& setpoints) : BoardDimensions(dim), SquareSize(SquareSize), SetPoints(setpoints) { counter = 0; };
+	Board(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& setpoints)
+		: BoardDimensions(dim), SquareSize(SquareSize), SetPoints(setpoints) 
+	{
+		counter = 0; shouldDraw = true;
+	}
 	
 	virtual bool getplaceShip() const = 0;
 	virtual void setPosition(const sf::Vector2f& mousepos) = 0;
@@ -19,6 +24,11 @@ public:
 	virtual void rotate_ship() = 0;
 	virtual sf::RectangleShape& return_ship() = 0;
 	virtual void updateTexture(const sf::Time&) = 0;
+	virtual void setDestroyedTexture() = 0;
+
+	virtual bool shouldBeDrawed() const { return shouldDraw; }
+	virtual void setShouldDraw(bool newValue) { shouldDraw = newValue; }
+
 	virtual ~Board() {};
 };
 

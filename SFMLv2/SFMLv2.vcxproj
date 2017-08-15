@@ -141,6 +141,7 @@
     <ClCompile Include="OptionsSubMenu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PushButton.cpp" />
+    <ClCompile Include="SetShipsAd.cpp" />
     <ClCompile Include="Ships.cpp" />
     <ClCompile Include="Ships_HP.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="OptionsSubMenu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PushButton.h" />
+    <ClInclude Include="SetShipsAd.h" />
     <ClInclude Include="Ships.h" />
     <ClInclude Include="Ships_HP.h" />
     <ClInclude Include="SubMenu.h" />

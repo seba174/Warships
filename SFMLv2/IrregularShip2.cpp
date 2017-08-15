@@ -212,4 +212,8 @@ void IrregularShip2::updateTexture(const sf::Time& timen)
 	}
 }
 
+void IrregularShip2::setDestroyedTexture()
+{
+}
+
 

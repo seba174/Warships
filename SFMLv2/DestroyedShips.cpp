@@ -14,7 +14,7 @@ void DestroyedShips::draw(sf::RenderTarget & target, sf::RenderStates states) co
 DestroyedShips::DestroyedShips(const sf::Vector2i & boardDimensions, const sf::Vector2f & squareSize, const sf::Vector2f& setPoint)
 	:boardDimensions(boardDimensions), squareSize(squareSize), setPoint(setPoint)
 {
-	destroyed = sf::Color(255, 0, 0, 180);
+	destroyed = sf::Color(255, 0, 0, 190);
 
 	TextureHandler& textures = TextureHandler::getInstance();
 

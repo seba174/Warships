@@ -93,6 +93,9 @@
     <ClCompile Include="DestroyedShipsWithBackground.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SetShipsAd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ships.h">
@@ -183,6 +186,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DestroyedShipsWithBackground.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SetShipsAd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

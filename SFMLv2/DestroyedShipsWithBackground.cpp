@@ -8,10 +8,10 @@ void DestroyedShipsWithBackground::draw(sf::RenderTarget & target, sf::RenderSta
 	DestroyedShips::draw(target, states);
 }
 
-DestroyedShipsWithBackground::DestroyedShipsWithBackground(const sf::Vector2i & boardDimensions, const sf::Vector2f & squareSize, const sf::Vector2f & setPoint)
+DestroyedShipsWithBackground::DestroyedShipsWithBackground(const sf::Vector2i & boardDimensions, const sf::Vector2f & squareSize, const sf::Vector2f & setPoint, float interfaceScale)
 	: DestroyedShips(boardDimensions, squareSize, setPoint), background(sf::Vector2f(static_cast<float>(boardDimensions.x), static_cast<float>(boardDimensions.y)))
 {
-	sf::Color background_color(0, 0, 0, 220);
+	sf::Color background_color(0, 0, 0, 225);
 	background.setPosition(setPoint);
 	background.setFillColor(background_color);
 }

@@ -38,7 +38,7 @@ int main()
 	options.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
 
 	int map_size = 0;
-	const int barSize = 50;
+	int barSize = 3;
 	const int line_thicknessSize = 10;
 	float interfaceScale = options.getResolution().x / 1920.0f;
 
@@ -68,6 +68,9 @@ int main()
 
 	sf::RectangleShape **square_tab = nullptr, **square_tab_2 = nullptr;	// tablice kwadratow do rysowania
 	sf::RectangleShape rect, rect2, trafienie, pudlo;     // kwadraty pudla, trafienia, i kwadratu do przesuwania
+
+	pudlo.setTexture(&textures.texture_handler["X"]);
+	trafienie.setTexture(&textures.texture_handler["fire5"]);
 
 	sf::Clock clock;	// czas klatki
 
@@ -179,8 +182,8 @@ int main()
 			rect2.setFillColor(sf::Color::Black);
 			rect.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
 			rect2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, static_cast<float>(bar)));
-			trafienie.setFillColor(sf::Color::Red);
-			pudlo.setFillColor(sf::Color(128, 128, 128));
+			//trafienie.setFillColor(sf::Color::Red);
+			pudlo.setFillColor(sf::Color(255, 255, 255, 170));
 
 			line.setPoint(0, sf::Vector2f(screenDimensions.x, 0));
 			line.setPoint(1, sf::Vector2f(screenDimensions.x, screenDimensions.y + bar));
@@ -241,7 +244,8 @@ int main()
 		{
 			std::cout << "loadplvspl" << std::endl;
 			gamePlayers = std::make_unique<GamePlayers>(screenDimensions, square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar),
-				pudlo, trafienie, square_tab, square_tab_2, bar, rect, rect2, *mouse_pl, *mouse);
+				pudlo, trafienie, square_tab, square_tab_2, bar, rect, rect2, *mouse_pl, *mouse,sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+				sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),	sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), interfaceScale);
 
 			additional_vs_info = AdditionalVisualInformations::NONE;
 			Gamestate = PlvsPl;

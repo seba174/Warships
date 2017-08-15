@@ -12,7 +12,7 @@ class DestroyedShipsWithBackground :
 
 public:
 
-	DestroyedShipsWithBackground(const sf::Vector2i & boardDimensions, const sf::Vector2f& squareSize, const sf::Vector2f& setPoint);
+	DestroyedShipsWithBackground(const sf::Vector2i & boardDimensions, const sf::Vector2f& squareSize, const sf::Vector2f& setPoint, float interfaceScale);
 
 	virtual ~DestroyedShipsWithBackground() {};
 };
