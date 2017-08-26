@@ -29,18 +29,22 @@
 #include "GamePlayers.h"
 #include "DestroyedShips.h"
 #include "DestroyedShipsWithBackground.h"
+#include "LanguageManager.h"
+#include "GeneralOptions.h"
 
 
 int main()
 {
 	INI_Reader reader("Config/config.ini");
-	Options options(reader);
-	options.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
+	Options graphicsOpt(reader);
+	graphicsOpt.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
+	GeneralOptions generalOpt(reader);
+	std::unique_ptr<LanguageManager> languageManager = nullptr;
 
 	int map_size = 0;
 	int barSize = 3;
 	const int line_thicknessSize = 10;
-	float interfaceScale = options.getResolution().x / 1920.0f;
+	float interfaceScale = graphicsOpt.getResolution().x / 1920.0f;
 
 	int bar = static_cast<int>(barSize * interfaceScale);
 	int line_thickness = static_cast<int>(line_thicknessSize * interfaceScale);
@@ -100,7 +104,7 @@ int main()
 	{
 		sf::Time dt = clock.restart();		// czas klatki
 		input.ResetKeys();
-		static bool first = true, reloaded = false;
+		static bool first = true, reloaded = false, reloadGeneral = false, restoredGeneral = false;
 
 		while (Window.pollEvent(Event))
 		{
@@ -120,7 +124,7 @@ int main()
 		}
 		if (Additionalmenu)
 		{
-			Additionalmenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input.isMouseLeftButtonPressed(), input, options);
+			Additionalmenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input.isMouseLeftButtonPressed(), input, graphicsOpt, generalOpt);
 			Additionalmenu->updateAdditionalMenuWithAnimations(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
 			Additionalmenu->updateGamestate(Gamestate);
 		}
@@ -245,7 +249,8 @@ int main()
 			std::cout << "loadplvspl" << std::endl;
 			gamePlayers = std::make_unique<GamePlayers>(screenDimensions, square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar),
 				pudlo, trafienie, square_tab, square_tab_2, bar, rect, rect2, *mouse_pl, *mouse,sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-				sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),	sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), interfaceScale);
+				sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),	sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2),
+				interfaceScale, *languageManager);
 
 			additional_vs_info = AdditionalVisualInformations::NONE;
 			Gamestate = PlvsPl;
@@ -262,7 +267,7 @@ int main()
 
 		case MENU:
 		{
-			MainMenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), map_size, level, input.isMouseLeftButtonPressed(), options);
+			MainMenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), map_size, level, input.isMouseLeftButtonPressed(), graphicsOpt, generalOpt);
 			MainMenu->updateGamestate(Gamestate, additional_vs_info);
 			MainMenu->updateMenuWithAnimates(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
 			drawnGamestate = MENU;
@@ -301,52 +306,68 @@ int main()
 
 		case RELOAD_GRAPHICS:
 		{
-			bool wasResolutionChanged = options.wasResolutionChanged();
-			bool wasFullScreenChanged = options.wasFullScreenChanged();
+			if (first || reloadGeneral)
+				languageManager = std::make_unique<LanguageManager>(generalOpt.getLanguage());
 
-			if ((wasFullScreenChanged && options.isFullScreenEnabled()) || (options.isFullScreenEnabled() && first))
+			bool wasResolutionChanged = graphicsOpt.wasResolutionChanged();
+			bool wasFullScreenChanged = graphicsOpt.wasFullScreenChanged();
+
+			if ((wasFullScreenChanged && graphicsOpt.isFullScreenEnabled()) || (graphicsOpt.isFullScreenEnabled() && first))
 			{
 				sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-				options.setDesktopResolution(sf::Vector2i(desktop.width, desktop.height));
+				graphicsOpt.setDesktopResolution(sf::Vector2i(desktop.width, desktop.height));
 				interfaceScale = desktop.width / 1920.0f;
 				screenDimensions = sf::Vector2i(desktop.width / 2 - line_thickness / 2, desktop.height - bar);
 				StandardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);
-				Window.create(desktop, "Warships", sf::Style::Fullscreen);
+				Window.create(desktop, L"Warships", sf::Style::Fullscreen);
+				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
 			}
-			else if ((wasResolutionChanged || first || wasFullScreenChanged) && !options.isFullScreenEnabled())
+			else if ((wasResolutionChanged || first || wasFullScreenChanged) && !graphicsOpt.isFullScreenEnabled())
 			{
-				interfaceScale = options.getResolution().x / 1920.0f;
-				screenDimensions = sf::Vector2i(options.getResolution().x / 2 - line_thickness / 2, options.getResolution().y - bar);
-				StandardWindowDimensions = sf::Vector2i(options.getResolution());
-				Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), "Warships", sf::Style::Close);
+				interfaceScale = graphicsOpt.getResolution().x / 1920.0f;
+				screenDimensions = sf::Vector2i(graphicsOpt.getResolution().x / 2 - line_thickness / 2, graphicsOpt.getResolution().y - bar);
+				StandardWindowDimensions = sf::Vector2i(graphicsOpt.getResolution());
+				Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), L"Warships", sf::Style::Close);
+				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
 			}
 
 			bar = barSize * interfaceScale;
 			line_thickness = line_thicknessSize * interfaceScale;
 
-			Window.setVerticalSyncEnabled(options.isVerticalSyncEnabled());
+			Window.setVerticalSyncEnabled(graphicsOpt.isVerticalSyncEnabled());
 
 			view = Window.getDefaultView();
-			view.zoom(100.0f / options.getResolutionScale());
+			view.zoom(100.0f / graphicsOpt.getResolutionScale());
 			Window.setView(view);
 
-			if (wasFullScreenChanged || (wasResolutionChanged && !options.isFullScreenEnabled()) || first)
+			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || first)
 			{
-				MainMenu = std::make_unique<Menu>("Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20 * interfaceScale),
-					sf::Vector2f(StandardWindowDimensions.x / 2, 290 * interfaceScale), 130 * interfaceScale, interfaceScale, options);
+				MainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20 * interfaceScale),
+					sf::Vector2f(StandardWindowDimensions.x / 2, 290 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
 				Additionalmenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
 					sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
-					sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info, interfaceScale);
+					sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info, interfaceScale, *languageManager);
 			}
 			if (!first || reloaded)
 			{
 				MainMenu->setMenustate(Menustates::OPT_GRAPHICS);
 				reloaded = false;
 			}
+			if (reloadGeneral)
+				MainMenu->setMenustate(Menustates::OPT_GENERAL);
 
 			Gamestate = MENU;
 			if (!first)
-				additional_vs_info = AdditionalVisualInformations::APPLY_CHANGES;
+				additional_vs_info = AdditionalVisualInformations::APPLY_CHANGES_GRAPHICS;
+
+			if (reloadGeneral && !restoredGeneral)
+			{
+				additional_vs_info = AdditionalVisualInformations::APPLY_CHANGES_GENERAL;
+				
+			}
+
+			restoredGeneral = false;
+			reloadGeneral = false;
 			first = false;
 		}
 		break;
@@ -358,6 +379,18 @@ int main()
 			Gamestate = RELOAD_GRAPHICS;
 		}
 		break;
+
+		case RELOAD_GENERAL:
+		{
+			reloadGeneral = true;
+			Gamestate = RESTORE_GRAPHICS;
+		} break;
+
+		case RESTORE_GENERAL:
+		{
+			restoredGeneral = true;
+			Gamestate = RELOAD_GENERAL;
+		} break;
 
 		case EXIT:
 		{
@@ -456,6 +489,9 @@ int main()
 		Window.display();
 		Window.clear();
 	}
+
+	graphicsOpt.saveToFile();
+	generalOpt.saveToFile();
 }
 
 

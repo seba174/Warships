@@ -41,7 +41,7 @@ protected:
 	bool plmoved = false;
 	int number;
 	sf::Vector2i cursorPosition;
-	std::string name;
+	std::wstring name;
 
 	float speed_ratio;	// mnoznik szybkosci ruchu w zaleznosci od mapy
 	int where_move = pos::Hold;  // w ktora strone rusza sie kwadrat
@@ -93,9 +93,9 @@ public:
 	
 	sf::RectangleShape** returnSquareTab() { return square_tab_2; }
 
-	void setPlayerName(const std::string& newName) { name = newName; }
+	void setPlayerName(const std::wstring& newName) { name = newName; }
 
-	std::string getPlayerName() const { return name; }
+	std::wstring getPlayerName() const { return name; }
 
 	 ~Player();
 };

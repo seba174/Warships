@@ -1,4 +1,8 @@
 #include "AdditionalMenu.h"
+#include "Input.h"
+#include "Options.h"
+#include "LanguageManager.h"
+#include "GeneralOptions.h"
 
 void AdditionalMenu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
@@ -10,28 +14,30 @@ void AdditionalMenu::draw(sf::RenderTarget & target, sf::RenderStates states) co
 		target.draw(Exit, states); break;
 	case LOADING:
 		target.draw(Loading, states); break;
-	case APPLY_CHANGES:
+	case APPLY_CHANGES_GRAPHICS:
+		target.draw(ApplyChanges, states); break;
+	case APPLY_CHANGES_GENERAL:
 		target.draw(ApplyChanges, states); break;
 	}
 }
 
 AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
-	const sf::Vector2f& backgroundForSubMenuPosition, AdditionalVisualInformations& additionalvsinfo, float interfaceScale)
+	const sf::Vector2f& backgroundForSubMenuPosition, AdditionalVisualInformations& additionalvsinfo, float interfaceScale, LanguageManager& langMan)
 	: state(additionalvsinfo)
 {
 	// SubMenu title character size
-	int title_size_1 = 55 * interfaceScale;
+	int title_size_1 = 50 * interfaceScale;
 	int title_size_2 = 50 * interfaceScale;
 
 
 	// SubMenu character size
-	int submenu_size = 35 * interfaceScale;
+	int submenu_size = 32 * interfaceScale;
 
 	// Background for SubMenu Exit size
-	sf::Vector2f backgroundForSubmenuExitSize(550 * interfaceScale, 370 * interfaceScale);
+	sf::Vector2f backgroundForSubmenuExitSize(600 * interfaceScale, 380 * interfaceScale);
 
 	// Background for SubMenu Exit size
-	sf::Vector2f backgroundForSubmenuApplyChangesSize(600 * interfaceScale, 320 * interfaceScale);
+	sf::Vector2f backgroundForSubmenuApplyChangesSize(700 * interfaceScale, 320 * interfaceScale);
 
 	// Background for SubMenu Color
 	sf::Color backgroundForSubMenuColor = sf::Color::Red;
@@ -40,7 +46,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	sf::Color backgroundExitColor = sf::Color(0, 0, 0, 200);
 
 	// Button size
-	sf::Vector2f button_size(340 * interfaceScale, 70 * interfaceScale);
+	sf::Vector2f button_size(360 * interfaceScale, 70 * interfaceScale);
 
 	// Bounds color
 	sf::Color bounds_color = sf::Color::White;
@@ -53,19 +59,19 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	// Position of title and button is based on backgroundForSubMenuPosition!
 
 	Exit.construct(backgroundSize, backgroundForSubmenuExitSize, backgroundForSubMenuPosition, backgroundForSubMenuColor, backgroundExitColor, sf::Vector2f(0, 0),
-		"What do you want to do?", "Resume,Return to Main Menu,Quit the game", title_size_1, submenu_size, title_or1st_button_position,
-		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons), button_size, space_between_buttons,
-		bounds_color, handler.font_handler["Mecha"], interfaceScale);
+		langMan.getText("What do you want to do") + L'?', langMan.getText("Resume") + L',' + langMan.getText("Return to Main Menu") + L',' + langMan.getText("Quit the game"),
+		title_size_1, submenu_size, title_or1st_button_position, sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons),
+		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
 
 	Loading.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_1),
-		sf::Color::Transparent, sf::Color::Black, sf::Vector2f(0, 0), "Loading...", "", title_size_1, submenu_size,
+		sf::Color::Transparent, sf::Color::Black, sf::Vector2f(0, 0), langMan.getText("Loading") + L"...", L"", title_size_1, submenu_size,
 		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
 
 	ApplyChanges.construct(backgroundSize, backgroundForSubmenuApplyChangesSize, backgroundForSubMenuPosition, backgroundForSubMenuColor, backgroundExitColor, sf::Vector2f(0, 0),
-		"Do you wish to save changes?", "Yes,No", title_size_2, submenu_size, title_or1st_button_position,
+		langMan.getText("Do you wish to save changes") + L'?', langMan.getText("Yes") + L',' + langMan.getText("No"), title_size_2, submenu_size, title_or1st_button_position,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons), button_size, space_between_buttons,
 		bounds_color, handler.font_handler["Mecha"], interfaceScale);
-	
+
 }
 
 void AdditionalMenu::updateAdditionalMenu()
@@ -85,7 +91,7 @@ void AdditionalMenu::updateAdditionalMenuWithAnimations(const sf::Time & time, c
 	Loading.updateButtonsWithAnimations(time);
 }
 
-void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPressed, Input& input, Options& options)
+void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPressed, Input& input, Options& options, GeneralOptions& genOptions)
 {
 	if (state == AdditionalVisualInformations::NONE && input.isKeyboardEscapeKeyPressed())
 		state = AdditionalVisualInformations::EXIT_INFO;
@@ -115,7 +121,7 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPress
 	
 	case LOADING: {} break;
 
-	case APPLY_CHANGES:
+	case APPLY_CHANGES_GRAPHICS:
 	{
 		newGamestate = PAUSED;
 		if (leftButtonPressed)
@@ -131,6 +137,26 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPress
 				state = AdditionalVisualInformations::NONE;
 				newGamestate = Gamestates::RESTORE_GRAPHICS;
 				options.restorePreviousOptions();
+			}
+		}
+	} break;
+
+	case APPLY_CHANGES_GENERAL:
+	{
+		newGamestate = PAUSED;
+		if (leftButtonPressed)
+		{
+			if (ApplyChanges.contains(0, mousepos)) // Yes button
+			{
+				state = AdditionalVisualInformations::NONE;
+				newGamestate = Gamestates::MENU;
+				genOptions.saveToPreviousOptions();
+			}
+			else if (ApplyChanges.contains(1, mousepos)) // No button
+			{
+				state = AdditionalVisualInformations::NONE;
+				newGamestate = Gamestates::RESTORE_GENERAL;
+				genOptions.restorePreviousOptions();
 			}
 		}
 	} break;

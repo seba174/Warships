@@ -144,6 +144,12 @@ public:
 
 	// returns desktop resolution as a string with Options::s_x value bewtween X and Y coords
 	std::string getDesktopResolution_string() const { return std::to_string(desktopResolution.x) + s_x + std::to_string(desktopResolution.y); }
+
+	// returns resolution as a string with Options::s_x value bewtween X and Y coords
+	std::string getResolution_string() const { return std::to_string(Resolution.x) + s_x + std::to_string(Resolution.y); }
 	
+	std::string getResolutionScale_string() const { return std::to_string(ResolutionScale); }
+
+	void saveToFile();
 };
 

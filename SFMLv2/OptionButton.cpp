@@ -1,4 +1,6 @@
 #include "OptionButton.h"
+#include "FontHandler.h"
+#include "TextureHandler.h"
 
 
 void OptionButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -7,13 +9,13 @@ void OptionButton::draw(sf::RenderTarget & target, sf::RenderStates states) cons
 	target.draw(bound_rectangle, states);
 	target.draw(leftbutton, states);
 	target.draw(rightbutton, states);
-	target.draw(current_displayed_option, states);
+	target.draw(drawnOption, states);
 }
 
 
-OptionButton::OptionButton(const std::string & options_list, const sf::Font& font, int characterSize, const sf::Vector2f& size, 
+OptionButton::OptionButton(const std::string & options_list, const sf::Font& font, int characterSize, LanguageManager& langMan, const sf::Vector2f& size,
 	const sf::Color& bounds_color)
-	: isPressed(false), isLeftButtonHighlighted(false), isRightButtonHighlighted(false), shouldUpdateAnimations(false), areArrowsBlocked(false)
+	: isPressed(false), isLeftButtonHighlighted(false), isRightButtonHighlighted(false), shouldUpdateAnimations(false), areArrowsBlocked(false), languageManager(langMan)
 {
 	current_option_number = 0;
 	usableTime = sf::milliseconds(100);
@@ -67,6 +69,7 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 	current_displayed_option.setFont(font);
 	current_displayed_option.setCharacterSize(characterSize);
 	current_displayed_option.setString(options[0]);
+	drawnOption = current_displayed_option;
 	setTextPosition();
 
 	bound_rectangle.setOutlineThickness(2);
@@ -82,6 +85,9 @@ void OptionButton::setTextPosition()
 
 	current_displayed_option.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - current_displayed_option.getGlobalBounds().width / 2,
 		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - current_displayed_option.getGlobalBounds().height / newScale);
+
+	drawnOption.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - drawnOption.getGlobalBounds().width / 2,
+		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - drawnOption.getGlobalBounds().height / newScale);
 }
 
 float OptionButton::addScale(const std::string & str)
@@ -90,6 +96,14 @@ float OptionButton::addScale(const std::string & str)
 	if (str.find('y') != std::string::npos || str.find('g') != std::string::npos || str.find('j') != std::string::npos || str.find('p') != std::string::npos)
 		tmp = 0.18;
 	return tmp;
+}
+
+void OptionButton::updateDrawnOption()
+{
+	drawnOption = current_displayed_option;
+	std::wstring tmp = languageManager.getText(current_displayed_option.getString());
+	if (!tmp.empty())
+		drawnOption.setString(sf::String(tmp));
 }
 
 void OptionButton::setPosition(float x, float y)
@@ -116,9 +130,12 @@ void OptionButton::updatePosition()
 	newScale += addScale(current_displayed_option.getString());
 
 	bound_rectangle.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
+	
 	current_displayed_option.setPosition(pos.x - current_displayed_option.getGlobalBounds().width / 2, pos.y - current_displayed_option.getGlobalBounds().height / newScale);
-	leftbutton.setPosition(bound_rectangle.getPosition());
+	drawnOption.setPosition(pos.x - drawnOption.getGlobalBounds().width / 2, pos.y - drawnOption.getGlobalBounds().height / newScale);
 
+	
+	leftbutton.setPosition(bound_rectangle.getPosition());
 	rightbutton.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getGlobalBounds().width - 2 * bound_rectangle.getOutlineThickness()
 		- rightbutton.getGlobalBounds().width, pos.y - bound_rectangle.getGlobalBounds().height / 2);
 }
@@ -150,6 +167,7 @@ void OptionButton::clickLeftButton()
 	if (current_option_number < 0)
 		current_option_number = number_of_options - 1;
 	current_displayed_option.setString(options[current_option_number]);
+	updateDrawnOption();
 	setTextPosition();
 }
 
@@ -161,6 +179,7 @@ void OptionButton::clickRightButton()
 	if (current_option_number == number_of_options)
 		current_option_number = 0;
 	current_displayed_option.setString(options[current_option_number]);
+	updateDrawnOption();
 	setTextPosition();
 }
 
@@ -195,6 +214,7 @@ void OptionButton::setScale(float x, float y)
 {
 	bound_rectangle.setScale(x, y);
 	current_displayed_option.setScale(x, y);
+	drawnOption.setScale(x, y);
 	leftbutton.setScale(x, y);
 	rightbutton.setScale(x, y);
 }
@@ -207,6 +227,7 @@ void OptionButton::setDisplayedOption(const std::string & newDisplayedOption)
 		{
 			current_displayed_option.setString(newDisplayedOption);
 			current_option_number = i;
+			updateDrawnOption();
 			return;
 		}
 	}
@@ -227,5 +248,6 @@ void OptionButton::setArrowsBlockAndDisplayedString(bool arrowsBlocked, const st
 		current_displayed_option.setString(displayed);
 	else
 		current_displayed_option.setString(options[current_option_number]);
+	updateDrawnOption();
 }
 

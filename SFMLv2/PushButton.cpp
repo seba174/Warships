@@ -1,4 +1,4 @@
-#include "PushButton.h"
+﻿#include "PushButton.h"
 
 
 
@@ -20,15 +20,16 @@ void PushButton::setTextPosition()
 		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - displayed_text.getGlobalBounds().height / newScale);
 }
 
-float PushButton::addScale(const std::string & str)
+float PushButton::addScale(const std::wstring & str)
 {
 	float tmp = 0;
-	if (str.find('y') != std::string::npos || str.find('g') != std::string::npos || str.find('j') != std::string::npos || str.find('p') != std::string::npos)
+	if (str.find('y') != std::wstring::npos || str.find('g') != std::wstring::npos || str.find('j') != std::wstring::npos || str.find('p') != std::wstring::npos
+		|| str.find('ą') != std::wstring::npos || str.find('ę') != std::wstring::npos)
 		tmp = 0.18;
 	return tmp;
 }
 
-PushButton::PushButton(const std::string& text, int char_size, const sf::Font& font, sf::Vector2f size, const sf::Color& bounds_color,
+PushButton::PushButton(const std::wstring& text, int char_size, const sf::Font& font, sf::Vector2f size, const sf::Color& bounds_color,
 	 int line_thickness)
 	: isPressed(false), shouldUpdateAnimations(false)
 {
@@ -47,6 +48,7 @@ PushButton::PushButton(const std::string& text, int char_size, const sf::Font& f
 	displayed_text.setFont(font);
 	displayed_text.setCharacterSize(char_size);
 	displayed_text.setString(text);
+
 	setTextPosition();
 
 	bound_rectangle.setOutlineThickness(line_thickness);

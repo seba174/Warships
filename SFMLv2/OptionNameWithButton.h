@@ -22,8 +22,8 @@ class OptionNameWithButton :
 
 public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!
-	OptionNameWithButton(const std::string& optionName, const sf::Font& nameFont, int nameCharacterSize, const sf::Vector2f& size,
-		const std::string& options_list, const sf::Font& buttonFont, int buttonCharacterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
+	OptionNameWithButton(const std::wstring& optionName, const sf::Font& nameFont, int nameCharacterSize, const sf::Vector2f& size,
+		const std::string& options_list, const sf::Font& buttonFont, int buttonCharacterSize, LanguageManager& langMan, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
 		const sf::Color& bounds_color = sf::Color::Transparent);
 
 	std::string getDisplayedOption() const { return button.getDisplayedOption(); }

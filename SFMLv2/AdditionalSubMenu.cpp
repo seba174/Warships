@@ -9,7 +9,7 @@ void AdditionalSubMenu::draw(sf::RenderTarget & target, sf::RenderStates states)
 
 AdditionalSubMenu::AdditionalSubMenu(const sf::Vector2f & backgroundSize, const sf::Vector2f & backgroundForSubMenuSize,
 	const sf::Vector2f & backgroundForSubMenuPosition, const sf::Color& backgroundForSubMenuColor, const sf::Color & backgroundColor,
-	const sf::Vector2f & backgroundPosition, const std::string & title, const std::string & buttons_text, int title_character_size, int char_size,
+	const sf::Vector2f & backgroundPosition, const std::wstring & title, const std::wstring & buttons_text, int title_character_size, int char_size,
 	const sf::Vector2f & title_position, const sf::Vector2f & first_button_position, const sf::Vector2f & button_size, int space_between_buttons, 
 	const sf::Color & bounds_color, const sf::Font & font, sf::Uint32 title_style, sf::Uint32 buttons_style) 
 {
@@ -22,7 +22,7 @@ AdditionalSubMenu::AdditionalSubMenu(const sf::Vector2f & backgroundSize, const 
 
 void AdditionalSubMenu::construct(const sf::Vector2f & backgroundSize, const sf::Vector2f & backgroundForSubMenuSize,
 	const sf::Vector2f & backgroundForSubMenuPosition, const sf::Color & backgroundForSubMenuColor, const sf::Color & backgroundColor,
-	const sf::Vector2f & backgroundPosition, const std::string & title, const std::string & buttons_text, int title_character_size, int char_size,
+	const sf::Vector2f & backgroundPosition, const std::wstring & title, const std::wstring & buttons_text, int title_character_size, int char_size,
 	const sf::Vector2f & title_position, const sf::Vector2f & first_button_position, const sf::Vector2f & button_size, int space_between_buttons,
 	const sf::Color & bounds_color, const sf::Font & font, float interfaceScale, sf::Uint32 title_style, sf::Uint32 buttons_style)
 {

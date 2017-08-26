@@ -17,6 +17,7 @@ class OptionsSubMenu :
 	int spaceBetweenButtons;
 
 	bool isConstructed;
+	LanguageManager& langMan;
 
 		// FUNCTIONS
 
@@ -26,19 +27,19 @@ class OptionsSubMenu :
 	void updatePushButtons();
 
 public:
-	OptionsSubMenu(const sf::Vector2f& position_of_first_button, int spaceBetweenButtons);
+	OptionsSubMenu(const sf::Vector2f& position_of_first_button, int spaceBetweenButtons, LanguageManager& langMan);
 
 	//Default constructor
 	// You have to call Construct() function in order to have OptionsSubMenu working properly!
-	OptionsSubMenu();
+	OptionsSubMenu(LanguageManager& langMan);
 
 	// May be run only once;
-	void Construct(const sf::Vector2f& position, int spaceBetweenButtons);
+	void Construct(const sf::Vector2f& position, int spaceBetweenButtons, LanguageManager& langMan);
 
-	void addPushButton(const std::string& displayed_text, int char_size, const sf::Font& font, sf::Vector2f size = sf::Vector2f(240, 50),
+	void addPushButton(const std::wstring& displayed_text, int char_size, const sf::Font& font, sf::Vector2f size = sf::Vector2f(240, 50),
 		const sf::Color& bounds_color = sf::Color::White, int line_thickness = 3);
 
-	void addOptionNameWithButton(const std::string& optionName, const sf::Font& nameFont, int nameCharacterSize, const sf::Vector2f& size,
+	void addOptionNameWithButton(const std::wstring& optionName, const sf::Font& nameFont, int nameCharacterSize, const sf::Vector2f& size,
 		const std::string& options_list, const sf::Font& buttonFont, int buttonCharacterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
 		const sf::Color& bounds_color = sf::Color::Transparent);
 

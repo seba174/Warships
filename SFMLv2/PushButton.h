@@ -9,7 +9,7 @@
 class PushButton :
 	public sf::Drawable, public sf::Transformable
 {
-	const float scale = 0.94f;
+	float scale = 1.1f;
 
 	sf::RectangleShape bound_rectangle;
 	sf::RectangleShape additionalEffects;
@@ -34,11 +34,11 @@ class PushButton :
 	// sets displayed_text in the center of button (bound_rectangle)
 	void setTextPosition();
 
-	float addScale(const std::string& str);
+	float addScale(const std::wstring& str);
 
 public:
 
-	PushButton(const std::string& displayed_text, int char_size, const sf::Font& font, sf::Vector2f size = sf::Vector2f(240, 50),
+	PushButton(const std::wstring& displayed_text, int char_size, const sf::Font& font, sf::Vector2f size = sf::Vector2f(240, 50),
 		const sf::Color& bounds_color = sf::Color::White,  int line_thickness = 3); 
 
 	// sets style for the text in the button

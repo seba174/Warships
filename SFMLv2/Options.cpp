@@ -247,6 +247,13 @@ void Options::loadDefaults()
 	saveToPreviousOptions();
 }
 
+void Options::saveToFile()
+{
+	setResolution(getResolution_string());
+	setVerticalSyncEnabled(isVerticalSyncEnabled_string());
+	setFullScreen(isFullScreenEnabled_string());
+	setResolutionScale(getResolutionScale_string());
+}
 
 std::string AvaliableResolutions::getResolutionString()
 {

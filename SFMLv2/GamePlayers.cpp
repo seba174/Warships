@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <iostream>
 #include "Input.h"
+#include "LanguageManager.h"
 
 using std::cout;
 using std::endl;
@@ -35,6 +36,8 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 			}
 		}
 		target.draw(player1Background, states);
+		if (shoudlDrawMenuPlayer1TurnStarts)
+			target.draw(menuPlayer1TurnStarts, states);
 
 	} break;
 
@@ -52,6 +55,9 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		}
 		target.draw(player2Background, states);
 		player2.Draw(target);
+
+		if (shoudlDrawMenuPlayer2TurnStarts)
+			target.draw(menuPlayer2TurnStarts, states);
 	} break;
 
 	case player1_setships:
@@ -221,8 +227,6 @@ void GamePlayers::updateBackgroundInformation()
 	}
 }
 
-
-
 void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input)
 {
 	lastFrameTime = dt;
@@ -297,10 +301,20 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			currentState = player1_moves;
 		else if (who == 2)
 			currentState = player2_moves;
+		utilityTime = sf::Time();
 	} break;
 
 	case player1_moves:
 	{
+		utilityTime += dt;
+		if (utilityTime <= TurnInfoTime)
+		{
+			shoudlDrawMenuPlayer1TurnStarts = true;
+			break;
+		}
+		else
+			shoudlDrawMenuPlayer1TurnStarts = false;
+
 		player1.PlayerMouseInput(dt, mousepos);
 		cout << "Play player1 moves" << endl;
 		if (input.isMouseLeftButtonPressed() && player1.isMouseInEnemyBounds(mousepos))
@@ -315,6 +329,8 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 				SetCursorPos(player2.getPlayersCursorPosition().x, player2.getPlayersCursorPosition().y);
 
 			currentState = player2_moves;
+			utilityTime = sf::Time();
+			shoudlDrawMenuPlayer2TurnStarts = true;
 		}
 
 		updateBackgroundInformation();
@@ -326,6 +342,15 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 
 	case player2_moves:
 	{
+		utilityTime += dt;
+		if (utilityTime <= TurnInfoTime)
+		{
+			shoudlDrawMenuPlayer2TurnStarts = true;
+			break;
+		}
+		else
+			shoudlDrawMenuPlayer2TurnStarts = false;
+
 		player2.PlayerMouseInput(dt, mousepos);
 		cout << "Play player2 moves" << endl;
 		if (input.isMouseLeftButtonPressed() && player2.isMouseInEnemyBounds(mousepos))
@@ -339,6 +364,8 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 				SetCursorPos(player1.getPlayersCursorPosition().x, player1.getPlayersCursorPosition().y);
 
 			currentState = player1_moves;
+			utilityTime = sf::Time();
+			shoudlDrawMenuPlayer1TurnStarts = true;
 		}
 
 		updateBackgroundInformation();
@@ -355,7 +382,8 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSize, const sf::Vector2f & player1_setpoints, const sf::Vector2f & player2_setpoints,
 	const sf::RectangleShape & pudlo, const sf::RectangleShape & trafienie, sf::RectangleShape ** player1Square_tab_2, sf::RectangleShape ** player2Square_tab_2, int bar,
 	sf::RectangleShape & player1Rect, sf::RectangleShape & player2Rect, const Mouse_S& pl1Mouse, const Mouse_S& pl2Mouse,
-	const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize, const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale)
+	const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize, const sf::Vector2f& backgroundForSubMenuPosition, 
+	float interfaceScale, LanguageManager& langMan)
 
 	: player1(dim, SquareSize, player2_setpoints, nullptr, player1_setpoints, pudlo, trafienie, player1Square_tab_2, bar, player1Rect),
 	player2(dim, SquareSize, player1_setpoints, nullptr, player2_setpoints, pudlo, trafienie, player2Square_tab_2, bar, player2Rect),
@@ -364,23 +392,30 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	player1Background(dim, SquareSize, player1_setpoints, interfaceScale),
 	player2Background(dim, SquareSize, player2_setpoints, interfaceScale),
 	shoudlDrawMenuPlayer1SetShipsInfo(true), shoudlDrawMenuPlayer2SetShipsInfo(true),
+	shoudlDrawMenuPlayer1TurnStarts(true), shoudlDrawMenuPlayer2TurnStarts(true),
 	advertPlayer1(dim,player2_setpoints, interfaceScale),
 	advertPlayer2(dim, player1_setpoints, interfaceScale)
 {
-	player1.setPlayerName("Player1");
-	player2.setPlayerName("Player2");
+	player1.setPlayerName(L"Player1");
+	player2.setPlayerName(L"Player2");
 
+	std::wstring str = L",\n" + langMan.getText("you still have to destroy following ships") + L':';
+	player1Background.setDisplayedString(player1.getPlayerName() + str);
+	player2Background.setDisplayedString(player2.getPlayerName() + str);
 
 
 	currentState = player1_setships;
+	int playersBackgroundOffset = 70;
 
 	player1.setenemyships(player2.getplayerships());
 	player2.setenemyships(player1.getplayerships());
+	player1Background.setPosition(playersBackgroundOffset);
+	player2Background.setPosition(playersBackgroundOffset);
 
 
 	// SubMenu title character size
 	int title_size_1 = 55 * interfaceScale;
-	int title_size_2 = 50 * interfaceScale;
+	int title_size_2 = 80 * interfaceScale;
 
 	// SubMenu character size
 	int submenu_size = 35 * interfaceScale;
@@ -406,16 +441,22 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	FontHandler& handler = FontHandler::getInstance();
 
 
-	std::string tmp = player1.getPlayerName();
-	tmp += ",\nPlease set up your ships";
+	std::wstring tmp = player1.getPlayerName();
+	menuPlayer1TurnStarts.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_2),
+		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, L"", title_size_2, submenu_size,
+		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
+	tmp += L",\n" + langMan.getText("Please set up your ships");
 	menuPlayer1SetShipsInfo.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_1),
-		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, "", title_size_1, submenu_size,
+		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, L"", title_size_1, submenu_size,
 		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
 
 	tmp = player2.getPlayerName();	
-	tmp += ",\nPlease set up your ships";
+	menuPlayer2TurnStarts.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_2),
+		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, L"", title_size_2, submenu_size,
+		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
+	tmp += L",\n" + langMan.getText("Please set up your ships");
 	menuPlayer2SetShipsInfo.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_1),
-		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, "", title_size_1, submenu_size,
+		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, L"", title_size_1, submenu_size,
 		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
 }
 

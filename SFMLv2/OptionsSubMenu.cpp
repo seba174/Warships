@@ -22,7 +22,8 @@ void OptionsSubMenu::updatePushButtons()
 	}
 }
 
-OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int spaceBetweenButtons)
+OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int spaceBetweenButtons, LanguageManager& langMan)
+	:langMan(langMan)
 {
 	spaceBetweenVertically = 0;
 	this->position = position_of_first;
@@ -31,35 +32,37 @@ OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int space
 	isConstructed = true;
 }
 
-OptionsSubMenu::OptionsSubMenu()
+OptionsSubMenu::OptionsSubMenu(LanguageManager& langMan)
+	:langMan(langMan)
 {
 	spaceBetweenVertically = 0;
 	additionalSpaceBetweenOptionsAndPushButtons = 0;
 	isConstructed = false;
 }
 
-void OptionsSubMenu::Construct(const sf::Vector2f & position_of_first, int spaceBetweenButtons)
+void OptionsSubMenu::Construct(const sf::Vector2f & position_of_first, int spaceBetweenButtons, LanguageManager& langMan)
 {
 	if (isConstructed)
 		return;
-
+	
+	this->langMan = langMan;
 	this->position = position_of_first;
 	this->spaceBetweenButtons = spaceBetweenButtons;
 	isConstructed = true;
 }
 
-void OptionsSubMenu::addPushButton(const std::string & displayed_text, int char_size, const sf::Font & font, sf::Vector2f size, 
+void OptionsSubMenu::addPushButton(const std::wstring & displayed_text, int char_size, const sf::Font & font, sf::Vector2f size, 
 	const sf::Color & bounds_color, int line_thickness)
 {
 	push_buttons.push_back(PushButton(displayed_text, char_size, font, size, bounds_color, line_thickness));
 	updatePushButtons();
 }
 
-void OptionsSubMenu::addOptionNameWithButton(const std::string & optionName, const sf::Font & nameFont, int nameCharacterSize, 
+void OptionsSubMenu::addOptionNameWithButton(const std::wstring & optionName, const sf::Font & nameFont, int nameCharacterSize, 
 	const sf::Vector2f & size, const std::string & options_list, const sf::Font & buttonFont, int buttonCharacterSize, const sf::Vector2f & button_size, 
 	const sf::Color & bounds_color)
 {
-	options_buttons.push_back(OptionNameWithButton(optionName, nameFont, nameCharacterSize, size, options_list, buttonFont, buttonCharacterSize, 
+	options_buttons.push_back(OptionNameWithButton(optionName, nameFont, nameCharacterSize, size, options_list, buttonFont, buttonCharacterSize, langMan,
 		button_size, bounds_color));
 	options_buttons[options_buttons.size() - 1].setPosition(position.x, position.y + (options_buttons.size() - 1)*spaceBetweenButtons);
 	updatePushButtons();

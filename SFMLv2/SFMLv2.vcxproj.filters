@@ -96,6 +96,18 @@
     <ClCompile Include="SetShipsAd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LanguageManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Translation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enumLanguagesCodes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ships.h">
@@ -189,6 +201,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SetShipsAd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Translation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enumLanguagesCodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

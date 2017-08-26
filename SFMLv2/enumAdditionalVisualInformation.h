@@ -1,3 +1,3 @@
 #pragma once
 
-enum AdditionalVisualInformations { NONE, EXIT_INFO, LOADING, PLAYER_WON, AI_WON, APPLY_CHANGES };
+enum AdditionalVisualInformations { NONE, EXIT_INFO, LOADING, PLAYER_WON, AI_WON, APPLY_CHANGES_GRAPHICS, APPLY_CHANGES_GENERAL };

@@ -1,12 +1,14 @@
 #pragma once
 #include "SubMenu.h"
-#include "Options.h"
 #include "OptionsSubMenu.h"
 #include "enumMenustate.h"
 #include "enumGamestate.h"
 #include "enumAdditionalVisualInformation.h"
 #include "enumLevelsDifficulty.h"
 
+class LanguageManager;
+class Options;
+class GeneralOptions;
 
 class Menu :
 	public sf::Drawable
@@ -28,15 +30,17 @@ class Menu :
 
 	bool hasVisibleOptionChanged(const Options& options);
 
+	bool hasVisibleGeneralOptionChanged(const GeneralOptions& options);
+
 
 public:
-	Menu(const std::string& main_title, const sf::Vector2f& main_title_position, const sf::Vector2f& title_or1st_button_position, int space_between_buttons,
-		float interfaceScale, const Options& opt);
+	Menu(const std::wstring& main_title, const sf::Vector2f& main_title_position, const sf::Vector2f& title_or1st_button_position, int space_between_buttons,
+		float interfaceScale, const Options& opt, LanguageManager& languageManager, const GeneralOptions& genOpt);
 
 	// function deals with running menu 
 	// check if user clicks on buttons and does appropriate acctions
 	// in order to updateGamestates, use updateGamestate() function
-	void runMenu(const sf::Vector2f& mousepos, int& mapsize, LevelsDifficulty& level, bool leftButtonPressed, Options& opt);
+	void runMenu(const sf::Vector2f& mousepos, int& mapsize, LevelsDifficulty& level, bool leftButtonPressed, Options& opt, GeneralOptions& generalOpt);
 
 	// updates information about OutlineColor for every SubMenu
 	void updateMenu();

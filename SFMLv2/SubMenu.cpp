@@ -8,7 +8,7 @@ void SubMenu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		target.draw(button, states);
 }
 
-SubMenu::SubMenu(const std::string & title, const std::string & buttons_text, int title_character_size, int char_size, const sf::Vector2f & title_position,
+SubMenu::SubMenu(const std::wstring & title, const std::wstring & buttons_text, int title_character_size, int char_size, const sf::Vector2f & title_position,
 	const sf::Vector2f & first_button_position, const sf::Vector2f& button_size, int space_between_buttons, const sf::Color& bounds_color, 
 	const sf::Font & font, sf::Uint32 title_style, sf::Uint32 buttons_style)
 {
@@ -18,7 +18,7 @@ SubMenu::SubMenu(const std::string & title, const std::string & buttons_text, in
 	isConstructed = true;
 }
 
-void SubMenu::construct(const std::string & title, const std::string & buttons_text, int title_character_size, int char_size, 
+void SubMenu::construct(const std::wstring & title, const std::wstring & buttons_text, int title_character_size, int char_size, 
 	const sf::Vector2f & title_position, const sf::Vector2f & first_button_position, const sf::Vector2f & button_size, int space_between_buttons, 
 	const sf::Color & bounds_color, const sf::Font & font, sf::Uint32 title_style, sf::Uint32 buttons_style)
 {
@@ -38,13 +38,13 @@ void SubMenu::construct(const std::string & title, const std::string & buttons_t
 	int beg = 0, end;
 
 	// finish if there aren't any buttons to create
-	if (buttons_text == "")
+	if (buttons_text == L"")
 		return;
 
 	// Creating buttons from string "buttons_text" (separated by ',')
 	do {
 		end = buttons_text.find(',', beg);
-		if (end == std::string::npos) end = buttons_text.size();
+		if (end == std::wstring::npos) end = buttons_text.size();
 		buttons.push_back(PushButton(buttons_text.substr(beg, end - beg), char_size, font, button_size, bounds_color));
 		buttons[buttons.size() - 1].setPosition(first_button_position.x, first_button_position.y + i*space_between_buttons);
 		buttons[buttons.size() - 1].setStyle(buttons_style);

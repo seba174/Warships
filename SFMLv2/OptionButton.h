@@ -1,17 +1,13 @@
 #pragma once
-#include <string>
 #include <memory>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include "FontHandler.h"
-#include "TextureHandler.h"
+#include <SFML\Graphics.hpp>
+#include "LanguageManager.h"
+
 
 class OptionButton :
 	public sf::Drawable, public sf::Transformable
 {
-	const float scale = 0.95f;
+	float scale = 1.1f;
 
 	// number of options in options array
 	int number_of_options;
@@ -35,9 +31,12 @@ class OptionButton :
 
 	// option displayed in button at pertacuilar moment
 	sf::Text current_displayed_option;
+	sf::Text drawnOption;
 
 	// position set in last call of setPosition function
 	sf::Vector2f pos;
+
+	LanguageManager& languageManager;
 
 	// variables used to control animation
 	bool shouldUpdateAnimations;
@@ -59,9 +58,11 @@ class OptionButton :
 
 	float addScale(const std::string& str);
 
+	void updateDrawnOption();
+
 public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!
-	OptionButton(const std::string& options_list, const sf::Font& font, int characterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
+	OptionButton(const std::string& options_list, const sf::Font& font, int characterSize, LanguageManager& langMan, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
 		const sf::Color& bounds_color = sf::Color::Transparent);
 
 	std::string getDisplayedOption() const { return current_displayed_option.getString(); }

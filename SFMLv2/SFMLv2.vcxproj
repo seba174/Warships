@@ -22,6 +22,7 @@
     <ProjectGuid>{63204E41-82BB-49F4-9418-6B46D8ECFC55}</ProjectGuid>
     <RootNamespace>SFMLv2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <ProjectName>Warships</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -126,13 +127,16 @@
     <ClCompile Include="DestroyedShips.cpp" />
     <ClCompile Include="DestroyedShipsWithBackground.cpp" />
     <ClCompile Include="DVector2i.cpp" />
+    <ClCompile Include="enumLanguagesCodes.cpp" />
     <ClCompile Include="FontHandler.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GamePlayers.cpp" />
+    <ClCompile Include="GeneralOptions.cpp" />
     <ClCompile Include="INI_Reader.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="IrregularShip2.cpp" />
     <ClCompile Include="IrregularShip3.cpp" />
+    <ClCompile Include="LanguageManager.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mouse_S.cpp" />
     <ClCompile Include="OptionButton.cpp" />
@@ -147,6 +151,7 @@
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="SubMenu.cpp" />
     <ClCompile Include="TextureHandler.cpp" />
+    <ClCompile Include="Translation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AdditionalMenu.h" />
@@ -158,15 +163,18 @@
     <ClInclude Include="DVector2i.h" />
     <ClInclude Include="enumAdditionalVisualInformation.h" />
     <ClInclude Include="enumGamestate.h" />
+    <ClInclude Include="enumLanguagesCodes.h" />
     <ClInclude Include="enumLevelsDifficulty.h" />
     <ClInclude Include="enumMenustate.h" />
     <ClInclude Include="FontHandler.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GamePlayers.h" />
+    <ClInclude Include="GeneralOptions.h" />
     <ClInclude Include="INI_Reader.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="IrregularShip2.h" />
     <ClInclude Include="IrregularShip3.h" />
+    <ClInclude Include="LanguageManager.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Mouse_S.h" />
     <ClInclude Include="OptionButton.h" />
@@ -180,6 +188,7 @@
     <ClInclude Include="Ships_HP.h" />
     <ClInclude Include="SubMenu.h" />
     <ClInclude Include="TextureHandler.h" />
+    <ClInclude Include="Translation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
