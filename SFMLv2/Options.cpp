@@ -17,21 +17,23 @@ const sf::Vector2i Options::defaultResolution(AvaliableResolutions::avaliableRes
 const bool Options::defaultFullScreen = false;
 const bool Options::defaultVerticalSyncEnabled = false;
 const int Options::defaultResolutionScale = 100;
+const bool Options::defaultAntialiasing = false;
 
 const string Options::s_yes = "Yes";
 const string Options::s_no = "No";
-const string Options::s_verticalsyncenabled = "VerticalSyncEnabled";
+const string Options::s_verticalsyncenabled = "VerticalSync";
 const string Options::s_graphics = "Graphics";
 const string Options::s_resolution = "Resolution";
 const string Options::s_resolutionscale = "ResolutionScale";
 const string Options::s_fullscreen = "FullScreen";
 const string Options::s_x = "x";
+const string Options::s_antialiasing = "Antialiasing";
 
 
 Options::Options(INI_Reader & reader)
 	: Resolution(sf::Vector2i(0, 0)), ResolutionScale(100), VerticalSyncEnabled(false), FullScreen(false), reader(reader),
-	hasFullScreenChanged(false), hasResolutionChanged(false), hasResolutionScaleChanged(false), hasVerticalSyncChanged(false),
-	desktopResolution(0,0)
+	hasFullScreenChanged(false), hasResolutionChanged(false), hasResolutionScaleChanged(false), hasVerticalSyncChanged(false), 
+	desktopResolution(0,0), antialiasing(false)
 {
 	const SettingFile& config = reader.getSettings();
 
@@ -71,6 +73,17 @@ Options::Options(INI_Reader & reader)
 	else
 	{
 		reader.insertValue(s_graphics, s_fullscreen, s_no);
+	}
+
+	// Antialiasing
+	tmp = reader.getValue(s_graphics, s_antialiasing);
+	if (tmp == s_yes)
+		antialiasing = true;
+	else if (tmp == s_no)
+		antialiasing = false;
+	else
+	{
+		reader.insertValue(s_graphics, s_antialiasing, s_no);
 	}
 
 	// ResolutionScale
@@ -169,6 +182,21 @@ void Options::setFullScreen(const std::string& isEnabled)
 	}
 }
 
+void Options::setAntialiasingEnabled(const std::string & isEnabled)
+{
+	if (isEnabled == s_yes)
+	{
+		antialiasing = true;
+		reader.insertValue(s_graphics, s_antialiasing, s_yes);
+	}
+	else if (isEnabled == s_no)
+	{
+		antialiasing = false;
+		reader.insertValue(s_graphics, s_antialiasing, s_no);
+	}
+
+}
+
 void Options::setResolutionScale(const std::string& resScale)
 {
 	if (resScale == "")
@@ -204,12 +232,21 @@ std::string Options::isFullScreenEnabled_string() const
 		return s_no;
 }
 
+std::string Options::isAntialiasingEnabled_string() const
+{
+	if (antialiasing)
+		return s_yes;
+	else
+		return s_no;
+}
+
 void Options::saveToPreviousOptions()
 {
 	previousOptions->FullScreen = FullScreen;
 	previousOptions->Resolution = Resolution;
 	previousOptions->ResolutionScale = ResolutionScale;
 	previousOptions->VerticalSyncEnabled = VerticalSyncEnabled;
+	previousOptions->antialiasing = antialiasing;
 	previousOptions->hasFullScreenChanged = hasFullScreenChanged;
 	previousOptions->hasResolutionChanged = hasResolutionChanged;
 	previousOptions->hasResolutionScaleChanged = hasResolutionScaleChanged;
@@ -222,6 +259,7 @@ void Options::restorePreviousOptions()
 	Resolution = previousOptions->Resolution;
 	ResolutionScale = previousOptions->ResolutionScale;
 	VerticalSyncEnabled = previousOptions->VerticalSyncEnabled;
+	antialiasing = previousOptions->antialiasing;
 	hasFullScreenChanged = previousOptions->hasFullScreenChanged;
 	hasResolutionChanged = previousOptions->hasResolutionChanged;
 	hasResolutionScaleChanged = previousOptions->hasResolutionScaleChanged;
@@ -233,7 +271,8 @@ bool Options::hasAnyOptionChanged() const
 	if (FullScreen == previousOptions->FullScreen
 		&& Resolution == previousOptions->Resolution
 		&& ResolutionScale == previousOptions->ResolutionScale
-		&& VerticalSyncEnabled == previousOptions->VerticalSyncEnabled)
+		&& VerticalSyncEnabled == previousOptions->VerticalSyncEnabled
+		&& antialiasing == previousOptions->antialiasing)
 		return false;
 	return true;
 }
@@ -244,6 +283,7 @@ void Options::loadDefaults()
 	VerticalSyncEnabled = defaultVerticalSyncEnabled;
 	ResolutionScale = defaultResolutionScale;
 	FullScreen = defaultFullScreen;
+	antialiasing = defaultAntialiasing;
 	saveToPreviousOptions();
 }
 
@@ -253,6 +293,7 @@ void Options::saveToFile()
 	setVerticalSyncEnabled(isVerticalSyncEnabled_string());
 	setFullScreen(isFullScreenEnabled_string());
 	setResolutionScale(getResolutionScale_string());
+	setAntialiasingEnabled(isAntialiasingEnabled_string());
 }
 
 std::string AvaliableResolutions::getResolutionString()

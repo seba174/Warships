@@ -10,6 +10,8 @@ class OptionsSubMenu :
 	int spaceBetweenVertically;
 	int additionalSpaceBetweenOptionsAndPushButtons;
 
+	sf::RectangleShape boundRectangle;
+
 	std::vector<OptionNameWithButton> options_buttons;
 	std::vector<PushButton> push_buttons;
 
@@ -25,6 +27,8 @@ class OptionsSubMenu :
 
 	// updates position of PushButtons after adding any new button
 	void updatePushButtons();
+
+	void updateBoundRectangle();
 
 public:
 	OptionsSubMenu(const sf::Vector2f& position_of_first_button, int spaceBetweenButtons, LanguageManager& langMan);
@@ -72,10 +76,12 @@ public:
 	// fucntion sets it only when new displayed option is included in option list
 	void setDisplayedOption(int number, std::string newDisplayedOption);
 
-	void handleAdditionalRectangleColor(int number, bool shouldApplyColor, const sf::Color& color);
+	void coverPushButtonWithColor(int number, bool shouldApplyColor, const sf::Color& color);
 
 	void setSpaceBetweenPushButtons(int space);
 
 	void setArrowsBlockAndDisplayedString(int number, bool arrowsBlocked, const std::string& displayed);
+
+	void setInteriorColorAllPushButtons(const sf::Color& color);
 };
 

@@ -1,4 +1,5 @@
 #include "IrregularShip3.h"
+#include "TextureHandler.h"
 
 
 IrregularShip3::IrregularShip3(const sf::Vector2f& squaresize, const sf::Vector2i& boarddimensions, const sf::Vector2f& setPoints, sf::Texture * texture)
@@ -250,4 +251,6 @@ void IrregularShip3::updateTexture(const sf::Time& timen)
 
 void IrregularShip3::setDestroyedTexture()
 {
+	TextureHandler &text = TextureHandler::getInstance();
+	shipv2.setTexture(&text.texture_handler["irregular3_destroyed"]);
 }

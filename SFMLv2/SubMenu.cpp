@@ -98,3 +98,19 @@ void SubMenu::highlightButton(int number)
 	if (number >= 0 && number < buttons.size())
 		buttons[number].highlightButton();
 }
+
+void SubMenu::coverButtonWithColor(int number, bool shouldApplyColor, const sf::Color & color)
+{
+	if (number >= 0 && number < buttons.size())
+	{
+		buttons[number].coverButtonWithColor(shouldApplyColor, color);
+	}
+}
+
+void SubMenu::setInteriorColorAllButtons(const sf::Color & color)
+{
+	for (PushButton& button : buttons)
+	{
+		button.setInteriorColor(color);
+	}
+}

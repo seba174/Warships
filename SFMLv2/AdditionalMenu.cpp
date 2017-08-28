@@ -45,6 +45,8 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	// Background Color for Exit
 	sf::Color backgroundExitColor = sf::Color(0, 0, 0, 200);
 
+	sf::Color buttonInteriorColor = sf::Color(0, 0, 0, 150);
+
 	// Button size
 	sf::Vector2f button_size(360 * interfaceScale, 70 * interfaceScale);
 
@@ -62,6 +64,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 		langMan.getText("What do you want to do") + L'?', langMan.getText("Resume") + L',' + langMan.getText("Return to Main Menu") + L',' + langMan.getText("Quit the game"),
 		title_size_1, submenu_size, title_or1st_button_position, sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons),
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
+	Exit.setInteriorColorAllButtons(buttonInteriorColor);
 
 	Loading.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_1),
 		sf::Color::Transparent, sf::Color::Black, sf::Vector2f(0, 0), langMan.getText("Loading") + L"...", L"", title_size_1, submenu_size,
@@ -71,6 +74,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 		langMan.getText("Do you wish to save changes") + L'?', langMan.getText("Yes") + L',' + langMan.getText("No"), title_size_2, submenu_size, title_or1st_button_position,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons), button_size, space_between_buttons,
 		bounds_color, handler.font_handler["Mecha"], interfaceScale);
+	ApplyChanges.setInteriorColorAllButtons(buttonInteriorColor);
 
 }
 

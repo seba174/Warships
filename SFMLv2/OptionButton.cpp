@@ -6,6 +6,7 @@
 void OptionButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
+	target.draw(additionalEffects, states);
 	target.draw(bound_rectangle, states);
 	target.draw(leftbutton, states);
 	target.draw(rightbutton, states);

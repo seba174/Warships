@@ -10,9 +10,11 @@ class PushButton :
 	public sf::Drawable, public sf::Transformable
 {
 	float scale = 1.1f;
+	float interiorScale = 0.93f;
 
 	sf::RectangleShape bound_rectangle;
 	sf::RectangleShape additionalEffects;
+	sf::RectangleShape interior;
 	sf::Text displayed_text;
 	
 	// information if mouse is within bound_rectagle (it is used in animation)
@@ -35,6 +37,8 @@ class PushButton :
 	void setTextPosition();
 
 	float addScale(const std::wstring& str);
+
+	void setInteriorPosition();
 
 public:
 
@@ -75,6 +79,8 @@ public:
 	// returns size of a button
 	sf::Vector2f getSize() { return bound_rectangle.getSize(); }
 
-	void handleAdditionalRectangleColor(bool shouldApplyColor, const sf::Color& color);
+	void coverButtonWithColor(bool shouldApplyColor, const sf::Color& color);
+
+	void setInteriorColor(const sf::Color& color);
 };
 

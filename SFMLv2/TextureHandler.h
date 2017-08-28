@@ -22,4 +22,6 @@ public:
 	static TextureHandler& getInstance();
 
 	std::map<std::string, sf::Texture> texture_handler;
+
+	void static setSmooth(bool shouldSet);
 };

@@ -3,7 +3,7 @@
 
 void OptionsSubMenu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-
+	target.draw(boundRectangle, states);
 	for (const OptionNameWithButton& but : options_buttons)
 		target.draw(but, states);
 	
@@ -22,6 +22,13 @@ void OptionsSubMenu::updatePushButtons()
 	}
 }
 
+void OptionsSubMenu::updateBoundRectangle()
+{
+	boundRectangle.setSize(sf::Vector2f(options_buttons[options_buttons.size() - 1].getBoundRectangleSize().x, 
+		spaceBetweenButtons*(options_buttons.size() - 1) + options_buttons[options_buttons.size() - 1].getBoundRectangleSize().y));
+	boundRectangle.setPosition(options_buttons[0].getBoundRectanglePosition());
+}
+
 OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int spaceBetweenButtons, LanguageManager& langMan)
 	:langMan(langMan)
 {
@@ -29,6 +36,8 @@ OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int space
 	this->position = position_of_first;
 	this->spaceBetweenButtons = spaceBetweenButtons;
 	additionalSpaceBetweenOptionsAndPushButtons = 0;
+	//test
+	boundRectangle.setFillColor(sf::Color::Black);
 	isConstructed = true;
 }
 
@@ -37,6 +46,7 @@ OptionsSubMenu::OptionsSubMenu(LanguageManager& langMan)
 {
 	spaceBetweenVertically = 0;
 	additionalSpaceBetweenOptionsAndPushButtons = 0;
+	boundRectangle.setFillColor(sf::Color(0,0,0,200));
 	isConstructed = false;
 }
 
@@ -65,6 +75,7 @@ void OptionsSubMenu::addOptionNameWithButton(const std::wstring & optionName, co
 	options_buttons.push_back(OptionNameWithButton(optionName, nameFont, nameCharacterSize, size, options_list, buttonFont, buttonCharacterSize, langMan,
 		button_size, bounds_color));
 	options_buttons[options_buttons.size() - 1].setPosition(position.x, position.y + (options_buttons.size() - 1)*spaceBetweenButtons);
+	updateBoundRectangle();
 	updatePushButtons();
 }
 
@@ -139,13 +150,14 @@ void OptionsSubMenu::setDisplayedOption(int number, std::string newDisplayedOpti
 	}
 }
 
-void OptionsSubMenu::handleAdditionalRectangleColor(int number, bool shouldApplyColor, const sf::Color & color)
+void OptionsSubMenu::coverPushButtonWithColor(int number, bool shouldApplyColor, const sf::Color & color)
 {
 	if (number >= 0 && number < push_buttons.size())
 	{
-		push_buttons[number].handleAdditionalRectangleColor(shouldApplyColor,color);
+		push_buttons[number].coverButtonWithColor(shouldApplyColor,color);
 	}
 }
+
 
 void OptionsSubMenu::setSpaceBetweenPushButtons(int space)
 {
@@ -159,4 +171,10 @@ void OptionsSubMenu::setArrowsBlockAndDisplayedString(int number, bool arrowsBlo
 	{
 		options_buttons[number].setArrowsBlockAndDisplayedString(arrowsBlocked, displayed);
 	}
+}
+
+void OptionsSubMenu::setInteriorColorAllPushButtons(const sf::Color & color)
+{
+	for (PushButton& button : push_buttons)
+		button.setInteriorColor(color);
 }

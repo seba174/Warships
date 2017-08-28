@@ -127,7 +127,6 @@
     <ClCompile Include="DestroyedShips.cpp" />
     <ClCompile Include="DestroyedShipsWithBackground.cpp" />
     <ClCompile Include="DVector2i.cpp" />
-    <ClCompile Include="enumLanguagesCodes.cpp" />
     <ClCompile Include="FontHandler.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GamePlayers.cpp" />

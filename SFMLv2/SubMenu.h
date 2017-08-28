@@ -57,5 +57,9 @@ public:
 
 	// sets isPressed = true for indicated button
 	void highlightButton(int number);
+
+	void coverButtonWithColor(int number, bool shouldApplyColor, const sf::Color& color);
+
+	void setInteriorColorAllButtons(const sf::Color& color);
 };
 

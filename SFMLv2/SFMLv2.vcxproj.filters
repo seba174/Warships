@@ -102,9 +102,6 @@
     <ClCompile Include="Translation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="enumLanguagesCodes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneralOptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

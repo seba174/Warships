@@ -130,5 +130,5 @@ void Ships::updateTexture(const sf::Time& timen)
 void Ships::setDestroyedTexture()
 {
 	TextureHandler &text = TextureHandler::getInstance();
-	shipv2.setTexture(&text.texture_handler["Destroyed"]);
+	shipv2.setTexture(&text.texture_handler["big_body_final_destroyed"]);
 }

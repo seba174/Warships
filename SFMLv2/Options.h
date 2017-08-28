@@ -48,6 +48,7 @@ class Options
 	bool VerticalSyncEnabled;
 	sf::Vector2i Resolution;
 	bool FullScreen;
+	bool antialiasing;
 	int ResolutionScale;
 	sf::Vector2i desktopResolution;
 
@@ -62,6 +63,7 @@ class Options
 	static const bool defaultVerticalSyncEnabled;
 	static const bool defaultFullScreen;
 	static const int defaultResolutionScale;
+	static const bool defaultAntialiasing;
 
 public:
 	// Default strings with options
@@ -72,6 +74,7 @@ public:
 	static const std::string s_resolution;
 	static const std::string s_resolutionscale;
 	static const std::string s_fullscreen;
+	static const std::string s_antialiasing;
 	static const std::string s_x;
 
 	// Note that config file can be modified!
@@ -92,12 +95,19 @@ public:
 	// NOTE that only s_yes and s_no strings are accepted!
 	void setFullScreen(const std::string& isEnabled);
 
+	// Function sets Antialiasing option
+	// NOTE that only s_yes and s_no strings are accepted!
+	void setAntialiasingEnabled(const std::string& isEnabled);
+
 	// Function sets ResolutionScale option
 	// New ResolutionScale must be valid (inside the AvaliableResolutionScale interval)
 	void setResolutionScale(const std::string& resScale);
 
 	// Checks if VerticalSync option is enabled
 	bool isVerticalSyncEnabled() const { return VerticalSyncEnabled; }
+
+	// Checks if Antialiasing option is enabled
+	bool isAntialiasingEnabled() const { return antialiasing; }
 
 	// Function returns the current Resolution
 	sf::Vector2i getResolution() const { return Resolution; }
@@ -115,6 +125,10 @@ public:
 	// Returns s_yes if FullScreen is enabled
 	// or s_no if FullScreen is disabled
 	std::string isFullScreenEnabled_string() const;
+
+	// Returns s_yes if Antialiasing is enabled
+	// or s_no if Antialiasing is disabled
+	std::string isAntialiasingEnabled_string() const;
 
 	// Chcecks if the Resolution option was changed
 	// NOTE that function sets hasResolutionChanged option false 

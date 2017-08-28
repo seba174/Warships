@@ -52,9 +52,10 @@ int main()
 	FontHandler& fonthandler = FontHandler::getInstance();
 	TextureHandler& textures = TextureHandler::getInstance();
 
-	sf::RectangleShape bImage, bImage2;
+	sf::RectangleShape bImage, bImage2, bImage3;
 	bImage.setTexture(&textures.texture_handler["nowefalev5"]);
 	bImage2.setTexture(&textures.texture_handler["nowefalev5"]);
+	bImage3.setTexture(&textures.texture_handler["menuTexture"]);
 
 	std::vector<Board*> vect_ship_to_draw;
 
@@ -312,6 +313,8 @@ int main()
 			bool wasResolutionChanged = graphicsOpt.wasResolutionChanged();
 			bool wasFullScreenChanged = graphicsOpt.wasFullScreenChanged();
 
+			TextureHandler::setSmooth(graphicsOpt.isAntialiasingEnabled());
+
 			if ((wasFullScreenChanged && graphicsOpt.isFullScreenEnabled()) || (graphicsOpt.isFullScreenEnabled() && first))
 			{
 				sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -320,6 +323,8 @@ int main()
 				screenDimensions = sf::Vector2i(desktop.width / 2 - line_thickness / 2, desktop.height - bar);
 				StandardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);
 				Window.create(desktop, L"Warships", sf::Style::Fullscreen);
+				//test
+				bImage3.setSize(sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y));
 				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
 			}
 			else if ((wasResolutionChanged || first || wasFullScreenChanged) && !graphicsOpt.isFullScreenEnabled())
@@ -328,6 +333,8 @@ int main()
 				screenDimensions = sf::Vector2i(graphicsOpt.getResolution().x / 2 - line_thickness / 2, graphicsOpt.getResolution().y - bar);
 				StandardWindowDimensions = sf::Vector2i(graphicsOpt.getResolution());
 				Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), L"Warships", sf::Style::Close);
+				//test
+				bImage3.setSize(sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y));
 				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
 			}
 
@@ -343,7 +350,7 @@ int main()
 			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || first)
 			{
 				MainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20 * interfaceScale),
-					sf::Vector2f(StandardWindowDimensions.x / 2, 290 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
+					sf::Vector2f(StandardWindowDimensions.x / 2, 280 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
 				Additionalmenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
 					sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
 					sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info, interfaceScale, *languageManager);
@@ -477,6 +484,7 @@ int main()
 
 		case MENU:
 		{
+			Window.draw(bImage3);
 			if (MainMenu)
 				Window.draw(*MainMenu);
 		}

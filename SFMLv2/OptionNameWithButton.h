@@ -10,6 +10,8 @@ class OptionNameWithButton :
 	// position set in last call of setPosition function
 	sf::Vector2f size;
 
+	sf::RectangleShape boundRectangle;
+
 	OptionButton button;
 
 		// FUNCTIONS
@@ -20,6 +22,8 @@ class OptionNameWithButton :
 
 	void setButtonPosition(float x, float y);
 
+	void setBoundRectanglePosition();
+
 public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!
 	OptionNameWithButton(const std::wstring& optionName, const sf::Font& nameFont, int nameCharacterSize, const sf::Vector2f& size,
@@ -27,6 +31,10 @@ public:
 		const sf::Color& bounds_color = sf::Color::Transparent);
 
 	std::string getDisplayedOption() const { return button.getDisplayedOption(); }
+
+	sf::Vector2f getBoundRectanglePosition() const { return boundRectangle.getPosition(); }
+
+	sf::Vector2f getBoundRectangleSize() const { return boundRectangle.getSize(); }
 
 	// sets position of a CENTER of the object
 	void setPosition(float x, float y);

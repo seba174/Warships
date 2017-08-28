@@ -30,9 +30,10 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 	hashMap.insert(std::make_pair("Load defaults", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Ustawienia domyślne"), Translation(enumLanguagesCodes::EN,L"Load defaults") }))));
 	hashMap.insert(std::make_pair("Resolution", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Rozdzielczość"), Translation(enumLanguagesCodes::EN,L"Resolution") }))));
 	
-	hashMap.insert(std::make_pair("Vertical Sync", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Synchronizacja Pionowa"), Translation(enumLanguagesCodes::EN,L"Vertical Sync") }))));
-	hashMap.insert(std::make_pair("Full Screen", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Tryb Pełnoekranowy"), Translation(enumLanguagesCodes::EN,L"Full Screen") }))));
-	hashMap.insert(std::make_pair("Resolution Scale", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Skala"), Translation(enumLanguagesCodes::EN,L"Resolution Scale") }))));
+	hashMap.insert(std::make_pair("Vertical Sync", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Synchronizacja pionowa"), Translation(enumLanguagesCodes::EN,L"Vertical sync") }))));
+	hashMap.insert(std::make_pair("Full Screen", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Tryb pełnoekranowy"), Translation(enumLanguagesCodes::EN,L"Full screen") }))));
+	hashMap.insert(std::make_pair("Resolution Scale", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Skalowanie rozdzielczości"), Translation(enumLanguagesCodes::EN,L"Resolution scale") }))));
+	hashMap.insert(std::make_pair("Antialiasing", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wygładzanie krawędzi"), Translation(enumLanguagesCodes::EN,L"Antialiasing") }))));
 	hashMap.insert(std::make_pair("Yes", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Tak"), Translation(enumLanguagesCodes::EN,L"Yes") }))));
 	hashMap.insert(std::make_pair("No", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Nie"), Translation(enumLanguagesCodes::EN,L"No") }))));
 
