@@ -63,11 +63,26 @@ TextureHandler & TextureHandler::getInstance()
 
 		//testing
 
-		if (!tmp.loadFromFile("Textures/warshipsMenu.png")) std::cout << error_message << std::endl;
-		else instance.texture_handler.insert(make_pair("menuTexture", tmp));
+		if (!tmp.loadFromFile("Textures/warshipsMenuSG2.jpg")) std::cout << error_message << std::endl;
+		else instance.texture_handler.insert(make_pair("menuTexture0", tmp));
+
+		if (!tmp.loadFromFile("Textures/warshipsMenuSG3.jpg")) std::cout << error_message << std::endl;
+		else instance.texture_handler.insert(make_pair("menuTexture1", tmp));
+
+		if (!tmp.loadFromFile("Textures/warshipsMenuSG1.jpg")) std::cout << error_message << std::endl;
+		else instance.texture_handler.insert(make_pair("menuTexture2", tmp));
 
 		if (!tmp.loadFromFile("Textures/Untitled.png")) std::cout << error_message << std::endl;
 		else instance.texture_handler.insert(make_pair("test", tmp));
+
+		if (!tmp.loadFromFile("Textures/logoSG.png")) std::cout << error_message << std::endl;
+		else instance.texture_handler.insert(make_pair("logo", tmp));
+
+		if (!tmp.loadFromFile("Textures/star.png")) std::cout << error_message << std::endl;
+		else instance.texture_handler.insert(make_pair("star", tmp));
+
+		if (!tmp.loadFromFile("Textures/trophyGold.png")) std::cout << error_message << std::endl;
+		else instance.texture_handler.insert(make_pair("cup", tmp));
 
 		
 		initialize = false;

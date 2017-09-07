@@ -17,6 +17,7 @@ class OptionsSubMenu :
 
 	sf::Vector2f position;
 	int spaceBetweenButtons;
+	int additionalPushButtonOffset;
 
 	bool isConstructed;
 	LanguageManager& langMan;
@@ -83,5 +84,7 @@ public:
 	void setArrowsBlockAndDisplayedString(int number, bool arrowsBlocked, const std::string& displayed);
 
 	void setInteriorColorAllPushButtons(const sf::Color& color);
+
+	void addVerticalOffsetForPushButtons(int offset) { additionalPushButtonOffset = offset; updatePushButtons(); }
 };
 

@@ -26,6 +26,7 @@ protected:
 	sf::Vector2f SquareSize;
 	sf::Vector2f Enemy_SetPoints;
 	sf::Vector2f Player_setPoints;
+	unsigned int totalShots, totalHits;
 
 	Board** set_ships; //tablica do rysowania
 	bool ships_set_up;
@@ -80,7 +81,8 @@ public:
 
 	sf::Vector2i getRectPositionInGame() const 
 	{
-		return sf::Vector2i(static_cast<int>(round((rect.getPosition().x - Enemy_SetPoints.x) / SquareSize.x)), static_cast<int>(round((rect.getPosition().y - Enemy_SetPoints.y) / SquareSize.y)));
+		return sf::Vector2i(static_cast<int>(round((rect.getPosition().x - Enemy_SetPoints.x) / SquareSize.x)),
+			static_cast<int>(round((rect.getPosition().y - Enemy_SetPoints.y) / SquareSize.y)));
 	}
 
 	void setPlayersCursorPositon(const sf::Vector2i& newPos) { cursorPosition = newPos; }
@@ -96,6 +98,15 @@ public:
 	void setPlayerName(const std::wstring& newName) { name = newName; }
 
 	std::wstring getPlayerName() const { return name; }
+
+	unsigned int returnTotalShotsNumber()const { return totalShots; }
+
+	unsigned int returnTotalHitsNumber() const { return totalHits; }
+
+	float returnAccuracy() const { if (totalShots != 0)return (static_cast<float>(totalHits) / static_cast<float>(totalShots)) * 100; else return 0; }
+
+	// usunac
+	void aaa() { totalHits = 50; totalShots = 70; }
 
 	 ~Player();
 };

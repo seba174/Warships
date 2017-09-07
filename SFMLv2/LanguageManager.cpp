@@ -47,9 +47,12 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 
 	hashMap.insert(std::make_pair("you still have to destroy following ships", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"musisz jeszcze zniszczyć poniższe statki"), Translation(enumLanguagesCodes::EN,L"you still have to destroy following ships") }))));
 	hashMap.insert(std::make_pair("Please set up your ships", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"ustaw swoje statki"), Translation(enumLanguagesCodes::EN,L"please set up your ships") }))));
-	hashMap.insert(std::make_pair("Language", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Język"), Translation(enumLanguagesCodes::EN,L"Language") }))));
-	hashMap.insert(std::make_pair("Language", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Język"), Translation(enumLanguagesCodes::EN,L"Language") }))));
-
+	hashMap.insert(std::make_pair("Menu desing", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wygląd menu"), Translation(enumLanguagesCodes::EN,L"Menu desing") }))));
+	hashMap.insert(std::make_pair("Game time", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Czas gry"), Translation(enumLanguagesCodes::EN,L"Game time") }))));
+	hashMap.insert(std::make_pair("Rating of players", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Ocena graczy"), Translation(enumLanguagesCodes::EN,L"Rating of players") }))));
+	hashMap.insert(std::make_pair("Statistics", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Statystyki"), Translation(enumLanguagesCodes::EN,L"Statistics") }))));
+	
+	
 
 
 }

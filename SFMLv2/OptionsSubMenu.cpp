@@ -13,7 +13,7 @@ void OptionsSubMenu::draw(sf::RenderTarget & target, sf::RenderStates states) co
 
 void OptionsSubMenu::updatePushButtons()
 {
-	int y = position.y + options_buttons.size()*spaceBetweenButtons;
+	int y = position.y + additionalPushButtonOffset + options_buttons.size()*spaceBetweenButtons;
 	int tmp = push_buttons.size();
 	for (PushButton& but : push_buttons)
 	{
@@ -30,7 +30,7 @@ void OptionsSubMenu::updateBoundRectangle()
 }
 
 OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int spaceBetweenButtons, LanguageManager& langMan)
-	:langMan(langMan)
+	:langMan(langMan), additionalPushButtonOffset(0)
 {
 	spaceBetweenVertically = 0;
 	this->position = position_of_first;
@@ -42,7 +42,7 @@ OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int space
 }
 
 OptionsSubMenu::OptionsSubMenu(LanguageManager& langMan)
-	:langMan(langMan)
+	:langMan(langMan), additionalPushButtonOffset(0)
 {
 	spaceBetweenVertically = 0;
 	additionalSpaceBetweenOptionsAndPushButtons = 0;

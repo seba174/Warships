@@ -94,6 +94,15 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 	} break;
 
+	case finish:
+	{
+		target.draw(finishMenu, states);
+	} break;
+
+	case statistics:
+	{
+
+	} break;
 	}
 }
 
@@ -227,9 +236,27 @@ void GamePlayers::updateBackgroundInformation()
 	}
 }
 
-void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input)
+void GamePlayers::updatePlayersFinishInformations()
+{
+	finishMenu.addPlayer(playersInformations(player1.getPlayerName(), player1Won, player1.returnAccuracy()));
+	finishMenu.addPlayer(playersInformations(player2.getPlayerName(), player2Won, player2.returnAccuracy()));
+}
+
+void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, Gamestates& gamestate)
 {
 	lastFrameTime = dt;
+	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
+	player2Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
+
+	// !!!!!!!!!
+	if (currentState == player1_setships)
+	{
+		player1Won = true;
+		//usunac funkcje
+		player1.aaa();
+		updatePlayersFinishInformations();
+		currentState = finish;
+	}
 
 	switch (currentState)
 	{
@@ -306,6 +333,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 
 	case player1_moves:
 	{
+		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
 		if (utilityTime <= TurnInfoTime)
 		{
@@ -336,12 +364,16 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 		updateBackgroundInformation();
 		if (checkForFinish())
 		{
-
+			std::cout << "koniec" << std::endl;
+			player1Won = true;
+			updatePlayersFinishInformations();
+			currentState = finish;
 		}
 	} break;
 
 	case player2_moves:
 	{
+		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
 		if (utilityTime <= TurnInfoTime)
 		{
@@ -371,10 +403,42 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 		updateBackgroundInformation();
 		if (checkForFinish())
 		{
-
+			std::cout << "koniec" << std::endl;
+			player2Won = true;
+			updatePlayersFinishInformations();
+			currentState = finish;
 		}
 	} break;
 
+	case finish:
+	{
+		if (input.isMouseLeftButtonPressed())
+		{
+			if (finishMenu.menuButtons.PushButtonContains(0, mousepos))
+			{
+				currentState = gamePlayersState::statistics;
+			} // Statistics button
+
+			if (finishMenu.menuButtons.PushButtonContains(1, mousepos))
+			{
+				gamestate = Gamestates::BREAK_AND_GO_TO_MENU;
+			} // Return to Main Menu
+
+			if (finishMenu.menuButtons.PushButtonContains(2, mousepos))
+			{
+				gamestate = Gamestates::EXIT;
+			} // Quit the game
+		}
+
+		finishMenu.updateStars(dt);
+		finishMenu.updateButtons(dt, mousepos);
+
+	} break;
+
+	case statistics:
+	{
+
+	} break;
 	}
 }
 
@@ -382,19 +446,21 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSize, const sf::Vector2f & player1_setpoints, const sf::Vector2f & player2_setpoints,
 	const sf::RectangleShape & pudlo, const sf::RectangleShape & trafienie, sf::RectangleShape ** player1Square_tab_2, sf::RectangleShape ** player2Square_tab_2, int bar,
 	sf::RectangleShape & player1Rect, sf::RectangleShape & player2Rect, const Mouse_S& pl1Mouse, const Mouse_S& pl2Mouse,
-	const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize, const sf::Vector2f& backgroundForSubMenuPosition, 
-	float interfaceScale, LanguageManager& langMan)
+	const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize, const sf::Vector2f& backgroundForSubMenuPosition,
+	float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim)
 
 	: player1(dim, SquareSize, player2_setpoints, nullptr, player1_setpoints, pudlo, trafienie, player1Square_tab_2, bar, player1Rect),
 	player2(dim, SquareSize, player1_setpoints, nullptr, player2_setpoints, pudlo, trafienie, player2Square_tab_2, bar, player2Rect),
 	mouse_player1(pl1Mouse),
 	mouse_player2(pl2Mouse),
-	player1Background(dim, SquareSize, player1_setpoints, interfaceScale),
-	player2Background(dim, SquareSize, player2_setpoints, interfaceScale),
+	player1Background(dim, SquareSize, player1_setpoints, interfaceScale, langMan),
+	player2Background(dim, SquareSize, player2_setpoints, interfaceScale, langMan),
 	shoudlDrawMenuPlayer1SetShipsInfo(true), shoudlDrawMenuPlayer2SetShipsInfo(true),
 	shoudlDrawMenuPlayer1TurnStarts(true), shoudlDrawMenuPlayer2TurnStarts(true),
+	player1Won(false), player2Won(false),
 	advertPlayer1(dim,player2_setpoints, interfaceScale),
-	advertPlayer2(dim, player1_setpoints, interfaceScale)
+	advertPlayer2(dim, player1_setpoints, interfaceScale),
+	finishMenu(screenDim,langMan,interfaceScale)
 {
 	player1.setPlayerName(L"Player1");
 	player2.setPlayerName(L"Player2");
@@ -438,6 +504,9 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	// Bounds color
 	sf::Color bounds_color = sf::Color::White;
 
+	sf::Vector2f logoSize(sf::Vector2f(120, 120)*interfaceScale);
+
+
 	FontHandler& handler = FontHandler::getInstance();
 
 
@@ -458,6 +527,14 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	menuPlayer2SetShipsInfo.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_1),
 		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, L"", title_size_1, submenu_size,
 		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
+
+	advertPlayer1.setLogoSize(logoSize);
+	advertPlayer1.setLogoPosition(sf::Vector2f(player2_setpoints.x+dim.x/2, player2_setpoints.y+dim.y-logoSize.y));
+
+	player1Background.setTimeFontSize(title_size_1);
+	player2Background.setTimeFontSize(title_size_1);
+
+	finishMenu.setTitle(L"Player1 has won!");
 }
 
 

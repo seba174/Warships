@@ -8,7 +8,7 @@ Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf
 	const sf::Vector2f& player_setpoints, const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape ** square_tab_2,
 	int bar, sf::RectangleShape& rect)
 	: BoardDimensions(dim), SquareSize(SquareSize), Enemy_SetPoints(enemy_setpoints), Player_setPoints(player_setpoints), enemy_ships(enemy_ships),
-	pudlo(pudlo), trafienie(trafienie), square_tab_2(square_tab_2), bar(bar), rect(rect)
+	pudlo(pudlo), trafienie(trafienie), square_tab_2(square_tab_2), bar(bar), rect(rect), totalHits(0),totalShots(0)
 {
 	rect.setPosition(Enemy_SetPoints);
 	number = BoardDimensions.x / SquareSize.x;
@@ -60,6 +60,7 @@ bool Player::Player_moves(const sf::Vector2i & position)
 		square_tab_2[position.x][position.y].setPosition(sf::Vector2f(Enemy_SetPoints.x + SquareSize.x*position.x, Enemy_SetPoints.y + SquareSize.y*position.y));
 		enemy_ships[position.x][position.y] = -2;
 		plmoved = false;
+		++totalShots;
 		return true;
 	}
 	else if (enemy_ships[position.x][position.y])
@@ -76,6 +77,8 @@ bool Player::Player_moves(const sf::Vector2i & position)
 		enemy_ships[position.x][position.y] = -2;
 		square_tab_2[position.x][position.y] = trafienie;
 		square_tab_2[position.x][position.y].setPosition(sf::Vector2f(Enemy_SetPoints.x + SquareSize.x*position.x, Enemy_SetPoints.y + SquareSize.y*position.y));
+		++totalHits;
+		++totalShots;
 	}
 	plmoved = false;
 	return false;

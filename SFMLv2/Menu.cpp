@@ -44,7 +44,8 @@ bool Menu::hasVisibleOptionChanged(const Options & options)
 bool Menu::hasVisibleGeneralOptionChanged(const GeneralOptions & options)
 {
 	// Numbers of buttons represents current menu and have to be changed when the order of button changes
-	return  (options.getLanguage_string() != SubGeneral.getDisplayedOption(0));
+	return  (options.getLanguage_string() != SubGeneral.getDisplayedOption(0)
+		|| options.getMenuTextureNumber_string() != SubGeneral.getDisplayedOption(1));
 }
 
 Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_position, const sf::Vector2f & title_or1st_button_position,
@@ -58,7 +59,7 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	const int submenuCharacterSize = 60 * interfaceScale;
 
 	// Standard Menu Button size
-	sf::Vector2f button_size(570 * interfaceScale, 110 * interfaceScale);
+	sf::Vector2f button_size(580 * interfaceScale, 110 * interfaceScale);
 
 	// Bounds color
 	sf::Color bounds_color = sf::Color::White;
@@ -81,7 +82,7 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	// Size of character in Options in PushButton
 	const int options_push_button_char = 28 * interfaceScale;
 
-	const int space_between_push_buttons = 23 * interfaceScale;
+	const int space_between_push_buttons = 25 * interfaceScale;
 
 	FontHandler& handler = FontHandler::getInstance();
 
@@ -161,12 +162,16 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGeneral.addOptionNameWithButton(langMan.getText("Language"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, "English,Polski", handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
+	SubGeneral.addOptionNameWithButton(langMan.getText("Menu desing"), handler.font_handler["Mecha"], options_name_with_button_char,
+		opt_name_with_button, "0,1,2", handler.font_handler["Mecha"],
+		options_name_with_button_char, options_butt_size);
 
 	SubGeneral.addPushButton(langMan.getText("Back"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGeneral.addPushButton(langMan.getText("Apply changes"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGeneral.addPushButton(langMan.getText("Load defaults"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 
 	SubGeneral.setDisplayedOption(0, genOpt.getLanguage_string());
+	SubGeneral.setDisplayedOption(1, genOpt.getMenuTextureNumber_string());
 	SubGeneral.setSpaceBetweenPushButtons(space_between_push_buttons);
 	SubGeneral.setInteriorColorAllPushButtons(buttonColor);
 }
@@ -181,11 +186,13 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 		SubGraphics.setDisplayedOption(1, opt.isVerticalSyncEnabled_string());
 		SubGraphics.setDisplayedOption(2, opt.isFullScreenEnabled_string());
 		SubGraphics.setDisplayedOption(3, opt.getResolutionScale_string());
+		SubGraphics.setDisplayedOption(4, opt.isAntialiasingEnabled_string());
 	}
 
 	if (menustate != OPT_GENERAL)
 	{
 		SubGeneral.setDisplayedOption(0, generalOpt.getLanguage_string());
+		SubGeneral.setDisplayedOption(1, generalOpt.getMenuTextureNumber_string());
 	}
 
 	switch (menustate)
@@ -268,6 +275,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			if (SubGeneral.PushButtonContains(1, mousepos))
 			{
 				generalOpt.setLanguage(SubGeneral.getDisplayedOption(0));
+				generalOpt.setMenuTexture(SubGeneral.getDisplayedOption(1));
 
 				if (generalOpt.hasAnyOptionChanged())
 				{
