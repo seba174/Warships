@@ -14,7 +14,7 @@ void DestroyedShipsWithBackground::draw(sf::RenderTarget & target, sf::RenderSta
 void DestroyedShipsWithBackground::setTimePosition()
 {
 	time.setOrigin(time.getGlobalBounds().width / 2, time.getGlobalBounds().height / 2);
-	time.setPosition(sf::Vector2f(timePos.x, timePos.y - 1.5*time.getGlobalBounds().height));
+	time.setPosition(sf::Vector2f(timePos.x, timePos.y - 1.5f*time.getGlobalBounds().height));
 }
 
 DestroyedShipsWithBackground::DestroyedShipsWithBackground(const sf::Vector2i & boardDimensions, const sf::Vector2f & squareSize, const sf::Vector2f & setPoint, float interfaceScale,

@@ -1,8 +1,10 @@
 ﻿#include "Menu.h"
 #include <iostream>
 #include "LanguageManager.h"
-#include "Options.h"
+#include "GraphicsOptions.h"
 #include "GeneralOptions.h"
+#include "Input.h"
+#include "Player.h"
 
 
 void Menu::draw(sf::RenderTarget & target, sf::RenderStates states) const 
@@ -29,11 +31,11 @@ void Menu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	}
 }
 
-bool Menu::hasVisibleOptionChanged(const Options & options)
+bool Menu::hasVisibleOptionChanged(const GraphicsOptions & options)
 {
 	// Numbers of buttons represents current menu and have to be changed when the order of button changes
 	return
-		(((std::to_string(options.getResolution().x) + Options::s_x + std::to_string(options.getResolution().y)) != SubGraphics.getDisplayedOption(0)
+		(((std::to_string(options.getResolution().x) + GraphicsOptions::s_x + std::to_string(options.getResolution().y)) != SubGraphics.getDisplayedOption(0)
 			&& ((options.getResolution() != options.getDesktopResolution() && !options.isFullScreenEnabled()) || !options.isFullScreenEnabled()))
 			|| options.isVerticalSyncEnabled_string() != SubGraphics.getDisplayedOption(1)
 			|| options.isFullScreenEnabled_string() != SubGraphics.getDisplayedOption(2)
@@ -49,17 +51,17 @@ bool Menu::hasVisibleGeneralOptionChanged(const GeneralOptions & options)
 }
 
 Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_position, const sf::Vector2f & title_or1st_button_position,
-	int space_between_buttons, float interfaceScale, const Options& opt, LanguageManager& langMan, const GeneralOptions& genOpt)
+	int space_between_buttons, float interfaceScale, const GraphicsOptions& opt, LanguageManager& langMan, const GeneralOptions& genOpt)
 	:SubGeneral(langMan), SubGraphics(langMan), SubAudio(langMan)
 {
 	// MainTitle character size
-	const int titleCharacterSize = 100 * interfaceScale;
+	const int titleCharacterSize = static_cast<int>(100 * interfaceScale);
 
 	// SubMenu titles and character size
-	const int submenuCharacterSize = 60 * interfaceScale;
+	const int submenuCharacterSize = static_cast<int>(60 * interfaceScale);
 
 	// Standard Menu Button size
-	sf::Vector2f button_size(580 * interfaceScale, 110 * interfaceScale);
+	sf::Vector2f button_size(580 * interfaceScale, 115 * interfaceScale);
 
 	// Bounds color
 	sf::Color bounds_color = sf::Color::White;
@@ -77,12 +79,12 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	sf::Vector2f push_in_opt_size(320 * interfaceScale, 55 * interfaceScale);
 
 	// Size of character in Options in Option button
-	const int options_name_with_button_char = 35 * interfaceScale;
+	const int options_name_with_button_char = static_cast<int>(35 * interfaceScale);
 
 	// Size of character in Options in PushButton
-	const int options_push_button_char = 28 * interfaceScale;
+	const int options_push_button_char = static_cast<int>(28 * interfaceScale);
 
-	const int space_between_push_buttons = 25 * interfaceScale;
+	const int space_between_push_buttons = static_cast<int>(25 * interfaceScale);
 
 	FontHandler& handler = FontHandler::getInstance();
 
@@ -129,16 +131,16 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 		opt_name_with_button, AvaliableResolutions::getResolutionString(), handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
 	SubGraphics.addOptionNameWithButton(langMan.getText("Vertical Sync"), handler.font_handler["Mecha"], options_name_with_button_char,
-		opt_name_with_button, Options::s_yes + ',' + Options::s_no, handler.font_handler["Mecha"],
+		opt_name_with_button, GraphicsOptions::s_yes + ',' + GraphicsOptions::s_no, handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
 	SubGraphics.addOptionNameWithButton(langMan.getText("Full Screen"), handler.font_handler["Mecha"], options_name_with_button_char,
-		opt_name_with_button, Options::s_yes + ',' + Options::s_no, handler.font_handler["Mecha"],
+		opt_name_with_button, GraphicsOptions::s_yes + ',' + GraphicsOptions::s_no, handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
 	SubGraphics.addOptionNameWithButton(langMan.getText("Resolution Scale"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, AvaliableResolutionScales::getScaleString(), handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
 	SubGraphics.addOptionNameWithButton(langMan.getText("Antialiasing"), handler.font_handler["Mecha"], options_name_with_button_char,
-		opt_name_with_button, Options::s_yes + ',' + Options::s_no, handler.font_handler["Mecha"],
+		opt_name_with_button, GraphicsOptions::s_yes + ',' + GraphicsOptions::s_no, handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
 
 	SubGraphics.addPushButton(langMan.getText("Back"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
@@ -147,7 +149,7 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGraphics.setSpaceBetweenPushButtons(space_between_push_buttons);
 
 	if (!opt.isFullScreenEnabled())
-		SubGraphics.setDisplayedOption(0, std::to_string(opt.getResolution().x) + Options::s_x + std::to_string(opt.getResolution().y));
+		SubGraphics.setDisplayedOption(0, std::to_string(opt.getResolution().x) + GraphicsOptions::s_x + std::to_string(opt.getResolution().y));
 	else
 		SubGraphics.setArrowsBlockAndDisplayedString(0, true, opt.getDesktopResolution_string());
 
@@ -161,10 +163,30 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGeneral.Construct(title_or1st_button_position, space_between_buttons, langMan);
 	SubGeneral.addOptionNameWithButton(langMan.getText("Language"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, "English,Polski", handler.font_handler["Mecha"],
-		options_name_with_button_char, options_butt_size);
+		options_name_with_button_char, options_butt_size, bounds_color);
 	SubGeneral.addOptionNameWithButton(langMan.getText("Menu desing"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, "0,1,2", handler.font_handler["Mecha"],
-		options_name_with_button_char, options_butt_size);
+		options_name_with_button_char, options_butt_size, bounds_color);
+	
+
+	
+	SubGeneral.addOptionNameWithButton(langMan.getText("First player name"), handler.font_handler["Mecha"], options_name_with_button_char,
+		opt_name_with_button, "Player1", handler.font_handler["Mecha"],
+		options_name_with_button_char, options_butt_size, bounds_color);
+	SubGeneral.shouldOptionButtonDisplayOnlyText(2, true);
+	SubGeneral.disableAnimation(2, true);
+	SubGeneral.setArrowsBlockAndDisplayedString(2, true, genOpt.getPlayer1Name());
+	SubGeneral.setDictionaryDisabledBool(2, true);
+	SubGeneral.addOptionNameWithButton(langMan.getText("Second player name"), handler.font_handler["Mecha"], options_name_with_button_char,
+		opt_name_with_button, "Player1", handler.font_handler["Mecha"],
+		options_name_with_button_char, options_butt_size, bounds_color);
+	SubGeneral.shouldOptionButtonDisplayOnlyText(3, true);
+	SubGeneral.disableAnimation(3, true);
+	SubGeneral.setArrowsBlockAndDisplayedString(3, true, genOpt.getPlayer2Name());
+	SubGeneral.setDictionaryDisabledBool(3, true);
+
+
+
 
 	SubGeneral.addPushButton(langMan.getText("Back"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGeneral.addPushButton(langMan.getText("Apply changes"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
@@ -176,9 +198,11 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGeneral.setInteriorColorAllPushButtons(buttonColor);
 }
 
-void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty& level, bool leftButtonPressed, Options& opt, GeneralOptions& generalOpt)
+void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty& level, const Input& input, GraphicsOptions& opt, GeneralOptions& generalOpt)
 {
 	sf::Color unclickableButtonColor(180, 180, 180, 140);
+
+	int lineThickness = 2;
 
 	if (menustate != OPT_GRAPHICS)
 	{
@@ -200,7 +224,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 	case DEFAULT: {
 		//Home.highlightButtonContaining(mousepos);
 
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (SubHome.contains(0, mousepos)) // Play button
 				menustate = Menustates::CHOOSE_GAMETYPE;
@@ -215,7 +239,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 	case OPTIONS: {
 		previousMenustate = Menustates::DEFAULT;
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (SubHome.contains(0, mousepos)) // General button
 				menustate = OPT_GENERAL;
@@ -230,13 +254,13 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 	case OPT_GRAPHICS: {
 		previousMenustate = Menustates::OPTIONS;
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			SubGraphics.clickArrowContaining(mousepos);
 			if (SubGraphics.PushButtonContains(0, mousepos))
 				menustate = previousMenustate; // Back button
-			
-			
+
+
 			if (SubGraphics.PushButtonContains(1, mousepos))
 			{
 				// 0- Resolution, 1- VerticalSync, 2-Fullscreen, 3-ResolutionScale
@@ -266,7 +290,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 	case OPT_GENERAL: {
 		previousMenustate = Menustates::OPTIONS;
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			SubGeneral.clickArrowContaining(mousepos);
 			if (SubGeneral.PushButtonContains(0, mousepos))
@@ -288,17 +312,66 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 				generalOpt.loadDefaults();
 				newGamestate = RELOAD_GENERAL;
 			} // Reset Defaults
+
+			if (SubGeneral.OptionNameWithButtonContains(2, mousepos))
+				SubGeneral.setOutlineThickness(2, static_cast<float>(lineThickness));
+			else
+			{
+				SubGeneral.setOutlineThickness(2, 0);
+			}
+
+			if (SubGeneral.OptionNameWithButtonContains(3, mousepos))
+				SubGeneral.setOutlineThickness(3, static_cast<float>(lineThickness));
+			else
+			{
+				SubGeneral.setOutlineThickness(3, 0);
+			}
+		}
+
+		if (SubGeneral.getOutlineThickness(2) != 0)
+		{
+			std::string temp = SubGeneral.getDisplayedOption(2);
+			if (input.isKeyboardBackspaceKeyPressed() && temp.size() != 0)
+				temp.pop_back();
+
+			if (input.returnInputText() != NULL && temp.size() <= Player::maximumPlayerNameSize)
+			{
+				SubGeneral.setArrowsBlockAndDisplayedString(2, true, temp + input.returnInputText());
+				generalOpt.setPlayer1Name(temp + input.returnInputText());
+			}
+			else
+			{
+				SubGeneral.setArrowsBlockAndDisplayedString(2, true, temp);
+				generalOpt.setPlayer1Name(temp);
+			}
+		}
+		if (SubGeneral.getOutlineThickness(3) != 0)
+		{
+			std::string temp = SubGeneral.getDisplayedOption(3);
+			if (input.isKeyboardBackspaceKeyPressed() && temp.size() != 0)
+				temp.pop_back();
+
+			if (input.returnInputText() != NULL && temp.size() <= Player::maximumPlayerNameSize)
+			{
+				SubGeneral.setArrowsBlockAndDisplayedString(3, true, temp + input.returnInputText());
+				generalOpt.setPlayer2Name(temp + input.returnInputText());
+			}
+			else
+			{
+				SubGeneral.setArrowsBlockAndDisplayedString(3, true, temp);
+				generalOpt.setPlayer2Name(temp);
+			}
 		}
 
 		SubGeneral.coverPushButtonWithColor(1, !hasVisibleGeneralOptionChanged(generalOpt), unclickableButtonColor);
 
 	} break;
-	
+
 	case CHOOSE_GAMETYPE: {
-	//	ChooseGametype.highlightButtonContaining(mousepos);
+		//	ChooseGametype.highlightButtonContaining(mousepos);
 		previousMenustate = Menustates::DEFAULT;
 
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (SubChooseGametype.contains(0, mousepos)) // Solo Game button
 			{
@@ -316,12 +389,12 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 				menustate = previousMenustate;
 		}
 	} break;
-	
+
 	case CHOOSE_MAPSIZE: {
-	//	ChooseMapSize.highlightButtonContaining(mousepos);
+		//	ChooseMapSize.highlightButtonContaining(mousepos);
 		previousMenustate = Menustates::CHOOSE_GAMETYPE;
 
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (SubChooseMapSize.contains(0, mousepos)) // 10 x 10 button
 			{
@@ -376,9 +449,9 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 	} break;
 
 	case CHOOSE_AILEVEL: {
-	//	ChooseAILevel.highlightButtonContaining(mousepos);
+		//	ChooseAILevel.highlightButtonContaining(mousepos);
 
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (SubChooseAILevel.contains(0, mousepos)) // Easy button
 			{

@@ -4,9 +4,6 @@
 #include "TextureHandler.h"
 
 
-
-
-
 void FinishMenu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(background, states);
@@ -27,23 +24,23 @@ FinishMenu::FinishMenu(const sf::Vector2f & dim, LanguageManager & langMan, floa
 
 	sf::Vector2f starsPos(sf::Vector2f(dim.x / 2, 400 * interfaceScale));
 
-	int spaceBetweenButtons(130 * interfaceScale);
+	int spaceBetweenButtons(static_cast<int>(130 * interfaceScale));
 
 	sf::Vector2f menuPosition(dim.x / 2, starsPos.y + 3*spaceBetweenButtons);
 
-	int playerFontSize = 30 * interfaceScale;
+	int playerFontSize = static_cast<int>(30 * interfaceScale);
 	
-	int buttonFontSize = 26 * interfaceScale;
+	int buttonFontSize = static_cast<int>(26 * interfaceScale);
 
-	int titleFontSize = 80 * interfaceScale;
+	int titleFontSize = static_cast<int>(80 * interfaceScale);
 
-	int infoFontSize = 35 * interfaceScale;
+	int infoFontSize = static_cast<int>(35 * interfaceScale);
 
 	sf::Vector2f push_in_opt_size(292 * interfaceScale, 60 * interfaceScale);
 
-	const int space_between_push_buttons = 22 * interfaceScale;
+	const int space_between_push_buttons = static_cast<int>(22 * interfaceScale);
 
-	int additionalTextureOffset = 10 * interfaceScale;
+	int additionalTextureOffset = static_cast<int>(10 * interfaceScale);
 
 	titlePos = sf::Vector2f(dim.x / 2, 100 * interfaceScale);
 
@@ -60,11 +57,11 @@ FinishMenu::FinishMenu(const sf::Vector2f & dim, LanguageManager & langMan, floa
 	info.setCharacterSize(infoFontSize);
 	info.setFont(handler.font_handler["Mecha"]);
 	info.setString(langMan.getText("Rating of players"));
-	info.setPosition(sf::Vector2f(dim.x / 2 - info.getGlobalBounds().width / 2, titlePos.y + 1.5*spaceBetweenButtons - info.getGlobalBounds().height / 2));
+	info.setPosition(sf::Vector2f(dim.x / 2 - info.getGlobalBounds().width / 2, titlePos.y + 1.5f*spaceBetweenButtons - info.getGlobalBounds().height / 2));
 
 	background.setFillColor(sf::Color::Black);
 
-	menuButtons.Construct(menuPosition, interfaceScale, langMan);
+	menuButtons.Construct(menuPosition, static_cast<int>(interfaceScale), langMan);
 	menuButtons.addPushButton(langMan.getText("Statistics"), buttonFontSize, handler.font_handler["Mecha"], push_in_opt_size);
 	menuButtons.addPushButton(langMan.getText("Return to Main Menu"), buttonFontSize, handler.font_handler["Mecha"], push_in_opt_size);
 	menuButtons.addPushButton(langMan.getText("Quit the game"), buttonFontSize, handler.font_handler["Mecha"], push_in_opt_size);
@@ -88,12 +85,15 @@ void FinishMenu::addPlayer(const playersInformations & player)
 
 void FinishMenu::updateStars(const sf::Time & dt)
 {
+	if (stars.size() != players.size())
+		return;
+
 	int i = 0;
 	for (auto it = stars.begin(); it != stars.end(); ++it)
 	{
 		int numberOfStars = 0;
 
-		int accuracy = players[i].returnAccuracy();
+		float accuracy = players[i].returnAccuracy();
 
 		if (accuracy >= 70)
 			numberOfStars = 5;

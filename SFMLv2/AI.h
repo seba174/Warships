@@ -17,9 +17,15 @@ class AI
 protected:
 	sf::Vector2i BoardDimensions;
 	sf::Vector2f SquareSize;
-	sf::Vector2f Player_SetPoints;
+	sf::Vector2f Enemy_SetPoints;
+	sf::Vector2f AI_SetPoints;
+	unsigned int totalShots, totalHits;
+	bool counter_to_set = false;
+	unsigned int maximumHitsTemp, maximumHits, maximumMissesTemp, maximumMisses;
 	
-	int** ships;
+	int** AI_ships;
+	int **enemy_ships;
+	int **modified_enemy_ships;
 
 	int number;
 	std::random_device rd;
@@ -38,7 +44,7 @@ public:
 
 	Info attack(int **ships);
 
-	int** get_AI_ships() { return ships; }
+	int** get_AI_ships() { return AI_ships; }
 
 	virtual ~AI();
 };

@@ -11,7 +11,8 @@ void FinishStarsWithText::draw(sf::RenderTarget & target, sf::RenderStates state
 
 FinishStarsWithText::FinishStarsWithText(const sf::Vector2f & wholeSize, const sf::Vector2f & starSize, const sf::Vector2f & centerPosition, int fontSize)
 	:stars(starSize, sf::Vector2f(centerPosition.x + wholeSize.x / 2 - (static_cast<float>(FinishStars::numberOfStars) / 2)*starSize.x, centerPosition.y)),
-	centerPosition(centerPosition), additionalTextureOffset(0)
+	centerPosition(centerPosition), 
+	additionalTextureOffset(0)
 {
 	text.setCharacterSize(fontSize);
 	text.setFont(FontHandler::getInstance().font_handler["Mecha"]);

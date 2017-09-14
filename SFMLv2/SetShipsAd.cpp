@@ -23,7 +23,7 @@ SetShipsAd::SetShipsAd(const sf::Vector2i & boardDimensions, const sf::Vector2f 
 
 	text.setString(std::string("Warships"));
 	text.setFont(FontHandler::getInstance().font_handler["Mecha"]);
-	text.setCharacterSize(fontSize * interfaceScale);
+	text.setCharacterSize(static_cast<unsigned>(fontSize * interfaceScale));
 	text.setPosition(sf::Vector2f(static_cast<float>(boardDimensions.x / 2 + setPoint.x-text.getGlobalBounds().width/2), static_cast<float>(boardDimensions.y / 2 + setPoint.y-text.getGlobalBounds().height)));
 }
 

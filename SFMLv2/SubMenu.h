@@ -43,7 +43,7 @@ public:
 
 	// checks if button of given number contains mousepos
 	// if button does not exists, returns false
-	bool contains(int number, const sf::Vector2f& mousepos) const;
+	bool contains(unsigned int number, const sf::Vector2f& mousepos) const;
 
 	// updates information about OutlineColor for every button
 	void updateButtons();
@@ -56,9 +56,9 @@ public:
 	void highlightButtonContaining(const sf::Vector2f& mousepos);
 
 	// sets isPressed = true for indicated button
-	void highlightButton(int number);
+	void highlightButton(unsigned int number);
 
-	void coverButtonWithColor(int number, bool shouldApplyColor, const sf::Color& color);
+	void coverButtonWithColor(unsigned int number, bool shouldApplyColor, const sf::Color& color);
 
 	void setInteriorColorAllButtons(const sf::Color& color);
 };

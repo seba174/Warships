@@ -10,7 +10,7 @@ void OptionNameWithButton::draw(sf::RenderTarget & target, sf::RenderStates stat
 
 void OptionNameWithButton::setTextPosition(float x, float y)
 {
-	optionName.setPosition(x - size.x / 2, y - optionName.getGlobalBounds().height / 1.1);
+	optionName.setPosition(x - size.x / 2, y - optionName.getGlobalBounds().height / 1.1f);
 }
 
 void OptionNameWithButton::setButtonPosition(float x, float y)
@@ -21,7 +21,7 @@ void OptionNameWithButton::setButtonPosition(float x, float y)
 void OptionNameWithButton::setBoundRectanglePosition()
 {
 	boundRectangle.setPosition(optionName.getPosition().x + size.x / 2 - boundRectangle.getSize().x / 2,
-		optionName.getPosition().y + optionName.getGlobalBounds().height / 1.2 - boundRectangle.getSize().y / 2);
+		optionName.getPosition().y + optionName.getGlobalBounds().height / 1.2f - boundRectangle.getSize().y / 2);
 }
 
 OptionNameWithButton::OptionNameWithButton(const std::wstring & optionName, const sf::Font & nameFont, int nameCharacterSize, const sf::Vector2f & size,
@@ -29,7 +29,7 @@ OptionNameWithButton::OptionNameWithButton(const std::wstring & optionName, cons
 	: button(options_list, buttonFont, buttonCharacterSize, langMan,button_size, bounds_color), size(size)
 {
 
-	sf::Vector2f boundRectangleProportions(1.05, 0.9);
+	sf::Vector2f boundRectangleProportions(1.05f, 0.9f);
 
 
 	this->optionName.setFont(nameFont);

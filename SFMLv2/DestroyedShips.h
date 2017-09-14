@@ -32,7 +32,7 @@ public:
 	void setPosition(int y);
 
 	// marks ship of given number destroyed
-	void markDestroyed(int number);
+	void markDestroyed(unsigned int number);
 
 	void setDisplayedString(const std::wstring& str) { info.setString(str); setPosition(0); }
 

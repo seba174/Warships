@@ -17,8 +17,8 @@ void GameTime::runGameTimer(const sf::Time & dt)
 
 std::wstring GameTime::returnTimeAsString() const
 {
-	int minutes = floor(timer.asSeconds() / 60);
-	int seconds = floor(timer.asSeconds() - minutes * 60);
+	int minutes = static_cast<int>(floor(timer.asSeconds() / 60));
+	int seconds = static_cast<int>(floor(timer.asSeconds() - minutes * 60));
 	std::wstring minutesString, secondsString;
 
 	if (minutes == 0)

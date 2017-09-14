@@ -13,19 +13,19 @@ void OptionsSubMenu::draw(sf::RenderTarget & target, sf::RenderStates states) co
 
 void OptionsSubMenu::updatePushButtons()
 {
-	int y = position.y + additionalPushButtonOffset + options_buttons.size()*spaceBetweenButtons;
+	int y = static_cast<int>(position.y + additionalPushButtonOffset + options_buttons.size()*spaceBetweenButtons);
 	int tmp = push_buttons.size();
 	for (PushButton& but : push_buttons)
 	{
-		but.setPosition(position.x - ((0.5*but.getSize().x) + (0.5*spaceBetweenVertically))*(tmp - 1), y + additionalSpaceBetweenOptionsAndPushButtons);
+		but.setPosition(position.x - ((0.5f*but.getSize().x) + (0.5f*spaceBetweenVertically))*(tmp - 1), static_cast<float>(y + additionalSpaceBetweenOptionsAndPushButtons));
 		tmp -= 2;
 	}
 }
 
 void OptionsSubMenu::updateBoundRectangle()
 {
-	boundRectangle.setSize(sf::Vector2f(options_buttons[options_buttons.size() - 1].getBoundRectangleSize().x, 
-		spaceBetweenButtons*(options_buttons.size() - 1) + options_buttons[options_buttons.size() - 1].getBoundRectangleSize().y));
+	boundRectangle.setSize(sf::Vector2f(options_buttons[options_buttons.size() - 1].getBoundRectangleSize().x,
+		spaceBetweenButtons*(options_buttons.size() - 1) + options_buttons[options_buttons.size() - 1].getBoundRectangleSize().y) + additionalBackgroundSize);
 	boundRectangle.setPosition(options_buttons[0].getBoundRectanglePosition());
 }
 
@@ -44,6 +44,7 @@ OptionsSubMenu::OptionsSubMenu(const sf::Vector2f & position_of_first, int space
 OptionsSubMenu::OptionsSubMenu(LanguageManager& langMan)
 	:langMan(langMan), additionalPushButtonOffset(0)
 {
+	additionalBackgroundSize = sf::Vector2f(0, 0);
 	spaceBetweenVertically = 0;
 	additionalSpaceBetweenOptionsAndPushButtons = 0;
 	boundRectangle.setFillColor(sf::Color(0,0,0,200));
@@ -79,7 +80,7 @@ void OptionsSubMenu::addOptionNameWithButton(const std::wstring & optionName, co
 	updatePushButtons();
 }
 
-bool OptionsSubMenu::PushButtonContains(int number, const sf::Vector2f & mousepos) const
+bool OptionsSubMenu::PushButtonContains(unsigned int number, const sf::Vector2f & mousepos) const
 {
 	if (number >= 0 && number < push_buttons.size())
 		if (push_buttons[number].contains(mousepos))
@@ -87,7 +88,7 @@ bool OptionsSubMenu::PushButtonContains(int number, const sf::Vector2f & mousepo
 	return false;
 }
 
-bool OptionsSubMenu::OptionNameWithButtonContains(int number, const sf::Vector2f & mousepos) const
+bool OptionsSubMenu::OptionNameWithButtonContains(unsigned int number, const sf::Vector2f & mousepos) const
 {
 	if (number >= 0 && number < options_buttons.size())
 		if (options_buttons[number].buttonContains(mousepos))
@@ -112,7 +113,7 @@ void OptionsSubMenu::highlightButtonContaining(const sf::Vector2f & mousepos)
 			but.highlightButton();
 }
 
-std::string OptionsSubMenu::getDisplayedOption(int number)
+std::string OptionsSubMenu::getDisplayedOption(unsigned int number)
 {
 	if (number >= 0 && number < options_buttons.size())
 		return options_buttons[number].getDisplayedOption();
@@ -142,7 +143,7 @@ void OptionsSubMenu::clickArrowContaining(const sf::Vector2f & mousepos)
 	}
 }
 
-void OptionsSubMenu::setDisplayedOption(int number, std::string newDisplayedOption)
+void OptionsSubMenu::setDisplayedOption(unsigned int number, std::string newDisplayedOption)
 {
 	if (number >= 0 && number < options_buttons.size())
 	{
@@ -150,7 +151,7 @@ void OptionsSubMenu::setDisplayedOption(int number, std::string newDisplayedOpti
 	}
 }
 
-void OptionsSubMenu::coverPushButtonWithColor(int number, bool shouldApplyColor, const sf::Color & color)
+void OptionsSubMenu::coverPushButtonWithColor(unsigned int number, bool shouldApplyColor, const sf::Color & color)
 {
 	if (number >= 0 && number < push_buttons.size())
 	{
@@ -165,7 +166,7 @@ void OptionsSubMenu::setSpaceBetweenPushButtons(int space)
 	updatePushButtons();
 }
 
-void OptionsSubMenu::setArrowsBlockAndDisplayedString(int number, bool arrowsBlocked, const std::string & displayed)
+void OptionsSubMenu::setArrowsBlockAndDisplayedString(unsigned int number, bool arrowsBlocked, const std::string & displayed)
 {
 	if (number >= 0 && number < options_buttons.size())
 	{
@@ -177,4 +178,46 @@ void OptionsSubMenu::setInteriorColorAllPushButtons(const sf::Color & color)
 {
 	for (PushButton& button : push_buttons)
 		button.setInteriorColor(color);
+}
+
+void OptionsSubMenu::shouldOptionButtonDisplayOnlyText(unsigned int number, bool whatToDo)
+{
+	if (number >= 0 && number < options_buttons.size())
+	{
+		options_buttons[number].shouldDisplayOnlyText(whatToDo);
+	}
+}
+
+void OptionsSubMenu::setOutlineThickness(unsigned int number, float outLine)
+{
+	if (number >= 0 && number < options_buttons.size())
+	{
+		options_buttons[number].setOutlineThickness(outLine);
+	}
+}
+
+void OptionsSubMenu::disableAnimation(unsigned int number, bool shouldDisable)
+{
+	if (number >= 0 && number < options_buttons.size())
+	{
+		options_buttons[number].disableAnimation(shouldDisable);
+	}
+}
+
+float OptionsSubMenu::getOutlineThickness(unsigned int number) const
+{
+	if (number >= 0 && number < options_buttons.size())
+	{
+		return options_buttons[number].getOutlineThickness();
+	}
+	else
+		return 0;
+}
+
+void OptionsSubMenu::setDictionaryDisabledBool(unsigned int number, bool val)
+{
+	if (number >= 0 && number < options_buttons.size())
+	{
+		options_buttons[number].setDictionaryDisabledBool(val);
+	}
 }

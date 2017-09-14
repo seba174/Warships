@@ -66,7 +66,7 @@ int SubMenu::contains(const sf::Vector2f & mousepos) const
 	return -1;
 }
 
-bool SubMenu::contains(int number, const sf::Vector2f& mousepos) const
+bool SubMenu::contains(unsigned int number, const sf::Vector2f& mousepos) const
 {
 	if (number >= 0 && number < buttons.size())
 		return buttons[number].contains(mousepos);
@@ -93,13 +93,13 @@ void SubMenu::highlightButtonContaining(const sf::Vector2f & mousepos)
 		buttons[tmp].highlightButton();
 }
 
-void SubMenu::highlightButton(int number)
+void SubMenu::highlightButton(unsigned int number)
 {
 	if (number >= 0 && number < buttons.size())
 		buttons[number].highlightButton();
 }
 
-void SubMenu::coverButtonWithColor(int number, bool shouldApplyColor, const sf::Color & color)
+void SubMenu::coverButtonWithColor(unsigned int number, bool shouldApplyColor, const sf::Color & color)
 {
 	if (number >= 0 && number < buttons.size())
 	{

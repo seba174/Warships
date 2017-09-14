@@ -28,7 +28,7 @@ public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!
 	OptionNameWithButton(const std::wstring& optionName, const sf::Font& nameFont, int nameCharacterSize, const sf::Vector2f& size,
 		const std::string& options_list, const sf::Font& buttonFont, int buttonCharacterSize, LanguageManager& langMan, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
-		const sf::Color& bounds_color = sf::Color::Transparent);
+		const sf::Color& bounds_color = sf::Color::White);
 
 	std::string getDisplayedOption() const { return button.getDisplayedOption(); }
 
@@ -88,5 +88,15 @@ public:
 	void setDisplayedOption(const std::string& newDisplayedOption) { button.setDisplayedOption(newDisplayedOption); }
 
 	void setArrowsBlockAndDisplayedString(bool arrowsBlocked, const std::string& displayed) { button.setArrowsBlockAndDisplayedString(arrowsBlocked, displayed); }
+
+	void shouldDisplayOnlyText(bool whatToDo) { button.shouldDisplayOnlyText(whatToDo); }
+
+	void setOutlineThickness(float outLine) { button.setOutlineThickness(outLine); }
+
+	void disableAnimation(bool shouldDisable) { button.disableAnimation(shouldDisable); }
+
+	float getOutlineThickness() const { return button.getOutlineThickness(); }
+
+	void setDictionaryDisabledBool(bool val) { button.setDictionaryDisabledBool(val); }
 };
 

@@ -51,9 +51,19 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 	hashMap.insert(std::make_pair("Game time", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Czas gry"), Translation(enumLanguagesCodes::EN,L"Game time") }))));
 	hashMap.insert(std::make_pair("Rating of players", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Ocena graczy"), Translation(enumLanguagesCodes::EN,L"Rating of players") }))));
 	hashMap.insert(std::make_pair("Statistics", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Statystyki"), Translation(enumLanguagesCodes::EN,L"Statistics") }))));
-	
-	
 
+	hashMap.insert(std::make_pair("Total number of shots", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Całkowita liczba strzałów"), Translation(enumLanguagesCodes::EN,L"Total number of shots") }))));
+	hashMap.insert(std::make_pair("Total number of hits", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Całkowita liczba trafień"), Translation(enumLanguagesCodes::EN,L"Total number of hits") }))));
+	hashMap.insert(std::make_pair("Accuracy", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Celność"), Translation(enumLanguagesCodes::EN,L"Accuracy") }))));
+	hashMap.insert(std::make_pair("The biggest hit series", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Największa seria trafień"), Translation(enumLanguagesCodes::EN,L"The biggest hit series") }))));
+	hashMap.insert(std::make_pair("The biggest miss series", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Największa seria chybień"), Translation(enumLanguagesCodes::EN,L"The biggest miss series") }))));
+	hashMap.insert(std::make_pair("has won the game", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"wygrał grę"), Translation(enumLanguagesCodes::EN,L"has won the game") }))));
+	
+	hashMap.insert(std::make_pair("Press left mouse button to place the ship", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Naciśnij lewy przycisk myszy aby ustawić statek"), Translation(enumLanguagesCodes::EN,L"Press left mouse button to place the ship") }))));
+	hashMap.insert(std::make_pair("Press right mouse button to rotate the ship", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Naciśnij prawy przycisk myszy aby obrócić statek"), Translation(enumLanguagesCodes::EN,L"Press right mouse button to rotate the ship") }))));
+
+	hashMap.insert(std::make_pair("First player name", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Nazwa pierwszego gracza"), Translation(enumLanguagesCodes::EN,L"First player name") }))));
+	hashMap.insert(std::make_pair("Second player name", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Nazwa drugiego gracza"), Translation(enumLanguagesCodes::EN,L"Second player name") }))));
 
 }
 

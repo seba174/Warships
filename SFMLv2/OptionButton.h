@@ -18,7 +18,7 @@ class OptionButton :
 	// an array of options to choose from
 	std::unique_ptr<std::string[]> options;
 
-	sf::RectangleShape bound_rectangle;
+	sf::RectangleShape bound_rectangle, bound_rectangleOutline;
 	sf::RectangleShape additionalEffects;
 	sf::RectangleShape leftbutton;
 	sf::RectangleShape rightbutton;
@@ -43,6 +43,9 @@ class OptionButton :
 	sf::Time usableTime;
 	float animationScale;
 	sf::Time animationTime;
+	bool displayOnlyText;
+	bool isAnimationBlocked;
+	bool isDictionaryDisabled;
 
 	bool areArrowsBlocked;
 
@@ -63,7 +66,7 @@ class OptionButton :
 public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!
 	OptionButton(const std::string& options_list, const sf::Font& font, int characterSize, LanguageManager& langMan, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
-		const sf::Color& bounds_color = sf::Color::Transparent);
+		const sf::Color& bounds_color = sf::Color::White);
 
 	std::string getDisplayedOption() const { return current_displayed_option.getString(); }
 
@@ -120,6 +123,10 @@ public:
 	// sets duration of animation
 	void setAnimationDuration(const sf::Time& time) { animationTime = time; }
 
+	void setOutlineThickness(float outLine) { bound_rectangleOutline.setOutlineThickness(outLine); }
+
+	void disableAnimation(bool shouldDisable) { isAnimationBlocked = shouldDisable; }
+
 	// Sets new displayed option
 	// Fucntion sets it only when new displayed option is included in option list
 	void setDisplayedOption(const std::string& newDisplayedOption);
@@ -127,5 +134,11 @@ public:
 	void handleAdditionalRectangleColor(bool shouldApplyColor, const sf::Color& color);
 
 	void setArrowsBlockAndDisplayedString(bool arrowsBlocked,const std::string& displayed);
+
+	void shouldDisplayOnlyText(bool whatDo) { displayOnlyText = whatDo; }
+
+	float getOutlineThickness() const { return bound_rectangleOutline.getOutlineThickness(); }
+
+	void setDictionaryDisabledBool(bool val) { isDictionaryDisabled = val; }
 };
 

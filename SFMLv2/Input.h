@@ -1,9 +1,11 @@
 #pragma once
+#include <string>
 
 class Input
 {
 	bool MouseLeftButtonPressed, MouseRightButtonPressed;
-	bool KeyboardReturnKeyPressed, KeyboardEscapeKeyPressed;
+	bool KeyboardReturnKeyPressed, KeyboardEscapeKeyPressed, KeyboardBackspaceKeyPressed;
+	char inputText;
 
 public:
 	Input();
@@ -22,5 +24,11 @@ public:
 
 	bool isKeyboardEscapeKeyPressed() const { return KeyboardEscapeKeyPressed; }
 	void setKeyboardEscapeKeyPressed() { KeyboardEscapeKeyPressed = true; }
+
+	bool isKeyboardBackspaceKeyPressed() const { return KeyboardBackspaceKeyPressed; }
+	void setKeyboardBackspaceKeyPressed() { KeyboardBackspaceKeyPressed = true; }
+
+	char returnInputText() const { return inputText; }
+	void setInputText(char newText) { inputText = newText; }
 };
 

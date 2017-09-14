@@ -84,7 +84,13 @@ TextureHandler & TextureHandler::getInstance()
 		if (!tmp.loadFromFile("Textures/trophyGold.png")) std::cout << error_message << std::endl;
 		else instance.texture_handler.insert(make_pair("cup", tmp));
 
+		if (!tmp.loadFromFile("Textures/crosshair2.png")) std::cout << error_message << std::endl;
+		else instance.texture_handler.insert(make_pair("crosshair", tmp));
 		
+		if (!tmp.loadFromFile("Textures/helpButton.png")) std::cout << error_message << std::endl;
+		else instance.texture_handler.insert(make_pair("helpButton", tmp));
+
+
 		initialize = false;
 	}
 	return instance;
@@ -92,7 +98,6 @@ TextureHandler & TextureHandler::getInstance()
 
 void TextureHandler::setSmooth(bool shouldSet)
 {
-
 	for (auto& el : TextureHandler::getInstance().texture_handler)
 	{
 		el.second.setSmooth(shouldSet);

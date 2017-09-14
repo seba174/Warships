@@ -1,10 +1,9 @@
-#include "Options.h"
+#include "GraphicsOptions.h"
 
 using std::string;
 
-const std::array<res, 7> AvaliableResolutions::avaliableRes =
+const std::array<res, 6> AvaliableResolutions::avaliableRes =
 {
-	res("960x540",sf::Vector2i(960, 540)),
 	res("1024x576",sf::Vector2i(1024, 576)),
 	res("1280x720",sf::Vector2i(1280, 720)),
 	res("1366x768",sf::Vector2i(1366, 768)),
@@ -13,24 +12,24 @@ const std::array<res, 7> AvaliableResolutions::avaliableRes =
 	res("2560x1440",sf::Vector2i(2560, 1440))
 };
 
-const sf::Vector2i Options::defaultResolution(AvaliableResolutions::avaliableRes[0].resolution_number);
-const bool Options::defaultFullScreen = false;
-const bool Options::defaultVerticalSyncEnabled = false;
-const int Options::defaultResolutionScale = 100;
-const bool Options::defaultAntialiasing = false;
+const sf::Vector2i GraphicsOptions::defaultResolution(AvaliableResolutions::avaliableRes[0].resolution_number);
+const bool GraphicsOptions::defaultFullScreen = false;
+const bool GraphicsOptions::defaultVerticalSyncEnabled = false;
+const int GraphicsOptions::defaultResolutionScale = 100;
+const bool GraphicsOptions::defaultAntialiasing = true;
 
-const string Options::s_yes = "Yes";
-const string Options::s_no = "No";
-const string Options::s_verticalsyncenabled = "VerticalSync";
-const string Options::s_graphics = "Graphics";
-const string Options::s_resolution = "Resolution";
-const string Options::s_resolutionscale = "ResolutionScale";
-const string Options::s_fullscreen = "FullScreen";
-const string Options::s_x = "x";
-const string Options::s_antialiasing = "Antialiasing";
+const string GraphicsOptions::s_yes = "Yes";
+const string GraphicsOptions::s_no = "No";
+const string GraphicsOptions::s_verticalsyncenabled = "VerticalSync";
+const string GraphicsOptions::s_graphics = "Graphics";
+const string GraphicsOptions::s_resolution = "Resolution";
+const string GraphicsOptions::s_resolutionscale = "ResolutionScale";
+const string GraphicsOptions::s_fullscreen = "FullScreen";
+const string GraphicsOptions::s_x = "x";
+const string GraphicsOptions::s_antialiasing = "Antialiasing";
 
 
-Options::Options(INI_Reader & reader)
+GraphicsOptions::GraphicsOptions(INI_Reader & reader)
 	: Resolution(sf::Vector2i(0, 0)), ResolutionScale(100), VerticalSyncEnabled(false), FullScreen(false), reader(reader),
 	hasFullScreenChanged(false), hasResolutionChanged(false), hasResolutionScaleChanged(false), hasVerticalSyncChanged(false), 
 	desktopResolution(0,0), antialiasing(false)
@@ -61,7 +60,13 @@ Options::Options(INI_Reader & reader)
 		VerticalSyncEnabled = false;
 	else
 	{
-		reader.insertValue(s_graphics, s_verticalsyncenabled, s_no);
+		if (defaultVerticalSyncEnabled)
+		{
+			reader.insertValue(s_graphics, s_verticalsyncenabled, s_yes);
+			VerticalSyncEnabled = true;
+		}
+		else
+			reader.insertValue(s_graphics, s_verticalsyncenabled, s_no);
 	}
 
 	// FullScreen
@@ -72,7 +77,13 @@ Options::Options(INI_Reader & reader)
 		FullScreen = false;
 	else
 	{
-		reader.insertValue(s_graphics, s_fullscreen, s_no);
+		if (defaultFullScreen)
+		{
+			reader.insertValue(s_graphics, s_fullscreen, s_yes);
+			FullScreen = true;
+		}
+		else
+			reader.insertValue(s_graphics, s_fullscreen, s_no);
 	}
 
 	// Antialiasing
@@ -83,7 +94,13 @@ Options::Options(INI_Reader & reader)
 		antialiasing = false;
 	else
 	{
-		reader.insertValue(s_graphics, s_antialiasing, s_no);
+		if (defaultAntialiasing)
+		{
+			reader.insertValue(s_graphics, s_antialiasing, s_yes);
+			antialiasing = true;
+		}
+		else
+			reader.insertValue(s_graphics, s_antialiasing, s_no);
 	}
 
 	// ResolutionScale
@@ -105,13 +122,13 @@ Options::Options(INI_Reader & reader)
 	if (copyTemp)
 	{
 		copyTemp = false;
-		previousOptions = std::make_unique<Options>(Options(reader));
+		previousOptions = std::make_unique<GraphicsOptions>(GraphicsOptions(reader));
 	}
 	else
 		copyTemp = true;
 }
 
-bool Options::isResolutionSupported(const sf::Vector2i & Resolution) const
+bool GraphicsOptions::isResolutionSupported(const sf::Vector2i & Resolution) const
 {
 	for (auto it = AvaliableResolutions::avaliableRes.begin(); it != AvaliableResolutions::avaliableRes.end(); ++it)
 	{
@@ -121,7 +138,7 @@ bool Options::isResolutionSupported(const sf::Vector2i & Resolution) const
 	return false;
 }
 
-void Options::setResolution(const string & res)
+void GraphicsOptions::setResolution(const string & res)
 {
 	if (res == "")
 		return;
@@ -147,7 +164,7 @@ void Options::setResolution(const string & res)
 	}
 }
 
-void Options::setVerticalSyncEnabled(const std::string& isEnabled)
+void GraphicsOptions::setVerticalSyncEnabled(const std::string& isEnabled)
 {
 	if (isEnabled == s_yes)
 	{
@@ -161,7 +178,7 @@ void Options::setVerticalSyncEnabled(const std::string& isEnabled)
 	}
 }
 
-void Options::setFullScreen(const std::string& isEnabled)
+void GraphicsOptions::setFullScreen(const std::string& isEnabled)
 {
 	if (isEnabled == s_yes)
 	{
@@ -182,7 +199,7 @@ void Options::setFullScreen(const std::string& isEnabled)
 	}
 }
 
-void Options::setAntialiasingEnabled(const std::string & isEnabled)
+void GraphicsOptions::setAntialiasingEnabled(const std::string & isEnabled)
 {
 	if (isEnabled == s_yes)
 	{
@@ -197,7 +214,7 @@ void Options::setAntialiasingEnabled(const std::string & isEnabled)
 
 }
 
-void Options::setResolutionScale(const std::string& resScale)
+void GraphicsOptions::setResolutionScale(const std::string& resScale)
 {
 	if (resScale == "")
 		return;
@@ -216,7 +233,7 @@ void Options::setResolutionScale(const std::string& resScale)
 	}
 }
 
-std::string Options::isVerticalSyncEnabled_string() const
+std::string GraphicsOptions::isVerticalSyncEnabled_string() const
 {
 	if (VerticalSyncEnabled)
 		return s_yes;
@@ -224,7 +241,7 @@ std::string Options::isVerticalSyncEnabled_string() const
 		return s_no;
 }
 
-std::string Options::isFullScreenEnabled_string() const
+std::string GraphicsOptions::isFullScreenEnabled_string() const
 {
 	if (FullScreen)
 		return s_yes;
@@ -232,7 +249,7 @@ std::string Options::isFullScreenEnabled_string() const
 		return s_no;
 }
 
-std::string Options::isAntialiasingEnabled_string() const
+std::string GraphicsOptions::isAntialiasingEnabled_string() const
 {
 	if (antialiasing)
 		return s_yes;
@@ -240,7 +257,7 @@ std::string Options::isAntialiasingEnabled_string() const
 		return s_no;
 }
 
-void Options::saveToPreviousOptions()
+void GraphicsOptions::saveToPreviousOptions()
 {
 	previousOptions->FullScreen = FullScreen;
 	previousOptions->Resolution = Resolution;
@@ -253,7 +270,7 @@ void Options::saveToPreviousOptions()
 	previousOptions->hasVerticalSyncChanged = hasVerticalSyncChanged;
 }
 
-void Options::restorePreviousOptions()
+void GraphicsOptions::restorePreviousOptions()
 {
 	FullScreen = previousOptions->FullScreen;
 	Resolution = previousOptions->Resolution;
@@ -266,7 +283,7 @@ void Options::restorePreviousOptions()
 	hasVerticalSyncChanged = previousOptions->hasVerticalSyncChanged;
 }
 
-bool Options::hasAnyOptionChanged() const
+bool GraphicsOptions::hasAnyOptionChanged() const
 {
 	if (FullScreen == previousOptions->FullScreen
 		&& Resolution == previousOptions->Resolution
@@ -277,7 +294,7 @@ bool Options::hasAnyOptionChanged() const
 	return true;
 }
 
-void Options::loadDefaults()
+void GraphicsOptions::loadDefaults()
 { 
 	Resolution = defaultResolution;
 	VerticalSyncEnabled = defaultVerticalSyncEnabled;
@@ -287,7 +304,7 @@ void Options::loadDefaults()
 	saveToPreviousOptions();
 }
 
-void Options::saveToFile()
+void GraphicsOptions::saveToFile()
 {
 	setResolution(getResolution_string());
 	setVerticalSyncEnabled(isVerticalSyncEnabled_string());

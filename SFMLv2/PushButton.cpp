@@ -15,20 +15,23 @@ void PushButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 void PushButton::setTextPosition()
 {
-	// Scale for better visual effect
-	float newScale = scale;
-	newScale += addScale(displayed_text.getString());
+	//// Scale for better visual effect
+	//float newScale = scale;
+	//newScale += addScale(displayed_text.getString());
+
+	//displayed_text.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - displayed_text.getGlobalBounds().width / 2,
+	//	bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - displayed_text.getGlobalBounds().height / newScale);
 
 	displayed_text.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - displayed_text.getGlobalBounds().width / 2,
-		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - displayed_text.getGlobalBounds().height / newScale);
+		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - (displayed_text.getLocalBounds().top + displayed_text.getGlobalBounds().height / 2.0f));
 }
 
 float PushButton::addScale(const std::wstring & str)
 {
 	float tmp = 0;
-	if (str.find('y') != std::wstring::npos || str.find('g') != std::wstring::npos || str.find('j') != std::wstring::npos || str.find('p') != std::wstring::npos
-		|| str.find('ą') != std::wstring::npos || str.find('ę') != std::wstring::npos)
-		tmp = 0.18;
+	//if (str.find('y') != std::wstring::npos || str.find('g') != std::wstring::npos || str.find('j') != std::wstring::npos || str.find('p') != std::wstring::npos
+	//	|| str.find(L'ą') != std::wstring::npos || str.find(L'ę') != std::wstring::npos)
+	//	tmp = 0.18;
 	return tmp;
 }
 
@@ -62,7 +65,7 @@ PushButton::PushButton(const std::wstring& text, int char_size, const sf::Font& 
 
 	setTextPosition();
 
-	bound_rectangle.setOutlineThickness(line_thickness);
+	bound_rectangle.setOutlineThickness(static_cast<float>(line_thickness));
 	bound_rectangle.setOutlineColor(sf::Color::Transparent);
 }
 
@@ -100,7 +103,7 @@ void PushButton::updateWithAnimations(const sf::Time & time)
 	if (isPressed)
 	{
 		isPressed = false;
-		setScale(1.1, 1.1);
+		setScale(1.1f, 1.1f);
 		shouldUpdateAnimations = true;
 	}
 	else
@@ -129,7 +132,8 @@ void PushButton::updatePosition()
 	bound_rectangle.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
 	setInteriorPosition();
 	additionalEffects.setPosition(interior.getPosition());
-	displayed_text.setPosition(pos.x - displayed_text.getGlobalBounds().width / 2, pos.y - displayed_text.getGlobalBounds().height / newScale);
+	displayed_text.setPosition(pos.x - displayed_text.getGlobalBounds().width / 2, pos.y - (displayed_text.getScale().y*displayed_text.getLocalBounds().top+displayed_text.getGlobalBounds().height / 2));
+	//displayed_text.setPosition(pos.x - displayed_text.getGlobalBounds().width / 2, pos.y - displayed_text.getGlobalBounds().height / newScale);
 }
 
 void PushButton::setScale(float x, float y)

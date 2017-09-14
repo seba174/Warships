@@ -6,22 +6,28 @@
 void OptionButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
-	target.draw(additionalEffects, states);
-	target.draw(bound_rectangle, states);
-	target.draw(leftbutton, states);
-	target.draw(rightbutton, states);
+	if (!displayOnlyText)
+	{
+		target.draw(additionalEffects, states);
+		target.draw(bound_rectangle, states);
+		target.draw(leftbutton, states);
+		target.draw(rightbutton, states);
+	}
+	target.draw(bound_rectangleOutline, states);
 	target.draw(drawnOption, states);
 }
 
 
 OptionButton::OptionButton(const std::string & options_list, const sf::Font& font, int characterSize, LanguageManager& langMan, const sf::Vector2f& size,
 	const sf::Color& bounds_color)
-	: isPressed(false), isLeftButtonHighlighted(false), isRightButtonHighlighted(false), shouldUpdateAnimations(false), areArrowsBlocked(false), languageManager(langMan)
+	: isPressed(false), isLeftButtonHighlighted(false), isRightButtonHighlighted(false), shouldUpdateAnimations(false), areArrowsBlocked(false), languageManager(langMan),
+	displayOnlyText(false), isAnimationBlocked(false), isDictionaryDisabled(false)
 {
 	current_option_number = 0;
 	usableTime = sf::milliseconds(100);
 	animationTime = sf::milliseconds(300);
-	animationScale = 1.1;
+	animationScale = 1.1f;
+	bound_rectangleOutline.setFillColor(sf::Color::Transparent);
 
 	TextureHandler& texture = TextureHandler::getInstance();
 
@@ -73,10 +79,13 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 	drawnOption = current_displayed_option;
 	setTextPosition();
 
-	bound_rectangle.setOutlineThickness(2);
-	bound_rectangle.setOutlineColor(bounds_color);
+	bound_rectangleOutline.setOutlineThickness(0);
+	bound_rectangleOutline.setOutlineColor(bounds_color);
 
 	bound_rectangle.setTexture(&texture.texture_handler["test"]);
+
+	bound_rectangleOutline.setSize(bound_rectangle.getSize());
+	bound_rectangleOutline.setPosition(bound_rectangle.getPosition());
 }
 
 void OptionButton::setTextPosition()
@@ -85,26 +94,29 @@ void OptionButton::setTextPosition()
 	newScale += addScale(current_displayed_option.getString());
 
 	current_displayed_option.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - current_displayed_option.getGlobalBounds().width / 2,
-		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - current_displayed_option.getGlobalBounds().height / newScale);
+		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - (current_displayed_option.getLocalBounds().top*current_displayed_option.getScale().y +
+			current_displayed_option.getGlobalBounds().height / 2));
 
 	drawnOption.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - drawnOption.getGlobalBounds().width / 2,
-		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - drawnOption.getGlobalBounds().height / newScale);
+		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - (drawnOption.getLocalBounds().top*drawnOption.getScale().y + drawnOption.getGlobalBounds().height / 2));
 }
 
 float OptionButton::addScale(const std::string & str)
 {
-	float tmp = 0;
-	if (str.find('y') != std::string::npos || str.find('g') != std::string::npos || str.find('j') != std::string::npos || str.find('p') != std::string::npos)
-		tmp = 0.18;
-	return tmp;
+	//float tmp = 0;
+	//if (str.find('y') != std::string::npos || str.find('g') != std::string::npos || str.find('j') != std::string::npos || str.find('p') != std::string::npos)
+	//	tmp = 0.18;
+	//return tmp;
+	return 0.0f;
 }
 
 void OptionButton::updateDrawnOption()
 {
 	drawnOption = current_displayed_option;
 	std::wstring tmp = languageManager.getText(current_displayed_option.getString());
-	if (!tmp.empty())
+	if (!tmp.empty()&& !isDictionaryDisabled)
 		drawnOption.setString(sf::String(tmp));
+	setTextPosition();
 }
 
 void OptionButton::setPosition(float x, float y)
@@ -114,6 +126,9 @@ void OptionButton::setPosition(float x, float y)
 	rightbutton.setPosition(x + bound_rectangle.getSize().x / 2 - rightbutton.getGlobalBounds().width, bound_rectangle.getPosition().y);
 	leftbutton.setPosition(bound_rectangle.getPosition());
 	setTextPosition();
+
+	bound_rectangleOutline.setSize(bound_rectangle.getSize());
+	bound_rectangleOutline.setPosition(bound_rectangle.getPosition());
 }
 
 void OptionButton::setPosition(const sf::Vector2f & position)
@@ -123,6 +138,9 @@ void OptionButton::setPosition(const sf::Vector2f & position)
 	rightbutton.setPosition(position.x + bound_rectangle.getSize().x / 2 - rightbutton.getGlobalBounds().width, bound_rectangle.getPosition().y);
 	leftbutton.setPosition(bound_rectangle.getPosition());
 	setTextPosition();
+
+	bound_rectangleOutline.setSize(bound_rectangle.getSize());
+	bound_rectangleOutline.setPosition(bound_rectangle.getPosition());
 }
 
 void OptionButton::updatePosition()
@@ -132,8 +150,10 @@ void OptionButton::updatePosition()
 
 	bound_rectangle.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
 	
-	current_displayed_option.setPosition(pos.x - current_displayed_option.getGlobalBounds().width / 2, pos.y - current_displayed_option.getGlobalBounds().height / newScale);
-	drawnOption.setPosition(pos.x - drawnOption.getGlobalBounds().width / 2, pos.y - drawnOption.getGlobalBounds().height / newScale);
+	current_displayed_option.setPosition(pos.x - current_displayed_option.getGlobalBounds().width / 2, pos.y -
+		(current_displayed_option.getLocalBounds().top*current_displayed_option.getScale().y + current_displayed_option.getGlobalBounds().height / 2));
+	drawnOption.setPosition(pos.x - drawnOption.getGlobalBounds().width / 2, pos.y -
+		(drawnOption.getLocalBounds().top*drawnOption.getScale().y + drawnOption.getGlobalBounds().height / 2));
 
 	
 	leftbutton.setPosition(bound_rectangle.getPosition());
@@ -186,6 +206,9 @@ void OptionButton::clickRightButton()
 
 void OptionButton::updateWithAnimations(const sf::Time & time)
 {
+	if (isAnimationBlocked)
+		return;
+
 	if (isPressed)
 	{
 		isPressed = false;

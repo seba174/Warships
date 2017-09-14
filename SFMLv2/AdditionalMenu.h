@@ -3,7 +3,7 @@
 #include "enumAdditionalVisualInformation.h"
 #include "enumGamestate.h"
 
-class Options;
+class GraphicsOptions;
 class LanguageManager;
 class GeneralOptions;
 class Input;
@@ -35,7 +35,7 @@ public:
 	// function deals with running AdditionalMenu 
 	// check if user clicks on buttons and does appropriate actions
 	// in order to updateGamestates, use updateGamestate() function
-	void runMenu(const sf::Vector2f& mousepos, bool leftButtonPressed, Input& input, Options& options, GeneralOptions& genOptions);
+	void runMenu(const sf::Vector2f& mousepos, Input& input, GraphicsOptions& options, GeneralOptions& genOptions);
 
 	// updates Gamestate
 	void updateGamestate(Gamestates& gamestate);

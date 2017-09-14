@@ -36,7 +36,7 @@ class Game :
 public:
 	Game(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& ai_setpoints, const sf::Vector2f& player_setpoints,
 		const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape** square_tab, sf::RectangleShape** square_tab_2,
-		int bar, sf::RectangleShape&, LevelsDifficulty level );
+		sf::RectangleShape&, LevelsDifficulty level );
 
 	void modified_set_minus1();
 

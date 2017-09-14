@@ -1,6 +1,6 @@
 #include "AdditionalMenu.h"
 #include "Input.h"
-#include "Options.h"
+#include "GraphicsOptions.h"
 #include "LanguageManager.h"
 #include "GeneralOptions.h"
 
@@ -26,12 +26,12 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	: state(additionalvsinfo)
 {
 	// SubMenu title character size
-	int title_size_1 = 50 * interfaceScale;
-	int title_size_2 = 50 * interfaceScale;
+	int title_size_1 = static_cast<int>(50 * interfaceScale);
+	int title_size_2 = static_cast<int>(50 * interfaceScale);
 
 
 	// SubMenu character size
-	int submenu_size = 32 * interfaceScale;
+	int submenu_size = static_cast<int>(32 * interfaceScale);
 
 	// Background for SubMenu Exit size
 	sf::Vector2f backgroundForSubmenuExitSize(600 * interfaceScale, 380 * interfaceScale);
@@ -95,18 +95,18 @@ void AdditionalMenu::updateAdditionalMenuWithAnimations(const sf::Time & time, c
 	Loading.updateButtonsWithAnimations(time);
 }
 
-void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPressed, Input& input, Options& options, GeneralOptions& genOptions)
+void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, GraphicsOptions& options, GeneralOptions& genOptions)
 {
 	if (state == AdditionalVisualInformations::NONE && input.isKeyboardEscapeKeyPressed())
 		state = AdditionalVisualInformations::EXIT_INFO;
 	else if (state == AdditionalVisualInformations::EXIT_INFO && input.isKeyboardEscapeKeyPressed())
 		state = AdditionalVisualInformations::NONE;
-
+	
 	switch (state)
 	{
 	case EXIT_INFO: {
 		newGamestate = PAUSED;
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (Exit.contains(0, mousepos)) // Resume button
 				state = AdditionalVisualInformations::NONE;
@@ -128,7 +128,7 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPress
 	case APPLY_CHANGES_GRAPHICS:
 	{
 		newGamestate = PAUSED;
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (ApplyChanges.contains(0, mousepos)) // Yes button
 			{
@@ -148,7 +148,7 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPress
 	case APPLY_CHANGES_GENERAL:
 	{
 		newGamestate = PAUSED;
-		if (leftButtonPressed)
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (ApplyChanges.contains(0, mousepos)) // Yes button
 			{

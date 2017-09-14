@@ -1,13 +1,18 @@
 #include "GeneralOptions.h"
+#include "Player.h"
 
 const enumLanguagesCodes GeneralOptions::defaultLanguage = EN;
 const int GeneralOptions::defaultMenuTexture = 0;
+const std::string GeneralOptions::defaultPlayer1Name = "Player1";
+const std::string GeneralOptions::defaultPlayer2Name = "Player2";
 
 const std::string GeneralOptions::s_general = "General";
 const std::string GeneralOptions::s_language = "Language";
 const std::string GeneralOptions::s_lang_PL = "Polski";
 const std::string GeneralOptions::s_lang_EN = "English";
 const std::string GeneralOptions::s_menuTexture = "MenuTexture";
+const std::string GeneralOptions::s_player1Name = "Player1Name";
+const std::string GeneralOptions::s_player2Name = "Player2Name";
 
 
 GeneralOptions::GeneralOptions(INI_Reader & config)
@@ -19,7 +24,7 @@ GeneralOptions::GeneralOptions(INI_Reader & config)
 		language = PL;
 	else if (tmp == s_lang_EN)
 		language = EN;
-	// Default option
+		// Default option
 	else
 	{
 		reader.insertValue(s_general, s_language, s_lang_EN);
@@ -45,6 +50,55 @@ GeneralOptions::GeneralOptions(INI_Reader & config)
 	}
 
 
+	// Player1Name
+	tmp = reader.getValue(s_general, s_player1Name);
+	for (auto it = tmp.begin(); it != tmp.end(); ++it)
+	{
+		if ((*it) < 33 || (*it) > 126)
+		{
+			tmp = defaultPlayer1Name;
+			reader.insertValue(s_general, s_player1Name, tmp);
+		}
+	}
+
+	if (tmp.size() == 0)
+	{
+		tmp = defaultPlayer1Name;
+		reader.insertValue(s_general, s_player1Name, tmp);
+	}
+
+	if (tmp.size() > Player::maximumPlayerNameSize)
+	{
+		tmp = defaultPlayer1Name;
+		reader.insertValue(s_general, s_player1Name, tmp);
+	}
+	player1Name = tmp;
+
+	// Player2Name
+	tmp = reader.getValue(s_general, s_player2Name);
+	for (auto it = tmp.begin(); it != tmp.end(); ++it)
+	{
+		if ((*it) < 33 || (*it) > 126)
+		{
+			tmp = defaultPlayer2Name;
+			reader.insertValue(s_general, s_player2Name, tmp);
+		}
+	}
+
+	if (tmp.size() == 0)
+	{
+		tmp = defaultPlayer2Name;
+		reader.insertValue(s_general, s_player2Name, tmp);
+	}
+
+	if (tmp.size() > Player::maximumPlayerNameSize)
+	{
+		tmp = defaultPlayer2Name;
+		reader.insertValue(s_general, s_player2Name, tmp);
+	}
+	player2Name = tmp;
+
+
 	// Managing creating copy
 	// copyTemp value stops executing constructor over and over (it allows it only for 1 copy)
 	static bool copyTemp = true;
@@ -66,6 +120,7 @@ std::string GeneralOptions::getLanguage_string() const
 	case PL:
 		return s_lang_PL;
 	}
+	return std::string();
 }
 
 void GeneralOptions::setLanguage(const std::string & newLang)
@@ -114,6 +169,8 @@ void GeneralOptions::loadDefaults()
 {
 	language = defaultLanguage;
 	textureNumber = defaultMenuTexture;
+	player1Name = defaultPlayer1Name;
+	player2Name = defaultPlayer2Name;
 }
 
 bool GeneralOptions::hasAnyOptionChanged() const
@@ -128,6 +185,8 @@ void GeneralOptions::saveToFile()
 {
 	setLanguage(getLanguage_string());
 	setMenuTexture(getMenuTextureNumber_string());
+	reader.insertValue(s_general, s_player1Name, player1Name);
+	reader.insertValue(s_general, s_player2Name, player2Name);
 }
 
 

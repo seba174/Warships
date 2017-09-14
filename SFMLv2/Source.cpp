@@ -24,7 +24,7 @@
 #include "INI_Reader.h"
 #include "OptionNameWithButton.h"
 #include "OptionsSubMenu.h"
-#include "Options.h"
+#include "GraphicsOptions.h"
 #include "GamePlayers.h"
 #include "DestroyedShips.h"
 #include "DestroyedShipsWithBackground.h"
@@ -36,7 +36,7 @@
 int main()
 {
 	INI_Reader reader("Config/config.ini");
-	Options graphicsOpt(reader);
+	GraphicsOptions graphicsOpt(reader);
 	graphicsOpt.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
 	GeneralOptions generalOpt(reader);
 	std::unique_ptr<LanguageManager> languageManager = nullptr;
@@ -110,21 +110,26 @@ int main()
 		{
 			if (Event.type == sf::Event::Closed)
 				additional_vs_info = EXIT_INFO;
-			else if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Escape)
+			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Escape)
 			{
 				input.setKeyboardEscapeKeyPressed();
 				//additional_vs_info = EXIT_INFO;
 			}
-			else if (Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
+			if (Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
 				input.setMouseLeftButtonPressed();
-			else if (Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Right)
+			if (Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Right)
 				input.setMouseRightButtonPressed();
-			else if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Return)
+			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::BackSpace)
+				input.setKeyboardBackspaceKeyPressed();
+			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Return)
 				input.setKeyboardReturnKeyPressed();
+			if (Event.type == sf::Event::TextEntered)
+				if (Event.text.unicode < 127 && Event.text.unicode > 32)
+					input.setInputText(static_cast<char>(Event.text.unicode));
 		}
 		if (Additionalmenu)
 		{
-			Additionalmenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input.isMouseLeftButtonPressed(), input, graphicsOpt, generalOpt);
+			Additionalmenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input, graphicsOpt, generalOpt);
 			Additionalmenu->updateAdditionalMenuWithAnimations(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
 			Additionalmenu->updateGamestate(Gamestate);
 		}
@@ -172,36 +177,36 @@ int main()
 
 		case loadGameVariables:
 		{
-			bImage.setSize(sf::Vector2f(screenDimensions.x, screenDimensions.y));
-			bImage2.setSize(sf::Vector2f(screenDimensions.x, screenDimensions.y));
+			bImage.setSize(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(screenDimensions.y)));
+			bImage2.setSize(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(screenDimensions.y)));
 
 			square_size = sf::Vector2f(static_cast<float>(screenDimensions.x) / map_size, static_cast<float>(screenDimensions.y) / map_size); // rozmiar 1 kwadratu mapy)
 
 			rect.setSize(square_size);
 			rect2.setSize(square_size);
+			rect.setTexture(&textures.texture_handler["crosshair"]);
+			rect2.setTexture(&textures.texture_handler["crosshair"]);
+
 			trafienie.setSize(square_size);
 			pudlo.setSize(square_size);
 
-			rect.setFillColor(sf::Color::Black);
-			rect2.setFillColor(sf::Color::Black);
 			rect.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
-			rect2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, static_cast<float>(bar)));
-			//trafienie.setFillColor(sf::Color::Red);
+			rect2.setPosition(sf::Vector2f(static_cast<float>(screenDimensions.x + line_thickness), static_cast<float>(bar)));
 			pudlo.setFillColor(sf::Color(255, 255, 255, 170));
 
-			line.setPoint(0, sf::Vector2f(screenDimensions.x, 0));
-			line.setPoint(1, sf::Vector2f(screenDimensions.x, screenDimensions.y + bar));
-			line.setPoint(2, sf::Vector2f(screenDimensions.x + line_thickness, screenDimensions.y + bar));
-			line.setPoint(3, sf::Vector2f(screenDimensions.x + line_thickness, 0));
+			line.setPoint(0, sf::Vector2f(static_cast<float>(screenDimensions.x), 0));
+			line.setPoint(1, sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(screenDimensions.y + bar)));
+			line.setPoint(2, sf::Vector2f(static_cast<float>(screenDimensions.x + line_thickness), static_cast<float>(screenDimensions.y + bar)));
+			line.setPoint(3, sf::Vector2f(static_cast<float>(screenDimensions.x + line_thickness), 0));
 			line.setOutlineColor(sf::Color::Red);
 
 			bImage.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
-			bImage2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, static_cast<float>(bar)));
+			bImage2.setPosition(sf::Vector2f(static_cast<float>(screenDimensions.x + line_thickness), static_cast<float>(bar)));
 
-			mouse = std::make_unique<Mouse_S>(sf::Vector2f(screenDimensions.x + line_thickness, 2 * screenDimensions.x + line_thickness),
-				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
-			mouse_pl = std::make_unique<Mouse_S>(sf::Vector2f(0, screenDimensions.x),
-				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
+			mouse = std::make_unique<Mouse_S>(sf::Vector2f(static_cast<float>(screenDimensions.x + line_thickness), static_cast<float>(2 * screenDimensions.x + line_thickness)),
+				sf::Vector2f(static_cast<float>(bar), static_cast<float>(screenDimensions.y + bar)), &Window);
+			mouse_pl = std::make_unique<Mouse_S>(sf::Vector2f(0, static_cast<float>(screenDimensions.x)),
+				sf::Vector2f(static_cast<float>(bar), static_cast<float>(screenDimensions.y + bar)), &Window);
 
 			square_tab = new sf::RectangleShape*[map_size];
 			square_tab_2 = new sf::RectangleShape*[map_size];
@@ -228,15 +233,16 @@ int main()
 		case loadPlvsAI:
 		{
 			AI_set_ships = new Board*[count_of_ships];
-			AI_set_ships[0] = new Ships(5, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[1] = new Ships(4, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[2] = new Ships(3, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[3] = new Ships(2, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[4] = new IrregularShip2(square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["irregular2"]);
-			AI_set_ships[5] = new IrregularShip3(square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["irregular3"]);
+			AI_set_ships[0] = new Ships(5, square_size, screenDimensions, sf::Vector2f(0, static_cast<float>(bar)), &textures.texture_handler["big_body_final"]);
+			AI_set_ships[1] = new Ships(4, square_size, screenDimensions, sf::Vector2f(0, static_cast<float>(bar)), &textures.texture_handler["big_body_final"]);
+			AI_set_ships[2] = new Ships(3, square_size, screenDimensions, sf::Vector2f(0, static_cast<float>(bar)), &textures.texture_handler["big_body_final"]);
+			AI_set_ships[3] = new Ships(2, square_size, screenDimensions, sf::Vector2f(0, static_cast<float>(bar)), &textures.texture_handler["big_body_final"]);
+			AI_set_ships[4] = new IrregularShip2(square_size, screenDimensions, sf::Vector2f(0, static_cast<float>(bar)), &textures.texture_handler["irregular2"]);
+			AI_set_ships[5] = new IrregularShip3(square_size, screenDimensions, sf::Vector2f(0, static_cast<float>(bar)), &textures.texture_handler["irregular3"]);
 
-			game = std::make_unique<Game>(screenDimensions, square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar),
-				pudlo, trafienie, square_tab, square_tab_2, bar, rect, level);
+			game = std::make_unique<Game>(screenDimensions, square_size, sf::Vector2f(0, static_cast<float>(bar)),
+				sf::Vector2f(static_cast<float>(screenDimensions.x + line_thickness), static_cast<float>(bar)),
+				pudlo, trafienie, square_tab, square_tab_2, rect, level);
 
 			additional_vs_info = AdditionalVisualInformations::NONE;
 			Gamestate = PlvsAI;
@@ -246,11 +252,12 @@ int main()
 
 		case loadPlvsPl:
 		{
-			std::cout << "loadplvspl" << std::endl;
-			gamePlayers = std::make_unique<GamePlayers>(screenDimensions, square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar),
-				pudlo, trafienie, square_tab, square_tab_2, bar, rect, rect2, *mouse_pl, *mouse, sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-				sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y), sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2),
-				interfaceScale, *languageManager, sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y));
+			gamePlayers = std::make_unique<GamePlayers>(screenDimensions, square_size, sf::Vector2f(0, static_cast<float>(bar)),
+				sf::Vector2f(static_cast<float>(screenDimensions.x + line_thickness), static_cast<float>(bar)),
+				pudlo, trafienie, square_tab, square_tab_2, rect, rect2, *mouse_pl, *mouse, sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)),
+				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), static_cast<float>(StandardWindowDimensions.y / 2)),
+				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)), generalOpt);
 
 			additional_vs_info = AdditionalVisualInformations::NONE;
 			Gamestate = PlvsPl;
@@ -267,10 +274,10 @@ int main()
 
 		case MENU:
 		{
-			MainMenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), map_size, level, input.isMouseLeftButtonPressed(), graphicsOpt, generalOpt);
+			MainMenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), map_size, level, input, graphicsOpt, generalOpt);
 			MainMenu->updateGamestate(Gamestate, additional_vs_info);
 			MainMenu->updateMenuWithAnimates(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
-			drawnGamestate = MENU;	
+			drawnGamestate = MENU;
 		}
 		break;
 
@@ -306,7 +313,6 @@ int main()
 
 		case RELOAD_GRAPHICS:
 		{
-			std::cout << "reload graphics" << std::endl;
 			if (first || reloadGeneral)
 				languageManager = std::make_unique<LanguageManager>(generalOpt.getLanguage());
 
@@ -337,7 +343,7 @@ int main()
 				StandardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);
 				Window.create(desktop, L"Warships", sf::Style::Fullscreen);
 				//test
-				menuTexture.setSize(sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y));
+				menuTexture.setSize(sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)));
 				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
 			}
 			else if ((wasResolutionChanged || first || wasFullScreenChanged) && !graphicsOpt.isFullScreenEnabled())
@@ -347,12 +353,12 @@ int main()
 				StandardWindowDimensions = sf::Vector2i(graphicsOpt.getResolution());
 				Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), L"Warships", sf::Style::Close);
 				//test
-				menuTexture.setSize(sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y));
+				menuTexture.setSize(sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)));
 				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
 			}
 
-			bar = barSize * interfaceScale;
-			line_thickness = line_thicknessSize * interfaceScale;
+			bar = static_cast<int>(barSize * interfaceScale);
+			line_thickness = static_cast<int>(line_thicknessSize * interfaceScale);
 
 			Window.setVerticalSyncEnabled(graphicsOpt.isVerticalSyncEnabled());
 
@@ -362,11 +368,12 @@ int main()
 
 			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || first)
 			{
-				MainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20 * interfaceScale),
-					sf::Vector2f(StandardWindowDimensions.x / 2, 300 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
+				MainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), 20 * interfaceScale),
+					sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), 300 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
 				Additionalmenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-					sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
-					sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info, interfaceScale, *languageManager);
+					sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)),
+					sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), static_cast<float>(StandardWindowDimensions.y / 2)),
+					additional_vs_info, interfaceScale, *languageManager);
 			}
 			if (!first || reloaded)
 			{
@@ -383,7 +390,6 @@ int main()
 			if (reloadGeneral && !restoredGeneral)
 			{
 				additional_vs_info = AdditionalVisualInformations::APPLY_CHANGES_GENERAL;
-				
 			}
 
 			restoredGeneral = false;

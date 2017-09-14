@@ -142,7 +142,8 @@ void IrregularShip2::rotate_ship()
 bool IrregularShip2::placePlayerShip(int ** ships, int tabs_size, std::vector<Board*>&VectRect, sf::Texture * texture)
 {
 	float accuracy = 0.98f;
-	sf::Vector2i pos(floor((shipv2.getPosition().x - SetPoints.x) / (accuracy*SquareSize.x)), floor((shipv2.getPosition().y - SetPoints.y) / (accuracy*SquareSize.y)));
+	sf::Vector2i pos(static_cast<int>(floor((shipv2.getPosition().x - SetPoints.x) / (accuracy*SquareSize.x))),
+		static_cast<int>(floor((shipv2.getPosition().y - SetPoints.y) / (accuracy*SquareSize.y))));
 	placeShip = false;
 
 	int rotation = static_cast<int>(shipv2.getRotation());

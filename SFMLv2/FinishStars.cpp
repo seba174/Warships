@@ -11,11 +11,11 @@ void FinishStars::draw(sf::RenderTarget & target, sf::RenderStates states) const
 FinishStars::FinishStars(const sf::Vector2f & starSize, const sf::Vector2f & position)
 {
 	stars = { sf::RectangleShape(starSize),sf::RectangleShape(starSize),sf::RectangleShape(starSize),sf::RectangleShape(starSize),sf::RectangleShape(starSize) };
-	stars[0].setOrigin(2.5*starSize.x, starSize.y / 2);
-	stars[1].setOrigin(1.5*starSize.x, starSize.y / 2);
-	stars[2].setOrigin(0.5*starSize.x, starSize.y / 2);
-	stars[3].setOrigin(-0.5*starSize.x, starSize.y / 2);
-	stars[4].setOrigin(-1.5*starSize.x, starSize.y / 2);
+	stars[0].setOrigin(2.5f*starSize.x, starSize.y / 2);
+	stars[1].setOrigin(1.5f*starSize.x, starSize.y / 2);
+	stars[2].setOrigin(0.5f*starSize.x, starSize.y / 2);
+	stars[3].setOrigin(-0.5f*starSize.x, starSize.y / 2);
+	stars[4].setOrigin(-1.5f*starSize.x, starSize.y / 2);
 	setPosition(position);
 
 	for (sf::RectangleShape& star : stars)
@@ -52,6 +52,3 @@ void FinishStars::clickStars(int numberOfStars, const sf::Time & dt)
 	}
 }
 
-FinishStars::~FinishStars()
-{
-}

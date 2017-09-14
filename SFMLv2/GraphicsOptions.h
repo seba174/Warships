@@ -20,7 +20,7 @@ public:
 class AvaliableResolutions
 {
 public:
-	static const std::array<res, 7> avaliableRes;
+	static const std::array<res, 6> avaliableRes;
 
 	// Returns string with avaliable resolutions separated with ','
 	static std::string getResolutionString();
@@ -40,7 +40,7 @@ public:
 };
 
 
-class Options
+class GraphicsOptions
 {
 	// Reader for config file
 	INI_Reader& reader;
@@ -53,7 +53,7 @@ class Options
 	sf::Vector2i desktopResolution;
 
 	// stores previous options
-	std::unique_ptr<Options> previousOptions = nullptr;
+	std::unique_ptr<GraphicsOptions> previousOptions = nullptr;
 
 	// True if one of the values changed it's state (e.g. from true to false)
 	bool hasResolutionChanged, hasFullScreenChanged, hasResolutionScaleChanged, hasVerticalSyncChanged;
@@ -78,7 +78,7 @@ public:
 	static const std::string s_x;
 
 	// Note that config file can be modified!
-	Options(INI_Reader& config);
+	GraphicsOptions(INI_Reader& config);
 
 	// Function checks if Resolution is in AvaliableResolution list
 	bool isResolutionSupported(const sf::Vector2i& Resolution) const;

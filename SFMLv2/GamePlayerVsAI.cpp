@@ -1,4 +1,4 @@
-#include "GamePlayers.h"
+#include "GamePlayerVsAI.h"
 #include <random>
 #include <codecvt>
 #include <Windows.h>
@@ -8,7 +8,7 @@
 #include "GeneralOptions.h"
 
 
-int GamePlayers::whoStarts() const
+int GamePlayerVsAI::whoStarts() const
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -17,7 +17,7 @@ int GamePlayers::whoStarts() const
 	return dist_num(mt);
 }
 
-void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
+void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	gamePlayersState drawnState = currentState;
 	if (currentState == finish)
@@ -26,7 +26,7 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 			if (player1Won)
 				drawnState = player1_moves;
 			else if (player2Won)
-				drawnState = player2_moves;
+				drawnState = ai_moves;
 		}
 
 	switch (drawnState)
@@ -43,12 +43,12 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		}
 		target.draw(player1Background, states);
 		player1.Draw(target);
-		
+
 		if (shoudlDrawMenuPlayer1TurnStarts)
 			target.draw(menuPlayer1TurnStarts, states);
 	} break;
 
-	case player2_moves:
+	case ai_moves:
 	{
 		for (Board* ship : vect_ship_to_draw_player1)
 		{
@@ -85,7 +85,7 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 	} break;
 
-	case player2_setships:
+	case ai_setships:
 	{
 		for (Board* ship : vect_ship_to_draw_player2)
 		{
@@ -116,12 +116,12 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	}
 }
 
-bool GamePlayers::checkForFinish() const
+bool GamePlayerVsAI::checkForFinish() const
 {
 	return !(player1.HP.chceckhp() && player2.HP.chceckhp());
 }
 
-void GamePlayers::updateBackgroundInformation()
+void GamePlayerVsAI::updateBackgroundInformation()
 {
 	if (player1.HP.size_5 == 0)
 	{
@@ -246,7 +246,7 @@ void GamePlayers::updateBackgroundInformation()
 	}
 }
 
-void GamePlayers::updatePlayersFinishInformations(LanguageManager& langMan)
+void GamePlayerVsAI::updatePlayersFinishInformations(LanguageManager& langMan)
 {
 	finishMenu.addPlayer(playersInformations(player1.getPlayerName(), player1Won, player1.returnAccuracy(), player1.returnTotalShotsNumber(), player1.returnTotalHitsNumber(),
 		player1.retrunMaximumHits(), player1.returnMaximumMisses()));
@@ -264,13 +264,13 @@ void GamePlayers::updatePlayersFinishInformations(LanguageManager& langMan)
 		finishMenu.setTitle(player2.getPlayerName() + L' ' + langMan.getText("has won the game") + L'!');
 }
 
-std::wstring GamePlayers::stringToWstringConversion(const std::string & s)
+std::wstring GamePlayerVsAI::stringToWstringConversion(const std::string & s)
 {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	return std::wstring(converter.from_bytes(s));
 }
 
-void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, Gamestates& gamestate)
+void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, Gamestates& gamestate)
 {
 	lastFrameTime = dt;
 	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
@@ -308,7 +308,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 
 		if (player1.get_ships_set_up())
 		{
-			currentState = player2_setships;
+			currentState = ai_setships;
 			utilityTime = sf::Time();
 			std::for_each(vect_ship_to_draw_player1.begin(), vect_ship_to_draw_player1.end(), [](Board* ship) {ship->setShouldDraw(false); });
 		}
@@ -319,7 +319,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			shouldDisplayHelpPlayer1 = false;
 	} break;
 
-	case player2_setships:
+	case ai_setships:
 	{
 		utilityTime += dt;
 		if (utilityTime <= PausedSetShipsTime)
@@ -358,7 +358,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 		if (who == 1)
 			currentState = player1_moves;
 		else if (who == 2)
-			currentState = player2_moves;
+			currentState = ai_moves;
 		utilityTime = sf::Time();
 	} break;
 
@@ -386,7 +386,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			if (player2.getPlayersCursorPosition() != sf::Vector2i())
 				SetCursorPos(player2.getPlayersCursorPosition().x, player2.getPlayersCursorPosition().y);
 
-			currentState = player2_moves;
+			currentState = ai_moves;
 			utilityTime = sf::Time();
 			shoudlDrawMenuPlayer2TurnStarts = true;
 		}
@@ -401,7 +401,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 		}
 	} break;
 
-	case player2_moves:
+	case ai_moves:
 	{
 		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
@@ -490,11 +490,11 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 }
 
 
-GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSize, const sf::Vector2f & player1_setpoints,
- const sf::Vector2f & player2_setpoints, const sf::RectangleShape & pudlo, const sf::RectangleShape & trafienie, sf::RectangleShape ** player1Square_tab_2,
- sf::RectangleShape ** player2Square_tab_2, sf::RectangleShape & player1Rect, sf::RectangleShape & player2Rect, const Mouse_S& pl1Mouse,
- const Mouse_S& pl2Mouse, const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
- const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim, const GeneralOptions& genOpt)
+GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & SquareSize, const sf::Vector2f & player1_setpoints,
+	const sf::Vector2f & player2_setpoints, const sf::RectangleShape & pudlo, const sf::RectangleShape & trafienie, sf::RectangleShape ** player1Square_tab_2,
+	sf::RectangleShape ** player2Square_tab_2, sf::RectangleShape & player1Rect, sf::RectangleShape & player2Rect, const Mouse_S& pl1Mouse,
+	const Mouse_S& pl2Mouse, const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
+	const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim, const GeneralOptions& genOpt)
 
 	: player1(dim, SquareSize, player2_setpoints, nullptr, player1_setpoints, pudlo, trafienie, player1Square_tab_2, player1Rect),
 	player2(dim, SquareSize, player1_setpoints, nullptr, player2_setpoints, pudlo, trafienie, player2Square_tab_2, player2Rect),
@@ -505,10 +505,10 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	shoudlDrawMenuPlayer1SetShipsInfo(true), shoudlDrawMenuPlayer2SetShipsInfo(true),
 	shoudlDrawMenuPlayer1TurnStarts(true), shoudlDrawMenuPlayer2TurnStarts(true),
 	player1Won(false), player2Won(false),
-	advertPlayer1(dim,player2_setpoints, interfaceScale),
+	advertPlayer1(dim, player2_setpoints, interfaceScale),
 	advertPlayer2(dim, player1_setpoints, interfaceScale),
-	finishMenu(screenDim,langMan,interfaceScale),
-	statisticsMenu(screenDim,langMan, interfaceScale),
+	finishMenu(screenDim, langMan, interfaceScale),
+	statisticsMenu(screenDim, langMan, interfaceScale),
 	helpInformationPlayer1(2),
 	helpInformationPlayer2(2)
 {
@@ -569,7 +569,7 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, L"", title_size_1, submenu_size,
 		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
 
-	tmp = player2.getPlayerName();	
+	tmp = player2.getPlayerName();
 	menuPlayer2TurnStarts.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_2),
 		sf::Color::Transparent, backgroundExitColor, sf::Vector2f(0, 0), tmp, L"", title_size_2, submenu_size,
 		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
@@ -579,7 +579,7 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 		title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
 
 	advertPlayer1.setLogoSize(logoSize);
-	advertPlayer1.setLogoPosition(sf::Vector2f(player2_setpoints.x+dim.x/2, player2_setpoints.y+dim.y-logoSize.y));
+	advertPlayer1.setLogoPosition(sf::Vector2f(player2_setpoints.x + dim.x / 2, player2_setpoints.y + dim.y - logoSize.y));
 
 	advertPlayer2.setLogoSize(logoSize);
 	advertPlayer2.setLogoPosition(sf::Vector2f(player1_setpoints.x + dim.x / 2, player1_setpoints.y + dim.y - logoSize.y));
@@ -632,5 +632,4 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	helpInformationPlayer1[1].setString(langMan.getText("Press right mouse button to rotate the ship"));
 	helpInformationPlayer2[1].setString(langMan.getText("Press right mouse button to rotate the ship"));
 }
-
 

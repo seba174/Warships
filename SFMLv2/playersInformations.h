@@ -13,18 +13,28 @@ class playersInformations
 	unsigned int maximumMisses;
 
 public:
-	playersInformations(const std::wstring& newName, bool isWinner, float accuracy, unsigned int totalShots, unsigned int totalHits, unsigned int maximumShots, unsigned int maximumMisses)
-		:playerName(newName), isWinner(isWinner), accuracy(accuracy), totalShots(totalShots), totalHits(totalHits), maximumMisses(maximumMisses), maximumShots(maximumShots) {}
+	playersInformations(const std::wstring& Name, bool isWinner, float accuracy, unsigned int totalShots, unsigned int totalHits, unsigned int maximumShots, unsigned int maximumMisses)
+		:playerName(Name), isWinner(isWinner), accuracy(accuracy), totalShots(totalShots), totalHits(totalHits), maximumMisses(maximumMisses), maximumShots(maximumShots) {}
 
 	std::wstring getPlayerName() const { return playerName; }
-	float returnAccuracy() const { return accuracy; } 
-	bool isAWinner() const { return isWinner; }
-	unsigned int returnTotalShots() const { return totalShots; }
-	unsigned int returnTotalHits() const { return totalHits; }
-	unsigned int returnMaximumShots() const { return maximumShots; }
-	unsigned int returnMaximumMisses() const { return maximumMisses; }
 
-	//void setIsWinner(bool isWinner) { this->isWinner = isWinner; }
-	//void setPlayerName(const std::wstring& newName) { playerName = newName; }
+	// returns percentage accuracy of the Players shots
+	float returnAccuracy() const { return accuracy; } 
+
+	// returns true when the Player has won the game
+	// returns false when the Player has lost the game
+	bool isAWinner() const { return isWinner; }
+	
+	// return total number of shots made by the Player
+	unsigned int returnTotalShots() const { return totalShots; }
+	
+	// return number of shots on target made by the Player
+	unsigned int returnTotalHits() const { return totalHits; }
+	
+	// returns maximum on target hits in a row 
+	unsigned int returnMaximumShots() const { return maximumShots; }
+	
+	// returns maximum misses in a row 
+	unsigned int returnMaximumMisses() const { return maximumMisses; }
 };
 

@@ -20,7 +20,7 @@ public:
 
 	void setTimeString(const std::wstring& newTime, LanguageManager& langMan);
 
-	void setTimeFontSize(float fontSize) { time.setCharacterSize(fontSize); setTimePosition(); }
+	void setTimeFontSize(float fontSize) { time.setCharacterSize(static_cast<unsigned>(fontSize)); setTimePosition(); }
 
 	virtual ~DestroyedShipsWithBackground() {};
 };

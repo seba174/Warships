@@ -15,14 +15,21 @@ class FinishStarsWithText
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 public:
+	// starSize is a size for ONE star
+	// position is a position of the center of object
 	FinishStarsWithText(const sf::Vector2f& wholeSize, const sf::Vector2f& starSize, const sf::Vector2f& centerPosition, int fontSize);
-
-	void clickStars(int numberOfStars, const sf::Time& dt) { stars.clickStars(numberOfStars, dt); }
 
 	void setTextString(const std::wstring& newString);
 
+	// function animates stars shining
+	// numberOfStars is a number of stars to shine
+	void clickStars(int numberOfStars, const sf::Time& dt) { stars.clickStars(numberOfStars, dt); }
+
+	// sets additionalTexture
+	// additionalTexture is to the left of the text
 	void setAdditionalTexture(const sf::Texture* newTexture) { additionalTexture.setTexture(newTexture); additionalTexture.setFillColor(sf::Color::White);}
 
+	// sets additional space between texture and text (texutre is to the left of the text)
 	void setAdditionalTextureOffset(int newOffset) { additionalTextureOffset = newOffset; setTextString(text.getString()); }
 };
 

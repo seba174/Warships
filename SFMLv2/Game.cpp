@@ -3,11 +3,11 @@
 #include "DVector2i.h"
 
 
-Game::Game(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& ai_setpoints, const sf::Vector2f& player_setpoints,
+Game::Game(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& ai_setpoints,const sf::Vector2f& player_setpoints,
 	const sf::RectangleShape& pudlo, const  sf::RectangleShape& trafienie, sf::RectangleShape** square_tab, sf::RectangleShape** square_tab_2,
-	int bar, sf::RectangleShape& rect, LevelsDifficulty level)
+	sf::RectangleShape& rect, LevelsDifficulty level)
 	:AI(dim,SquareSize,player_setpoints), trafienie(trafienie), pudlo(pudlo), square_tab(square_tab), state(no_hit_yet), level(level),
-	player(dim,SquareSize,ai_setpoints, nullptr,player_setpoints,pudlo,trafienie,square_tab_2,bar,rect)
+	player(dim,SquareSize,ai_setpoints, nullptr,player_setpoints,pudlo,trafienie,square_tab_2,rect)
 {
 	ai_ships = AI::get_AI_ships();
 	player.setenemyships(AI::get_AI_ships());
@@ -80,173 +80,6 @@ void Game::set_modified_value(const sf::Vector2i& pos, int num, int ship_num)
 		}
 }
 
-/*void Game::AI_moves()
-{
-	static Info last;
-	static int count;
-	Info info;
-	
-	if (first)
-	{
-		for (int i = 0; i < AI::number; i++)
-		{
-			for (int j = 0; j < AI::number; j++)
-				modified_player_ships[i][j] = player_ships[i][j];
-		}
-		first = false;
-	}
-
-	switch (state)
-	{
-	case no_hit_yet:
-			info = AI::attack(modified_player_ships);
-
-		if (info.what_hit)
-		{
-			square_tab[info.position.x][info.position.y] = trafienie;
-			square_tab[info.position.x][info.position.y].setPosition(sf::Vector2f(info.position.x*AI::SquareSize.x + Player_SetPoints.x, info.position.y*AI::SquareSize.y + Player_SetPoints.y));
-
-			//sf::Vertex* quad = &(*square_tab_v2)[(info.position.x + info.position.y * AI::AI::number) * 4];
-			//quad[0].position = sf::Vector2f(Player_SetPoints.x + info.position.x * AI::SquareSize.x, Player_SetPoints.y + info.position.y  * AI::SquareSize.y);
-			//quad[1].position = sf::Vector2f((Player_SetPoints.x + info.position.x + 1) * AI::SquareSize.x, Player_SetPoints.y + info.position.y  * AI::SquareSize.y);
-			//quad[2].position = sf::Vector2f((Player_SetPoints.x + info.position.x + 1) * AI::SquareSize.x, Player_SetPoints.y + (info.position.y + 1) * AI::SquareSize.y);
-			//quad[3].position = sf::Vector2f(Player_SetPoints.x + info.position.x * AI::SquareSize.x, Player_SetPoints.y + (info.position.y + 1) * AI::SquareSize.y);
-
-			//quad[0].color = sf::Color::Red;
-			//quad[1].color = sf::Color::Red;
-			//quad[2].color = sf::Color::Red;
-			//quad[3].color = sf::Color::Red;
-
-			modified_player_ships[info.position.x][info.position.y] = -2;
-			last = info;
-			switch (info.what_hit)
-			{
-			case 2: state = hit_2; break;
-			case 3: state = hit_3; break;
-			case 4: state = hit_4; break;
-			case 5: state = hit_5; break;
-			case 10: state = hit_irregular2; break;
-			case 11: state = hit_irregular3; break;
-			}
-			AI_moves();
-		}
-		else
-		{
-			square_tab[info.position.x][info.position.y] = pudlo;
-			square_tab[info.position.x][info.position.y].setPosition(sf::Vector2f(info.position.x*AI::SquareSize.x + Player_SetPoints.x, info.position.y*AI::SquareSize.y + Player_SetPoints.y));
-
-			//sf::Vertex* quad = &(*square_tab_v2)[(info.position.x + info.position.y * AI::AI::number) * 4];
-			//quad[0].position = sf::Vector2f(Player_SetPoints.x + info.position.x * AI::SquareSize.x, Player_SetPoints.y + info.position.y  * AI::SquareSize.y);
-			//quad[1].position = sf::Vector2f((Player_SetPoints.x + info.position.x + 1) * AI::SquareSize.x, Player_SetPoints.y + info.position.y  * AI::SquareSize.y);
-			//quad[2].position = sf::Vector2f((Player_SetPoints.x + info.position.x + 1) * AI::SquareSize.x, Player_SetPoints.y + (info.position.y + 1) * AI::SquareSize.y);
-			//quad[3].position = sf::Vector2f(Player_SetPoints.x + info.position.x * AI::SquareSize.x, Player_SetPoints.y + (info.position.y + 1) * AI::SquareSize.y);
-
-			//quad[0].color = sf::Color::Green;
-			//quad[1].color = sf::Color::Green;
-			//quad[2].color = sf::Color::Green;
-			//quad[3].color = sf::Color::Green;
-
-			modified_player_ships[info.position.x][info.position.y] = -2;
-		}
-		break;
-	case hit_2:
-		if (count == 0)
-			modified_set_minus1();
-		++count;
-		state = no_hit_yet;
-		if (count == 2)
-		{
-			ai_ships_destroyed++;
-			count = 0;
-			copy_player_ships();
-		}
-		else
-			set_modified_value(last.position, 0, 2);
-		AI_moves();
-		break;
-	case hit_3:
-		if (count == 0)
-			modified_set_minus1();
-		++count;
-		state = no_hit_yet;
-		if (count == 3)
-		{
-			ai_ships_destroyed++;
-			count = 0;
-			copy_player_ships();
-		}
-		else
-			set_modified_value(last.position, 0, 3);
-		AI_moves();
-
-		break;
-	case hit_4:
-		if (count == 0)
-			modified_set_minus1();
-		++count;
-		state = no_hit_yet;
-		if (count == 4)
-		{
-			ai_ships_destroyed++;
-			count = 0;
-			copy_player_ships();
-		}
-		else
-			set_modified_value(last.position, 0, 4);
-		AI_moves();
-
-		break;
-	case hit_5:
-		if (count == 0)
-			modified_set_minus1();
-		++count;
-		state = no_hit_yet;
-		if (count == 5)
-		{
-			ai_ships_destroyed++;
-			count = 0;
-			copy_player_ships();
-		}
-		else
-			set_modified_value(last.position, 0, 5);
-		AI_moves();
-
-		break;
-	case hit_irregular2:
-		if (count == 0)
-			modified_set_minus1();
-		++count;
-		state = no_hit_yet;
-		if (count == 3)
-		{
-			ai_ships_destroyed++;
-			count = 0;
-			copy_player_ships();
-		}
-		else
-			set_modified_value(last.position, 0, 10);
-		AI_moves();
-
-		break;
-	case hit_irregular3:
-		if (count == 0)
-			modified_set_minus1();
-		++count;
-		state = no_hit_yet;
-		if (count == 6)
-		{
-			ai_ships_destroyed++;
-			count = 0;
-			copy_player_ships();
-		}
-		else
-			set_modified_value(last.position, 0, 11);
-		AI_moves();
-
-		break;	
-	}
-}*/
-
 bool Game::AI_moves_level_easy()
 {
 	static Info last;
@@ -272,7 +105,7 @@ bool Game::AI_moves_level_easy()
 		if (info.what_hit)
 		{
 			square_tab[info.position.x][info.position.y] = trafienie;
-			square_tab[info.position.x][info.position.y].setPosition(sf::Vector2f(info.position.x*AI::SquareSize.x + Player_SetPoints.x, info.position.y*AI::SquareSize.y + Player_SetPoints.y));
+			square_tab[info.position.x][info.position.y].setPosition(sf::Vector2f(info.position.x*AI::SquareSize.x + Enemy_SetPoints.x, info.position.y*AI::SquareSize.y + Enemy_SetPoints.y));
 
 			modified_player_ships[info.position.x][info.position.y] = -2;
 			last = info;
@@ -286,7 +119,7 @@ bool Game::AI_moves_level_easy()
 		else
 		{
 			square_tab[info.position.x][info.position.y] = pudlo;
-			square_tab[info.position.x][info.position.y].setPosition(sf::Vector2f(info.position.x*AI::SquareSize.x + Player_SetPoints.x, info.position.y*AI::SquareSize.y + Player_SetPoints.y));
+			square_tab[info.position.x][info.position.y].setPosition(sf::Vector2f(info.position.x*AI::SquareSize.x + Enemy_SetPoints.x, info.position.y*AI::SquareSize.y + Enemy_SetPoints.y));
 
 			modified_player_ships[info.position.x][info.position.y] = -2;
 
@@ -294,6 +127,7 @@ bool Game::AI_moves_level_easy()
 		}
 		break;
 	}
+	return true;
 }
 
 bool Game::AI_moves_level_medium()
@@ -325,7 +159,7 @@ bool Game::AI_moves_level_medium()
 		{
 			square_tab[info.position.x][info.position.y] = trafienie;
 			square_tab[info.position.x][info.position.y].setPosition(
-				sf::Vector2f(info.position.x*AI::SquareSize.x + Player_SetPoints.x, info.position.y*AI::SquareSize.y + Player_SetPoints.y));
+				sf::Vector2f(info.position.x*AI::SquareSize.x + Enemy_SetPoints.x, info.position.y*AI::SquareSize.y + Enemy_SetPoints.y));
 			modified_player_ships[info.position.x][info.position.y] = -2;
 			last = info;
 
@@ -345,7 +179,7 @@ bool Game::AI_moves_level_medium()
 		{
 			square_tab[info.position.x][info.position.y] = pudlo;
 			square_tab[info.position.x][info.position.y].setPosition(
-				sf::Vector2f(info.position.x*AI::SquareSize.x + Player_SetPoints.x, info.position.y*AI::SquareSize.y + Player_SetPoints.y));
+				sf::Vector2f(info.position.x*AI::SquareSize.x + Enemy_SetPoints.x, info.position.y*AI::SquareSize.y + Enemy_SetPoints.y));
 			modified_player_ships[info.position.x][info.position.y] = -2;
 			return true;
 		}
@@ -469,6 +303,7 @@ bool Game::AI_moves_level_medium()
 		return false;
 		break;
 	}
+	return true;
 }
 
 bool Game::AI_moves_level_hard()

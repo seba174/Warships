@@ -1,52 +1,53 @@
-#include "rectangleWithText.h"
+#include "RectangleWithText.h"
 
-rectangleWithText::rectangleWithText()
+RectangleWithText::RectangleWithText()
 	: position(0,0)
 {
+	rect.setFillColor(sf::Color::Black);
 }
 
-void rectangleWithText::setTextPosition()
+void RectangleWithText::setTextPosition()
 {
-	text.setPosition(sf::Vector2f(rect.getPosition().x - text.getGlobalBounds().width / 2, rect.getPosition().y - text.getGlobalBounds().height / 2));
+	text.setPosition(sf::Vector2f(rect.getPosition().x - text.getGlobalBounds().width / 2, rect.getPosition().y - (text.getLocalBounds().top + text.getLocalBounds().height / 2)));
 }
 
-void rectangleWithText::setOrigin()
+void RectangleWithText::setOrigin()
 {
 	rect.setOrigin(rect.getSize().x / 2, rect.getSize().y / 2);
 }
 
-void rectangleWithText::draw(sf::RenderTarget & target, sf::RenderStates states) const
+void RectangleWithText::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(rect, states);
 	target.draw(text, states);
 }
 
-void rectangleWithText::setString(const std::wstring & newString)
+void RectangleWithText::setString(const std::wstring & newString)
 {
 	text.setString(newString);
 	setTextPosition();
 }
 
-void rectangleWithText::setSize(const sf::Vector2f & size)
+void RectangleWithText::setSize(const sf::Vector2f & size)
 {
 	rect.setSize(size);
 	setOrigin();
 	setPosition(position);
 }
 
-void rectangleWithText::setPosition(const sf::Vector2f & pos)
+void RectangleWithText::setPosition(const sf::Vector2f & pos)
 {
 	position = pos;
 	rect.setPosition(pos);
 	setTextPosition();
 }
 
-void rectangleWithText::setFontSize(float fontSize)
+void RectangleWithText::setFontSize(float fontSize)
 {
-	text.setCharacterSize(fontSize);
+	text.setCharacterSize(static_cast<unsigned>(fontSize));
 }
 
-void rectangleWithText::setFont(const sf::Font & font)
+void RectangleWithText::setFont(const sf::Font & font)
 {
 	text.setFont(font);
 }

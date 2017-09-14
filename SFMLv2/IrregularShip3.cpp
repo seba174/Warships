@@ -64,7 +64,7 @@ bool IrregularShip3::CanChangePositionY(const sf::Vector2f& newposition) const
 void IrregularShip3::setPosition(const sf::Vector2f& mousepos)
 {
 	sf::Vector2f newposition = sf::Vector2f(floor(mousepos.x / SquareSize.x)*SquareSize.x, floor(mousepos.y / SquareSize.y)*SquareSize.y);
-	int rotation = shipv2.getRotation();
+	int rotation = static_cast<int>(shipv2.getRotation());
 
 	switch (rotation)
 	{
@@ -97,7 +97,7 @@ void IrregularShip3::setPosition(const sf::Vector2f& mousepos)
 			shipv2.setPosition(sf::Vector2f(SetPoints.x + BoardDimensions.x - shipv2.getSize().y, shipv2.getPosition().y));
 		break;
 	}
-	rotation = shipv2.getRotation();
+	rotation = static_cast<int>(shipv2.getRotation());
 	switch (rotation)
 	{
 	case 0:
@@ -162,11 +162,12 @@ void IrregularShip3::rotate_ship()
 
 bool IrregularShip3::placePlayerShip(int ** ships, int tabs_size, std::vector<Board*>&VectRect, sf::Texture * texture)
 {
-	float accuracy = 0.98;
-	sf::Vector2i pos(floor((shipv2.getPosition().x - SetPoints.x) / (accuracy*SquareSize.x)), floor((shipv2.getPosition().y - SetPoints.y) / (accuracy*SquareSize.y)));
+	float accuracy = 0.98f;
+	sf::Vector2i pos(static_cast<int>(floor((shipv2.getPosition().x - SetPoints.x) / (accuracy*SquareSize.x))), 
+		static_cast<int>(floor((shipv2.getPosition().y - SetPoints.y) / (accuracy*SquareSize.y))));
 	placeShip = false;
 
-	int rotation = shipv2.getRotation();
+	int rotation = static_cast<int>(shipv2.getRotation());
 	switch (rotation)
 	{
 	case 0:

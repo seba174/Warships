@@ -83,14 +83,14 @@ void Ships::rotate_ship()
 
 bool Ships::placePlayerShip(int **ships, int tabs_size, std::vector<Board*>& VectRect, sf::Texture* texture)
 {
-	float accuracy = 0.98;
-	int x = floor((shipv2.getPosition().x - SetPoints.x) / (accuracy*SquareSize.x));
+	float accuracy = 0.98f;
+	int x = static_cast<int>(floor((shipv2.getPosition().x - SetPoints.x) / (accuracy*SquareSize.x)));
 	int y;
 	placeShip = false;
 	
 	if (!rotation_horizontally)
 	{
-		y = floor((shipv2.getPosition().y - SetPoints.y) / (accuracy*SquareSize.y));
+		y = static_cast<int>(floor((shipv2.getPosition().y - SetPoints.y) / (accuracy*SquareSize.y)));
 		for (int i = y; i < y + size; i++)
 			if (ships[x][i])
 				return false;
@@ -101,7 +101,7 @@ bool Ships::placePlayerShip(int **ships, int tabs_size, std::vector<Board*>& Vec
 	}
 	else
 	{
-		y = floor((shipv2.getPosition().y - SetPoints.y - SquareSize.y) / (accuracy*SquareSize.y));
+		y = static_cast<int>(floor((shipv2.getPosition().y - SetPoints.y - SquareSize.y) / (accuracy*SquareSize.y)));
 		for (int i = x; i < x + size; i++)
 			if (ships[i][y])
 				return false;
