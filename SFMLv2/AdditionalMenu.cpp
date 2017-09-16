@@ -56,7 +56,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	FontHandler& handler = FontHandler::getInstance();
 
 	state = AdditionalVisualInformations::NONE;
-	newGamestate = Gamestates::NOTHING;
+	newGamestate = Gamestates::nothing;
 
 	// Position of title and button is based on backgroundForSubMenuPosition!
 
@@ -105,19 +105,19 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, Graphi
 	switch (state)
 	{
 	case EXIT_INFO: {
-		newGamestate = PAUSED;
+		newGamestate = paused;
 		if (input.isMouseLeftButtonPressed())
 		{
 			if (Exit.contains(0, mousepos)) // Resume button
 				state = AdditionalVisualInformations::NONE;
 			else if (Exit.contains(1, mousepos)) // Return to main menu button
 			{
-				newGamestate = Gamestates::BREAK_AND_GO_TO_MENU;
+				newGamestate = Gamestates::breakAndGoToMenu;
 				state = AdditionalVisualInformations::NONE;
 			}
 			else if (Exit.contains(2, mousepos)) // Quit the game button
 			{
-				newGamestate = EXIT;
+				newGamestate = Gamestates::Exit;
 				state = AdditionalVisualInformations::NONE;
 			}
 		}
@@ -127,19 +127,19 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, Graphi
 
 	case APPLY_CHANGES_GRAPHICS:
 	{
-		newGamestate = PAUSED;
+		newGamestate = paused;
 		if (input.isMouseLeftButtonPressed())
 		{
 			if (ApplyChanges.contains(0, mousepos)) // Yes button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::MENU;
+				newGamestate = Gamestates::menu;
 				options.saveToPreviousOptions();
 			}
 			else if (ApplyChanges.contains(1, mousepos)) // No button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::RESTORE_GRAPHICS;
+				newGamestate = Gamestates::restoreGraphicsOptions;
 				options.restorePreviousOptions();
 			}
 		}
@@ -147,19 +147,19 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, Graphi
 
 	case APPLY_CHANGES_GENERAL:
 	{
-		newGamestate = PAUSED;
+		newGamestate = paused;
 		if (input.isMouseLeftButtonPressed())
 		{
 			if (ApplyChanges.contains(0, mousepos)) // Yes button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::MENU;
+				newGamestate = Gamestates::menu;
 				genOptions.saveToPreviousOptions();
 			}
 			else if (ApplyChanges.contains(1, mousepos)) // No button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::RESTORE_GENERAL;
+				newGamestate = Gamestates::restoreGeneralOptions;
 				genOptions.restorePreviousOptions();
 			}
 		}
@@ -174,7 +174,7 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, Graphi
 
 void AdditionalMenu::updateGamestate(Gamestates & gamestate)
 {
-	if (newGamestate != Gamestates::NOTHING)
+	if (newGamestate != Gamestates::nothing)
 		gamestate = newGamestate;
-	newGamestate = Gamestates::NOTHING;
+	newGamestate = Gamestates::nothing;
 }

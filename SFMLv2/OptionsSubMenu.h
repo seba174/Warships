@@ -49,11 +49,11 @@ public:
 		const std::string& options_list, const sf::Font& buttonFont, int buttonCharacterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
 		const sf::Color& bounds_color = sf::Color::White);
 
-	// checks if PushButton of given number contains mousepos
+	// checks if PushButton of given mapSize contains mousepos
 	// if button does not exists, returns false
 	bool PushButtonContains(unsigned int number, const sf::Vector2f& mousepos) const;
 
-	// checks if OptionNameWithButton of given number contains mousepos
+	// checks if OptionNameWithButton of given mapSize contains mousepos
 	// if button does not exists, returns false
 	bool OptionNameWithButtonContains(unsigned int number, const sf::Vector2f& mousepos) const;
 
@@ -64,7 +64,7 @@ public:
 	// sets additional space between OptionsButtons and PushButtons
 	void setAdditionalSpaceBetweenOptionsAndPushButtons(int add) { this->additionalSpaceBetweenOptionsAndPushButtons = add; }
 
-	// gets string with current displayed option of given button number
+	// gets string with current displayed option of given button mapSize
 	// if button does not exists, function returns empty string
 	std::string getDisplayedOption(unsigned int number);
 
@@ -74,7 +74,7 @@ public:
 	// function checks if any arrow of Options Buttons contains mousepos and if so, clicks it
 	void clickArrowContaining(const sf::Vector2f& mousepos);
 
-	// function sets new displayed option for button of given number
+	// function sets new displayed option for button of given mapSize
 	// fucntion sets it only when new displayed option is included in option list
 	void setDisplayedOption(unsigned int number, std::string newDisplayedOption);
 

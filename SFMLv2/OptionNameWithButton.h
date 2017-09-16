@@ -64,11 +64,11 @@ public:
 	void updateArrows() { button.updateArrows(); }
 
 	// function changes string displayed in a button for previous one in array
-	// if number exceeds array the last text in array is displayed
+	// if mapSize exceeds array the last text in array is displayed
 	void clickLeftButton() { button.clickLeftButton(); }
 
 	// function changes string displayed in a button for next one in array
-	// if number exceeds array the first text in array is displayed
+	// if mapSize exceeds array the first text in array is displayed
 	void clickRightButton() { button.clickRightButton(); }
 
 	// function animates and updates button size

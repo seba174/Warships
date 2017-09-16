@@ -10,28 +10,28 @@ public:
 	static const int maximumPlayerNameSize = 10;
 
 protected:
-	sf::Vector2i BoardDimensions;
-	sf::Vector2f SquareSize;
-	sf::Vector2f Enemy_SetPoints;
-	sf::Vector2f Player_setPoints;
+	sf::Vector2i boardDimensions;
+	sf::Vector2f squareSize;
+	sf::Vector2f enemySetPoints;
+	sf::Vector2f playerSetPoints;
 	unsigned int totalShots, totalHits;
-	bool counter_to_set = false;
+	bool counterToSet = false;
 	unsigned int maximumHitsTemp, maximumHits, maximumMissesTemp, maximumMisses;
 
-	Board** set_ships; 
-	bool ships_set_up;
+	Board** setShips;
+	bool shipsSetUp;
 	int counter = 0;
 
-	//number of ships in game
-	const int count_of_ships = 6; 
+	//mapSize of ships in game
+	const int countOfShips = 6;
 
-	int** player_ships;
-	int **enemy_ships;
-	sf::RectangleShape** square_tab_2;
-	sf::RectangleShape pudlo;
-	sf::RectangleShape trafienie;
-	bool plmoved = false;
-	int number;
+	int** playerShips;
+	int **enemyShips;
+	sf::RectangleShape** squareTab2;
+	sf::RectangleShape missedShot;
+	sf::RectangleShape hit;
+	bool playerMoved = false;
+	int mapSize;
 	sf::Vector2i cursorPosition;
 	std::wstring name;
 	sf::RectangleShape& rect;
@@ -41,16 +41,16 @@ protected:
 
 public:
 	Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, int** enemy_ships, const sf::Vector2f& player_setpoints,
-		const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape** square_tab_2, sf::RectangleShape& rect);
-	
-	bool Player_moves(const sf::Vector2i& position);
+		const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape** square_tab_2, sf::RectangleShape& rect);
 
-	void PlayerMouseInput(const sf::Time& dt, const sf::Vector2f& mousepos);
+	bool playerMoves(const sf::Vector2i& position);
 
-	void Player_Set_ships(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw);
-	
-	void Draw(sf::RenderTarget& Window) const;
-	
+	void playerMouseInput(const sf::Time& dt, const sf::Vector2f& mousepos);
+
+	void playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw);
+
+	void draw(sf::RenderTarget& Window) const;
+
 	void setPlayersCursorPositon(const sf::Vector2i& newPos) { cursorPosition = newPos; }
 
 	sf::Vector2i getPlayersCursorPosition() const { return cursorPosition; }
@@ -63,26 +63,25 @@ public:
 
 	~Player();
 
-
 	sf::Vector2i getRectPositionInGame() const
 	{
-		return sf::Vector2i(static_cast<int>(round((rect.getPosition().x - Enemy_SetPoints.x) / SquareSize.x)),
-			static_cast<int>(round((rect.getPosition().y - Enemy_SetPoints.y) / SquareSize.y)));
+		return sf::Vector2i(static_cast<int>(round((rect.getPosition().x - enemySetPoints.x) / squareSize.x)),
+			static_cast<int>(round((rect.getPosition().y - enemySetPoints.y) / squareSize.y)));
 	}
 
-	void setplaceship() { set_ships[counter]->setplaceShip(true); }
+	void setPlaceShip() { setShips[counter]->setplaceShip(true); }
 
-	int** getplayerships() { return player_ships; }
+	int** getPlayerShips() { return playerShips; }
 
-	void setenemyships(int ** ships) { enemy_ships = ships; }
+	void setEnemyShips(int ** ships) { enemyShips = ships; }
 
-	bool get_ships_set_up() const { return ships_set_up; }
+	bool getShipsSetUp() const { return shipsSetUp; }
 
-	bool& getplmoved() { return plmoved; }
+	bool& getPlayerMoved() { return playerMoved; }
 
-	void rotateShip() { set_ships[counter]->rotate_ship(); }
-	
-	sf::RectangleShape** returnSquareTab() { return square_tab_2; }
+	void rotateShip() { setShips[counter]->rotate_ship(); }
+
+	sf::RectangleShape** returnSquareTab() { return squareTab2; }
 
 	void setPlayerName(const std::wstring& newName) { name = newName; }
 

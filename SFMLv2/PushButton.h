@@ -12,10 +12,10 @@ class PushButton :
 	float scale = 1.1f;
 	float interiorScale = 0.93f;
 
-	sf::RectangleShape bound_rectangle;
+	sf::RectangleShape boundRectangle;
 	sf::RectangleShape additionalEffects;
 	sf::RectangleShape interior;
-	sf::Text displayed_text;
+	sf::Text displayedText;
 	
 	// information if mouse is within bound_rectagle (it is used in animation)
 	bool isPressed;
@@ -33,7 +33,7 @@ class PushButton :
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	// sets displayed_text in the center of button (bound_rectangle)
+	// sets displayedText in the center of button (boundRectangle)
 	void setTextPosition();
 
 	float addScale(const std::wstring& str);
@@ -46,14 +46,14 @@ public:
 		const sf::Color& bounds_color = sf::Color::White,  int line_thickness = 3); 
 
 	// sets style for the text in the button
-	void setStyle(sf::Uint32 style) { displayed_text.setStyle(style); }
+	void setStyle(sf::Uint32 style) { displayedText.setStyle(style); }
 
 	// gets size of an bounding box with text 
-	sf::Vector2f getSize() const { return sf::Vector2f(bound_rectangle.getSize().x, bound_rectangle.getSize().y); }
+	sf::Vector2f getSize() const { return sf::Vector2f(boundRectangle.getSize().x, boundRectangle.getSize().y); }
 
 	// function chcecks if a point is inside button
 	// WARNING! if you pass mouse position, check if you don't need to use mapCoordsToPixels function!
-	bool contains(const sf::Vector2f& mousepos) const { return bound_rectangle.getGlobalBounds().contains(mousepos); }
+	bool contains(const sf::Vector2f& mousepos) const { return boundRectangle.getGlobalBounds().contains(mousepos); }
 
 	// sets isPressed = true
 	void highlightButton() { isPressed = true; }
@@ -77,7 +77,7 @@ public:
 	void setScale(float x, float y);
 
 	// returns size of a button
-	sf::Vector2f getSize() { return bound_rectangle.getSize(); }
+	sf::Vector2f getSize() { return boundRectangle.getSize(); }
 
 	void coverButtonWithColor(bool shouldApplyColor, const sf::Color& color);
 

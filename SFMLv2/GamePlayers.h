@@ -20,11 +20,11 @@ class GeneralOptions;
 class GamePlayers
 	: public sf::Drawable
 {
-	enum gamePlayersState { player1_moves, player2_moves, player1_setships, player2_setships, loadVariablesAndStart, finish, statistics };
+	enum gamePlayersState { player1Moves, player2Moves, player1SetShips, player2SetShips, loadVariablesAndStart, finish, statistics };
 
 	Player player1, player2;
-	Mouse_S mouse_player1, mouse_player2;
-	std::vector<Board*> vect_ship_to_draw_player1, vect_ship_to_draw_player2;
+	Mouse_S mousePlayer1, mousePlayer2;
+	std::vector<Board*> vectShipsToDrawPlayer1, vectShipsToDrawPlayer2;
 	DestroyedShipsWithBackground player1Background, player2Background;
 	AdditionalSubMenu menuPlayer1SetShipsInfo, menuPlayer2SetShipsInfo, menuPlayer1TurnStarts, menuPlayer2TurnStarts;
 	bool shoudlDrawMenuPlayer1SetShipsInfo, shoudlDrawMenuPlayer2SetShipsInfo, shoudlDrawMenuPlayer1TurnStarts, shoudlDrawMenuPlayer2TurnStarts;
@@ -32,12 +32,9 @@ class GamePlayers
 	bool player1Won, player2Won;
 	FinishMenu finishMenu;
 	StatisticsMenu statisticsMenu;
-
-	//!!!!!!!!!!!!
 	std::vector<RectangleWithTextAndFrames> helpInformationPlayer1, helpInformationPlayer2;
 	sf::RectangleShape helpButtonPlayer1, helpButtonPlayer2;
 	bool shouldDisplayHelpPlayer1, shouldDisplayHelpPlayer2;
-	//!!!!!!!!!!!!
 
 	gamePlayersState currentState;
 

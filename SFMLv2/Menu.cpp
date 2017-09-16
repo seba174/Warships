@@ -1,5 +1,4 @@
 ﻿#include "Menu.h"
-#include <iostream>
 #include "LanguageManager.h"
 #include "GraphicsOptions.h"
 #include "GeneralOptions.h"
@@ -12,21 +11,21 @@ void Menu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(MainTitle, states);
 	switch (menustate)
 	{
-	case DEFAULT:
+	case Menustates::DEFAULT:
 		target.draw(SubHome, states); break;
-	case CHOOSE_GAMETYPE:
+	case Menustates::CHOOSE_GAMETYPE:
 		target.draw(SubChooseGametype, states); break;
-	case CHOOSE_MAPSIZE:
+	case Menustates::CHOOSE_MAPSIZE:
 		target.draw(SubChooseMapSize, states); break;
-	case CHOOSE_AILEVEL:
+	case Menustates::CHOOSE_AILEVEL:
 		target.draw(SubChooseAILevel, states); break;
-	case OPTIONS:
+	case Menustates::OPTIONS:
 		target.draw(SubOptions, states); break;
-	case OPT_GENERAL:
+	case Menustates::OPT_GENERAL:
 		target.draw(SubGeneral, states); break;
-	case OPT_GRAPHICS:
+	case Menustates::OPT_GRAPHICS:
 		target.draw(SubGraphics, states); break;
-	case OPT_AUDIO:
+	case Menustates::OPT_AUDIO:
 		target.draw(SubAudio, states); break;
 	}
 }
@@ -88,11 +87,10 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 
 	FontHandler& handler = FontHandler::getInstance();
 
-	menustate = DEFAULT;
-	previousMenustate = DEFAULT;
+	menustate = Menustates::DEFAULT;
+	previousMenustate = Menustates::DEFAULT;
 	newVSinfo = AdditionalVisualInformations::NONE;
-	newGamestate = MENU;
-	newVSinfo = NONE;
+	newGamestate = Gamestates::menu;
 
 	MainTitle.setFont(handler.font_handler["Mecha"]);
 	MainTitle.setString(main_title);
@@ -124,7 +122,6 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubChooseAILevel.setInteriorColorAllButtons(buttonColor);
 
-
 	SubGraphics.Construct(title_or1st_button_position, space_between_buttons, langMan);
 
 	SubGraphics.addOptionNameWithButton(langMan.getText("Resolution"), handler.font_handler["Mecha"], options_name_with_button_char,
@@ -153,7 +150,6 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	else
 		SubGraphics.setArrowsBlockAndDisplayedString(0, true, opt.getDesktopResolution_string());
 
-
 	SubGraphics.setDisplayedOption(1, opt.isVerticalSyncEnabled_string());
 	SubGraphics.setDisplayedOption(2, opt.isFullScreenEnabled_string());
 	SubGraphics.setDisplayedOption(3, std::to_string(opt.getResolutionScale()));
@@ -167,8 +163,6 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGeneral.addOptionNameWithButton(langMan.getText("Menu desing"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, "0,1,2", handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size, bounds_color);
-	
-
 	
 	SubGeneral.addOptionNameWithButton(langMan.getText("First player name"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, "Player1", handler.font_handler["Mecha"],
@@ -185,9 +179,6 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGeneral.setArrowsBlockAndDisplayedString(3, true, genOpt.getPlayer2Name());
 	SubGeneral.setDictionaryDisabledBool(3, true);
 
-
-
-
 	SubGeneral.addPushButton(langMan.getText("Back"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGeneral.addPushButton(langMan.getText("Apply changes"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGeneral.addPushButton(langMan.getText("Load defaults"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
@@ -201,10 +192,9 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty& level, const Input& input, GraphicsOptions& opt, GeneralOptions& generalOpt)
 {
 	sf::Color unclickableButtonColor(180, 180, 180, 140);
-
 	int lineThickness = 2;
 
-	if (menustate != OPT_GRAPHICS)
+	if (menustate != Menustates::OPT_GRAPHICS)
 	{
 		SubGraphics.setDisplayedOption(0, opt.getResolution_string());
 		SubGraphics.setDisplayedOption(1, opt.isVerticalSyncEnabled_string());
@@ -212,8 +202,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 		SubGraphics.setDisplayedOption(3, opt.getResolutionScale_string());
 		SubGraphics.setDisplayedOption(4, opt.isAntialiasingEnabled_string());
 	}
-
-	if (menustate != OPT_GENERAL)
+	if (menustate != Menustates::OPT_GENERAL)
 	{
 		SubGeneral.setDisplayedOption(0, generalOpt.getLanguage_string());
 		SubGeneral.setDisplayedOption(1, generalOpt.getMenuTextureNumber_string());
@@ -221,9 +210,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 	switch (menustate)
 	{
-	case DEFAULT: {
-		//Home.highlightButtonContaining(mousepos);
-
+	case Menustates::DEFAULT: {
 		if (input.isMouseLeftButtonPressed())
 		{
 			if (SubHome.contains(0, mousepos)) // Play button
@@ -233,26 +220,26 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			else if (SubHome.contains(2, mousepos)) // Credits
 				;
 			else if (SubHome.contains(3, mousepos)) // Exit button
-				newGamestate = EXIT;
+				newGamestate = Gamestates::Exit;
 		}
 	} break;
 
-	case OPTIONS: {
+	case Menustates::OPTIONS: {
 		previousMenustate = Menustates::DEFAULT;
 		if (input.isMouseLeftButtonPressed())
 		{
 			if (SubHome.contains(0, mousepos)) // General button
-				menustate = OPT_GENERAL;
+				menustate = Menustates::OPT_GENERAL;
 			else if (SubHome.contains(1, mousepos)) // Graphics button
-				menustate = OPT_GRAPHICS;
+				menustate = Menustates::OPT_GRAPHICS;
 			else if (SubHome.contains(2, mousepos)) // Sounds button
-				menustate = OPT_AUDIO;
+				menustate = Menustates::OPT_AUDIO;
 			else if (SubHome.contains(3, mousepos)) // Back button
 				menustate = previousMenustate;
 		}
 	} break;
 
-	case OPT_GRAPHICS: {
+	case Menustates::OPT_GRAPHICS: {
 		previousMenustate = Menustates::OPTIONS;
 		if (input.isMouseLeftButtonPressed())
 		{
@@ -272,14 +259,14 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 				if (opt.hasAnyOptionChanged())
 				{
-					newGamestate = RELOAD_GRAPHICS;
+					newGamestate = Gamestates::reloadOptions;
 				}
 			} // Apply Changes
 
 			if (SubGraphics.PushButtonContains(2, mousepos))
 			{
 				opt.loadDefaults();
-				newGamestate = RESTORE_GRAPHICS;
+				newGamestate = Gamestates::restoreGraphicsOptions;
 			} // Reset Defaults
 		}
 
@@ -288,7 +275,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 	} break;
 
-	case OPT_GENERAL: {
+	case Menustates::OPT_GENERAL: {
 		previousMenustate = Menustates::OPTIONS;
 		if (input.isMouseLeftButtonPressed())
 		{
@@ -303,14 +290,14 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 				if (generalOpt.hasAnyOptionChanged())
 				{
-					newGamestate = RELOAD_GENERAL;
+					newGamestate = Gamestates::reloadGeneralOptions;
 				}
 			} // Apply Changes
 
 			if (SubGeneral.PushButtonContains(2, mousepos))
 			{
 				generalOpt.loadDefaults();
-				newGamestate = RELOAD_GENERAL;
+				newGamestate = reloadGeneralOptions;
 			} // Reset Defaults
 
 			if (SubGeneral.OptionNameWithButtonContains(2, mousepos))
@@ -362,12 +349,11 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 				generalOpt.setPlayer2Name(temp);
 			}
 		}
-
 		SubGeneral.coverPushButtonWithColor(1, !hasVisibleGeneralOptionChanged(generalOpt), unclickableButtonColor);
 
 	} break;
 
-	case CHOOSE_GAMETYPE: {
+	case Menustates::CHOOSE_GAMETYPE: {
 		//	ChooseGametype.highlightButtonContaining(mousepos);
 		previousMenustate = Menustates::DEFAULT;
 
@@ -377,20 +363,20 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			{
 				menustate = Menustates::CHOOSE_MAPSIZE;
 				previousMenustate = Menustates::CHOOSE_GAMETYPE;
-				choosedGamemode = Gamestates::PlvsAI;
+				choosedGamemode = Gamestates::playerVsAI;
 			}
 			else if (SubChooseGametype.contains(1, mousepos)) // Player vs Player button
 			{
 				menustate = Menustates::CHOOSE_MAPSIZE;
 				previousMenustate = Menustates::CHOOSE_GAMETYPE;
-				choosedGamemode = Gamestates::PlvsPl;
+				choosedGamemode = Gamestates::playerVsPlayer;
 			}
 			else if (SubChooseGametype.contains(2, mousepos)) // Back button
 				menustate = previousMenustate;
 		}
 	} break;
 
-	case CHOOSE_MAPSIZE: {
+	case Menustates::CHOOSE_MAPSIZE: {
 		//	ChooseMapSize.highlightButtonContaining(mousepos);
 		previousMenustate = Menustates::CHOOSE_GAMETYPE;
 
@@ -399,7 +385,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			if (SubChooseMapSize.contains(0, mousepos)) // 10 x 10 button
 			{
 				mapsize = 10;
-				if (choosedGamemode == Gamestates::PlvsPl)
+				if (choosedGamemode == Gamestates::playerVsPlayer)
 				{
 					newGamestate = Gamestates::loadGameVariables;
 					newVSinfo = AdditionalVisualInformations::LOADING;
@@ -415,7 +401,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			{
 				mapsize = 20;
 
-				if (choosedGamemode == Gamestates::PlvsPl)
+				if (choosedGamemode == Gamestates::playerVsPlayer)
 				{
 					newGamestate = Gamestates::loadGameVariables;
 					newVSinfo = AdditionalVisualInformations::LOADING;
@@ -431,7 +417,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			{
 				mapsize = 40;
 
-				if (choosedGamemode == Gamestates::PlvsPl)
+				if (choosedGamemode == Gamestates::playerVsPlayer)
 				{
 					newGamestate = Gamestates::loadGameVariables;
 					newVSinfo = AdditionalVisualInformations::LOADING;
@@ -448,7 +434,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 		}
 	} break;
 
-	case CHOOSE_AILEVEL: {
+	case Menustates::CHOOSE_AILEVEL: {
 		//	ChooseAILevel.highlightButtonContaining(mousepos);
 
 		if (input.isMouseLeftButtonPressed())
@@ -478,7 +464,6 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 				menustate = previousMenustate;
 		}
 	} break;
-
 	}
 }
 
@@ -514,11 +499,10 @@ void Menu::updateMenuWithAnimates(const sf::Time & time, const sf::Vector2f& mou
 
 void Menu::Reset()
 {
-	menustate = DEFAULT;
-	previousMenustate = DEFAULT;
+	menustate = Menustates::DEFAULT;
+	previousMenustate = Menustates::DEFAULT;
 	newVSinfo = AdditionalVisualInformations::NONE;
-	newGamestate = MENU;
-	newVSinfo = NONE;
+	newGamestate = Gamestates::menu;
 }
 
 Gamestates Menu::getChoosedGamemode()
@@ -531,5 +515,5 @@ void Menu::updateGamestate(Gamestates & gamestate, AdditionalVisualInformations 
 	gamestate = newGamestate;
 	if (newVSinfo != AdditionalVisualInformations::NONE)
 		additionalvsinfo = newVSinfo;
-	newGamestate = MENU;
+	newGamestate = Gamestates::menu;
 }

@@ -25,10 +25,10 @@ public:
 	// returns false when the Player has lost the game
 	bool isAWinner() const { return isWinner; }
 	
-	// return total number of shots made by the Player
+	// return total mapSize of shots made by the Player
 	unsigned int returnTotalShots() const { return totalShots; }
 	
-	// return number of shots on target made by the Player
+	// return mapSize of shots on target made by the Player
 	unsigned int returnTotalHits() const { return totalHits; }
 	
 	// returns maximum on target hits in a row 

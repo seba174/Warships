@@ -36,7 +36,7 @@ public:
 	void addPlayer(const playersInformations& player);
 
 	// function animates shining of the stars
-	// number of stars to shine for every player is based on the player's accuracy
+	// mapSize of stars to shine for every player is based on the player's accuracy
 	void updateStars(const sf::Time& dt);
 
 	// function updates and animates all pushButtons

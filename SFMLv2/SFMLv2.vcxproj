@@ -131,7 +131,6 @@
     <ClCompile Include="FinishStars.cpp" />
     <ClCompile Include="FinishStarsWithText.cpp" />
     <ClCompile Include="FontHandler.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GamePlayers.cpp" />
     <ClCompile Include="GamePlayerVsAI.cpp" />
     <ClCompile Include="GameTime.cpp" />
@@ -178,7 +177,6 @@
     <ClInclude Include="FinishStars.h" />
     <ClInclude Include="FinishStarsWithText.h" />
     <ClInclude Include="FontHandler.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GamePlayers.h" />
     <ClInclude Include="GamePlayerVsAI.h" />
     <ClInclude Include="GameTime.h" />

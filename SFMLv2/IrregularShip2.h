@@ -27,7 +27,7 @@ public:
 
 	void rotate_ship();
 
-	bool placePlayerShip(int **ships, int tabs_size, std::vector<Board*>&, sf::Texture* texture);
+	bool placePlayerShip(int **ships, int tabs_size, std::vector<Board*>&);
 
 	void updateTexture(const sf::Time&);
 

@@ -15,8 +15,8 @@ public:
 	MultipleTextFrame(unsigned int numberOfFrames);
 
 	// sets string for all text frames
-	// NOTE that stringList size and number of textFrames of object must be the same
-	// returns false when sizes of stringList and number of textFrames are not equal
+	// NOTE that stringList size and mapSize of textFrames of object must be the same
+	// returns false when sizes of stringList and mapSize of textFrames are not equal
 	bool setStrings(const std::list<std::wstring>& stringList);
 
 	// sets position of the center of all textFrames

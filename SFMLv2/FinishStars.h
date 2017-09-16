@@ -25,7 +25,7 @@ public:
 	void setPosition(const sf::Vector2f& position);
 
 	// function animates stars shining
-	// numberOfStars is a number of stars to shine
+	// numberOfStars is a mapSize of stars to shine
 	void clickStars(int numberOfStars, const sf::Time& dt);
 };
 

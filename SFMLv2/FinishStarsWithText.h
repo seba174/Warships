@@ -22,7 +22,7 @@ public:
 	void setTextString(const std::wstring& newString);
 
 	// function animates stars shining
-	// numberOfStars is a number of stars to shine
+	// numberOfStars is a mapSize of stars to shine
 	void clickStars(int numberOfStars, const sf::Time& dt) { stars.clickStars(numberOfStars, dt); }
 
 	// sets additionalTexture

@@ -1,70 +1,70 @@
 ﻿#include "LanguageManager.h"
 #include <iostream>
-using std::list;
-using std::string;
-using std::initializer_list;
 
-
-
+typedef std::list<Translation> lT;
+typedef std::initializer_list<Translation> inT;
+typedef enumLanguagesCodes eLC;
+typedef Translation Tr;
 
 
 LanguageManager::LanguageManager(enumLanguagesCodes code)
 	: lang(code)
 {
-	hashMap.insert(std::make_pair("Exit", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wyjście"), Translation(enumLanguagesCodes::EN,L"Exit") }))));
-	hashMap.insert(std::make_pair("Play", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Graj"), Translation(enumLanguagesCodes::EN,L"Play") }))));
-	hashMap.insert(std::make_pair("Options", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Opcje"), Translation(enumLanguagesCodes::EN,L"Options") }))));
-	hashMap.insert(std::make_pair("Credits", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Autorzy"), Translation(enumLanguagesCodes::EN,L"Credits") }))));
-	hashMap.insert(std::make_pair("Solo Game", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Gra jednoosobowa"), Translation(enumLanguagesCodes::EN,L"Solo Game") }))));
-	hashMap.insert(std::make_pair("Player vs Player", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Gra dwuosobowa"), Translation(enumLanguagesCodes::EN,L"Player vs Player") }))));
-	hashMap.insert(std::make_pair("Back", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Powrót"), Translation(enumLanguagesCodes::EN,L"Back") }))));
-	hashMap.insert(std::make_pair("General", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Ogólne"), Translation(enumLanguagesCodes::EN,L"General") }))));
-	hashMap.insert(std::make_pair("Graphics", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Grafika"), Translation(enumLanguagesCodes::EN,L"Graphics") }))));
-	hashMap.insert(std::make_pair("Sound", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Dźwięk"), Translation(enumLanguagesCodes::EN,L"Sound") }))));
-	hashMap.insert(std::make_pair("Choose map size", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wybierz rozmiar mapy"), Translation(enumLanguagesCodes::EN,L"Choose map size") }))));
-	hashMap.insert(std::make_pair("Choose difficulty level", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wybierz poziom trudności"), Translation(enumLanguagesCodes::EN,L"Choose difficulty level") }))));
-	hashMap.insert(std::make_pair("Easy", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Łatwy"), Translation(enumLanguagesCodes::EN,L"Easy") }))));
-	hashMap.insert(std::make_pair("Medium", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Średni"), Translation(enumLanguagesCodes::EN,L"Medium") }))));
-	hashMap.insert(std::make_pair("Hard", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Trudny"), Translation(enumLanguagesCodes::EN,L"Hard") }))));
-	hashMap.insert(std::make_pair("Apply changes", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Zatwierdź"), Translation(enumLanguagesCodes::EN,L"Apply changes") }))));
-	hashMap.insert(std::make_pair("Load defaults", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Ustawienia domyślne"), Translation(enumLanguagesCodes::EN,L"Load defaults") }))));
-	hashMap.insert(std::make_pair("Resolution", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Rozdzielczość"), Translation(enumLanguagesCodes::EN,L"Resolution") }))));
-	
-	hashMap.insert(std::make_pair("Vertical Sync", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Synchronizacja pionowa"), Translation(enumLanguagesCodes::EN,L"Vertical sync") }))));
-	hashMap.insert(std::make_pair("Full Screen", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Tryb pełnoekranowy"), Translation(enumLanguagesCodes::EN,L"Full screen") }))));
-	hashMap.insert(std::make_pair("Resolution Scale", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Skalowanie rozdzielczości"), Translation(enumLanguagesCodes::EN,L"Resolution scale") }))));
-	hashMap.insert(std::make_pair("Antialiasing", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wygładzanie krawędzi"), Translation(enumLanguagesCodes::EN,L"Antialiasing") }))));
-	hashMap.insert(std::make_pair("Yes", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Tak"), Translation(enumLanguagesCodes::EN,L"Yes") }))));
-	hashMap.insert(std::make_pair("No", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Nie"), Translation(enumLanguagesCodes::EN,L"No") }))));
+	hashMap.insert(make_pair("Exit", lT(inT({ Tr(eLC::PL,L"Wyjście"), Tr(eLC::EN,L"Exit") }))));
+	hashMap.insert(make_pair("Play", lT(inT({ Tr(eLC::PL,L"Graj"), Tr(eLC::EN,L"Play") }))));
+	hashMap.insert(make_pair("Options", lT(inT({ Tr(eLC::PL,L"Opcje"), Tr(eLC::EN,L"Options") }))));
+	hashMap.insert(make_pair("Credits", lT(inT({ Tr(eLC::PL,L"Autorzy"), Tr(eLC::EN,L"Credits") }))));
+	hashMap.insert(make_pair("Solo Game", lT(inT({ Tr(eLC::PL,L"Gra jednoosobowa"), Tr(eLC::EN,L"Solo Game") }))));
+	hashMap.insert(make_pair("Player vs Player", lT(inT({ Tr(eLC::PL,L"Gra dwuosobowa"), Tr(eLC::EN,L"Player vs Player") }))));
+	hashMap.insert(make_pair("Back", lT(inT({ Tr(eLC::PL,L"Powrót"), Tr(eLC::EN,L"Back") }))));
+	hashMap.insert(make_pair("General", lT(inT({ Tr(eLC::PL,L"Ogólne"), Tr(eLC::EN,L"General") }))));
+	hashMap.insert(make_pair("Graphics", lT(inT({ Tr(eLC::PL,L"Grafika"), Tr(eLC::EN,L"Graphics") }))));
+	hashMap.insert(make_pair("Sound", lT(inT({ Tr(eLC::PL,L"Dźwięk"), Tr(eLC::EN,L"Sound") }))));
+	hashMap.insert(make_pair("Choose map size", lT(inT({ Tr(eLC::PL,L"Wybierz rozmiar mapy"), Tr(eLC::EN,L"Choose map size") }))));
+	hashMap.insert(make_pair("Choose difficulty level", lT(inT({ Tr(eLC::PL,L"Wybierz poziom trudności"), Tr(eLC::EN,L"Choose difficulty level") }))));
+	hashMap.insert(make_pair("Easy", lT(inT({ Tr(eLC::PL,L"Łatwy"), Tr(eLC::EN,L"Easy") }))));
+	hashMap.insert(make_pair("Medium", lT(inT({ Tr(eLC::PL,L"Średni"), Tr(eLC::EN,L"Medium") }))));
+	hashMap.insert(make_pair("Hard", lT(inT({ Tr(eLC::PL,L"Trudny"), Tr(eLC::EN,L"Hard") }))));
+	hashMap.insert(make_pair("Apply changes", lT(inT({ Tr(eLC::PL,L"Zatwierdź"), Tr(eLC::EN,L"Apply changes") }))));
+	hashMap.insert(make_pair("Load defaults", lT(inT({ Tr(eLC::PL,L"Ustawienia domyślne"), Tr(eLC::EN,L"Load defaults") }))));
+	hashMap.insert(make_pair("Resolution", lT(inT({ Tr(eLC::PL,L"Rozdzielczość"), Tr(eLC::EN,L"Resolution") }))));
 
-	hashMap.insert(std::make_pair("What do you want to do", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Co masz zamiar zrobić"), Translation(enumLanguagesCodes::EN,L"What do you want to do") }))));
-	hashMap.insert(std::make_pair("Resume", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Kontynuuj"), Translation(enumLanguagesCodes::EN,L"Resume") }))));
-	hashMap.insert(std::make_pair("Return to Main Menu", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wróć do menu"), Translation(enumLanguagesCodes::EN,L"Return to Main Menu") }))));
-	hashMap.insert(std::make_pair("Quit the game", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wyjdź z gry"), Translation(enumLanguagesCodes::EN,L"Quit the game") }))));
-	hashMap.insert(std::make_pair("Loading", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Ładowanie"), Translation(enumLanguagesCodes::EN,L"Loading") }))));
-	hashMap.insert(std::make_pair("Do you wish to save changes", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Czy chcesz zapisać zmiany"), Translation(enumLanguagesCodes::EN,L"Do you wish to save changes") }))));
-	hashMap.insert(std::make_pair("Language", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Język"), Translation(enumLanguagesCodes::EN,L"Language") }))));
+	hashMap.insert(make_pair("Vertical Sync", lT(inT({ Tr(eLC::PL,L"Synchronizacja pionowa"), Tr(eLC::EN,L"Vertical sync") }))));
+	hashMap.insert(make_pair("Full Screen", lT(inT({ Tr(eLC::PL,L"Tryb pełnoekranowy"), Tr(eLC::EN,L"Full screen") }))));
+	hashMap.insert(make_pair("Resolution Scale", lT(inT({ Tr(eLC::PL,L"Skalowanie rozdzielczości"), Tr(eLC::EN,L"Resolution scale") }))));
+	hashMap.insert(make_pair("Antialiasing", lT(inT({ Tr(eLC::PL,L"Wygładzanie krawędzi"), Tr(eLC::EN,L"Antialiasing") }))));
+	hashMap.insert(make_pair("Yes", lT(inT({ Tr(eLC::PL,L"Tak"), Tr(eLC::EN,L"Yes") }))));
+	hashMap.insert(make_pair("No", lT(inT({ Tr(eLC::PL,L"Nie"), Tr(eLC::EN,L"No") }))));
 
-	hashMap.insert(std::make_pair("you still have to destroy following ships", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"musisz jeszcze zniszczyć poniższe statki"), Translation(enumLanguagesCodes::EN,L"you still have to destroy following ships") }))));
-	hashMap.insert(std::make_pair("Please set up your ships", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"ustaw swoje statki"), Translation(enumLanguagesCodes::EN,L"please set up your ships") }))));
-	hashMap.insert(std::make_pair("Menu desing", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Wygląd menu"), Translation(enumLanguagesCodes::EN,L"Menu desing") }))));
-	hashMap.insert(std::make_pair("Game time", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Czas gry"), Translation(enumLanguagesCodes::EN,L"Game time") }))));
-	hashMap.insert(std::make_pair("Rating of players", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Ocena graczy"), Translation(enumLanguagesCodes::EN,L"Rating of players") }))));
-	hashMap.insert(std::make_pair("Statistics", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Statystyki"), Translation(enumLanguagesCodes::EN,L"Statistics") }))));
+	hashMap.insert(make_pair("What do you want to do", lT(inT({ Tr(eLC::PL,L"Co masz zamiar zrobić"), Tr(eLC::EN,L"What do you want to do") }))));
+	hashMap.insert(make_pair("Resume", lT(inT({ Tr(eLC::PL,L"Kontynuuj"), Tr(eLC::EN,L"Resume") }))));
+	hashMap.insert(make_pair("Return to Main Menu", lT(inT({ Tr(eLC::PL,L"Wróć do menu"), Tr(eLC::EN,L"Return to Main Menu") }))));
+	hashMap.insert(make_pair("Quit the game", lT(inT({ Tr(eLC::PL,L"Wyjdź z gry"), Tr(eLC::EN,L"Quit the game") }))));
+	hashMap.insert(make_pair("Loading", lT(inT({ Tr(eLC::PL,L"Ładowanie"), Tr(eLC::EN,L"Loading") }))));
+	hashMap.insert(make_pair("Do you wish to save changes", lT(inT({ Tr(eLC::PL,L"Czy chcesz zapisać zmiany"), Tr(eLC::EN,L"Do you wish to save changes") }))));
+	hashMap.insert(make_pair("Language", lT(inT({ Tr(eLC::PL,L"Język"), Tr(eLC::EN,L"Language") }))));
 
-	hashMap.insert(std::make_pair("Total number of shots", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Całkowita liczba strzałów"), Translation(enumLanguagesCodes::EN,L"Total number of shots") }))));
-	hashMap.insert(std::make_pair("Total number of hits", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Całkowita liczba trafień"), Translation(enumLanguagesCodes::EN,L"Total number of hits") }))));
-	hashMap.insert(std::make_pair("Accuracy", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Celność"), Translation(enumLanguagesCodes::EN,L"Accuracy") }))));
-	hashMap.insert(std::make_pair("The biggest hit series", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Największa seria trafień"), Translation(enumLanguagesCodes::EN,L"The biggest hit series") }))));
-	hashMap.insert(std::make_pair("The biggest miss series", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Największa seria chybień"), Translation(enumLanguagesCodes::EN,L"The biggest miss series") }))));
-	hashMap.insert(std::make_pair("has won the game", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"wygrał grę"), Translation(enumLanguagesCodes::EN,L"has won the game") }))));
-	
-	hashMap.insert(std::make_pair("Press left mouse button to place the ship", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Naciśnij lewy przycisk myszy aby ustawić statek"), Translation(enumLanguagesCodes::EN,L"Press left mouse button to place the ship") }))));
-	hashMap.insert(std::make_pair("Press right mouse button to rotate the ship", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Naciśnij prawy przycisk myszy aby obrócić statek"), Translation(enumLanguagesCodes::EN,L"Press right mouse button to rotate the ship") }))));
+	hashMap.insert(make_pair("you still have to destroy following ships", lT(inT({ Tr(eLC::PL,L"musisz jeszcze zniszczyć poniższe statki"), Tr(eLC::EN,L"you still have to destroy following ships") }))));
+	hashMap.insert(make_pair("Please set up your ships", lT(inT({ Tr(eLC::PL,L"ustaw swoje statki"), Tr(eLC::EN,L"please set up your ships") }))));
+	hashMap.insert(make_pair("is setting his ships", lT(inT({ Tr(eLC::PL,L"ustawia swoje statki"), Tr(eLC::EN,L"is setting his ships") }))));
+	hashMap.insert(make_pair("Menu desing", lT(inT({ Tr(eLC::PL,L"Wygląd menu"), Tr(eLC::EN,L"Menu desing") }))));
+	hashMap.insert(make_pair("Game time", lT(inT({ Tr(eLC::PL,L"Czas gry"), Tr(eLC::EN,L"Game time") }))));
+	hashMap.insert(make_pair("Rating of players", lT(inT({ Tr(eLC::PL,L"Ocena graczy"), Tr(eLC::EN,L"Rating of players") }))));
+	hashMap.insert(make_pair("Statistics", lT(inT({ Tr(eLC::PL,L"Statystyki"), Tr(eLC::EN,L"Statistics") }))));
 
-	hashMap.insert(std::make_pair("First player name", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Nazwa pierwszego gracza"), Translation(enumLanguagesCodes::EN,L"First player name") }))));
-	hashMap.insert(std::make_pair("Second player name", std::list<Translation>(initializer_list<Translation>({ Translation(enumLanguagesCodes::PL,L"Nazwa drugiego gracza"), Translation(enumLanguagesCodes::EN,L"Second player name") }))));
+	hashMap.insert(make_pair("Total number of shots", lT(inT({ Tr(eLC::PL,L"Całkowita liczba strzałów"), Tr(eLC::EN,L"Total number of shots") }))));
+	hashMap.insert(make_pair("Total number of hits", lT(inT({ Tr(eLC::PL,L"Całkowita liczba trafień"), Tr(eLC::EN,L"Total number of hits") }))));
+	hashMap.insert(make_pair("Accuracy", lT(inT({ Tr(eLC::PL,L"Celność"), Tr(eLC::EN,L"Accuracy") }))));
+	hashMap.insert(make_pair("The biggest hit series", lT(inT({ Tr(eLC::PL,L"Największa seria trafień"), Tr(eLC::EN,L"The biggest hit series") }))));
+	hashMap.insert(make_pair("The biggest miss series", lT(inT({ Tr(eLC::PL,L"Największa seria chybień"), Tr(eLC::EN,L"The biggest miss series") }))));
+	hashMap.insert(make_pair("has won the game", lT(inT({ Tr(eLC::PL,L"wygrał grę"), Tr(eLC::EN,L"has won the game") }))));
 
+	hashMap.insert(make_pair("Press left mouse button to place the ship", lT(inT({ Tr(eLC::PL,L"Naciśnij lewy przycisk myszy aby ustawić statek"), Tr(eLC::EN,L"Press left mouse button to place the ship") }))));
+	hashMap.insert(make_pair("Press right mouse button to rotate the ship", lT(inT({ Tr(eLC::PL,L"Naciśnij prawy przycisk myszy aby obrócić statek"), Tr(eLC::EN,L"Press right mouse button to rotate the ship") }))));
+
+	hashMap.insert(make_pair("First player name", lT(inT({ Tr(eLC::PL,L"Nazwa pierwszego gracza"), Tr(eLC::EN,L"First player name") }))));
+	hashMap.insert(make_pair("Second player name", lT(inT({ Tr(eLC::PL,L"Nazwa drugiego gracza"), Tr(eLC::EN,L"Second player name") }))));
+	hashMap.insert(make_pair("AI", lT(inT({ Tr(eLC::PL,L"AI"), Tr(eLC::EN,L"AI") }))));
 }
 
 std::wstring LanguageManager::getText(const std::string & code) 
