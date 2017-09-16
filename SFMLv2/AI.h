@@ -90,7 +90,7 @@ public:
 	// returns true when AI misses
 	bool AIMovesLevelMedium();
 	// returns true when AI misses
-	bool AIMovesLevelHard();
+	bool AIMovesLevelHard(bool& wasAIUsingSuperPowers);
 
 	void resetSquareTab(int num, sf::RectangleShape** newSquareTab);
 

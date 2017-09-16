@@ -1,6 +1,7 @@
 #include "StatisticsMenu.h"
 #include "FontHandler.h"
 #include "LanguageManager.h"
+#include "UtilityFunctions.h"
 
 
 void StatisticsMenu::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -23,27 +24,11 @@ void StatisticsMenu::setStringsAfterAddingPlayers()
 	rows[2].setStrings(std::list<std::wstring>(std::initializer_list<std::wstring>(
 	{ langMan.getText("Total number of hits"),std::to_wstring(players[0].returnTotalHits()),std::to_wstring(players[1].returnTotalHits()) })));
 	rows[3].setStrings(std::list<std::wstring>(std::initializer_list<std::wstring>(
-	{ langMan.getText("Accuracy"),floatWith2DecimalPlaces(players[0].returnAccuracy()) + L'%',floatWith2DecimalPlaces(players[1].returnAccuracy()) + L'%' })));
+	{ langMan.getText("Accuracy"),floatWith2DecimalPlaces(players[0].returnAccuracy(), std::wstring()) + L'%',floatWith2DecimalPlaces(players[1].returnAccuracy(), std::wstring()) + L'%' })));
 	rows[4].setStrings(std::list<std::wstring>(std::initializer_list<std::wstring>(
 	{ langMan.getText("The biggest hit series"),std::to_wstring(players[0].returnMaximumShots()),std::to_wstring(players[1].returnMaximumShots()) })));
 	rows[5].setStrings(std::list<std::wstring>(std::initializer_list<std::wstring>(
 	{ langMan.getText("The biggest miss series"),std::to_wstring(players[0].returnMaximumMisses()),std::to_wstring(players[1].returnMaximumMisses()) })));
-}
-
-std::wstring StatisticsMenu::floatWith2DecimalPlaces(float value)
-{
-	int integer = static_cast<int>(value), temp;
-	float afterDecimalPoint = value - integer;
-
-	temp = static_cast<int>(afterDecimalPoint * 10);
-	if (temp == 0)
-	{
-		temp = static_cast<int>(afterDecimalPoint * 100);
-		return std::to_wstring(integer) + L'.' + L'0' + std::to_wstring(temp);
-	}
-
-	temp = static_cast<int>(afterDecimalPoint * 100);
-	return std::to_wstring(integer) + L'.' + std::to_wstring(temp);
 }
 
 StatisticsMenu::StatisticsMenu(const sf::Vector2f & dim, LanguageManager & langMan, float interfaceScale)
@@ -122,3 +107,4 @@ void StatisticsMenu::updateButtons(const sf::Time & dt, const sf::Vector2f & mou
 	menuButtons.highlightButtonContaining(mousepos);
 	menuButtons.updateWithAnimations(dt);
 }
+

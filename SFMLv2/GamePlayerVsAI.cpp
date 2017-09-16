@@ -433,6 +433,17 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 
 			case HARD:
 			{
+				if (player2.AIMovesLevelHard(wasAIUsingSuperPowers))
+				{
+					aiFinishesMove = true;
+					utilityClock.restart();
+					shouldAIWait = false;
+				}
+				else
+				{
+					shouldAIWait = true;
+					utilityClock2.restart();
+				}
 			}
 			break;
 			}
@@ -469,6 +480,12 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 
 	case gamePlayersState::finish:
 	{
+		if (!wasGameLogged)
+		{
+			logger->logPlayerVsAIGame(mapSize, level, player2.returnTotalShotsNumber(), wasAIUsingSuperPowers, player1.returnAccuracy(),
+				finishMenu.giveStars(player1.returnAccuracy()), player2.returnAccuracy(), finishMenu.giveStars(player2.returnAccuracy()));
+			wasGameLogged = true;
+		}
 		if (input.isMouseLeftButtonPressed())
 		{
 			if (finishMenu.menuButtons.PushButtonContains(0, mousepos))
@@ -535,11 +552,13 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	player1Won(false), player2Won(false),
 	advertPlayer1(dim, player2_setpoints, interfaceScale),
 	advertPlayer2(dim, player1_setpoints, interfaceScale),
-	finishMenu(screenDim, langMan, interfaceScale),
+	finishMenu(screenDim, langMan, interfaceScale, static_cast<int>(dim.x / SquareSize.x)),
 	statisticsMenu(screenDim, langMan, interfaceScale),
 	helpInformationPlayer1(2),
 	helpInformationPlayer2(2),
-	level(level)
+	level(level),
+	wasGameLogged(false), wasAIUsingSuperPowers(false),
+	mapSize(static_cast<int>(dim.x / SquareSize.x))
 {
 	player1.setPlayerName(stringToWstringConversion(genOpt.getPlayer1Name()));
 	player2.setPlayerName(langMan.getText("AI"));

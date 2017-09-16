@@ -9,8 +9,7 @@ void INI_Reader::saveToFile(const string & filePath)
 	std::ofstream out;
 	out.open(filePath);
 
-	out << "% Do NOT change any information in this file manually!" << std::endl;
-	out << "% If line has '%' inside, it is treated like an comment!" << std::endl << std::endl;
+	out << "% Warships config file %" << std::endl << std::endl;
 	for (auto it = settings.groups.begin(); it != settings.groups.end(); ++it)
 	{
 		string tmp;

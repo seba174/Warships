@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "Ships_HP.h"
 #include "Ships.h"
 

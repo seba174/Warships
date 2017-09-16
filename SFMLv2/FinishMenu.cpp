@@ -14,9 +14,9 @@ void FinishMenu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		target.draw(star, states);
 }
 
-FinishMenu::FinishMenu(const sf::Vector2f & dim, LanguageManager & langMan, float interfaceScale)
+FinishMenu::FinishMenu(const sf::Vector2f & dim, LanguageManager & langMan, float interfaceScale, int mapSize)
 	: menuButtons(langMan),
-	background(dim), langMan(langMan)
+	background(dim), langMan(langMan), mapSize(mapSize)
 {
 	sf::Vector2f starSize(sf::Vector2f(50, 50)*interfaceScale);
 
@@ -91,20 +91,7 @@ void FinishMenu::updateStars(const sf::Time & dt)
 	int i = 0;
 	for (auto it = stars.begin(); it != stars.end(); ++it)
 	{
-		int numberOfStars = 0;
-
-		float accuracy = players[i].returnAccuracy();
-
-		if (accuracy >= 70)
-			numberOfStars = 5;
-		else if (accuracy >= 60)
-			numberOfStars = 4;
-		else if (accuracy >= 50)
-			numberOfStars = 3;
-		else if (accuracy >= 40)
-			numberOfStars = 2;
-		else numberOfStars = 1;
-
+		unsigned numberOfStars = giveStars(players[i].returnAccuracy());
 		it->clickStars(numberOfStars, dt);
 		++i;
 	}
@@ -114,4 +101,20 @@ void FinishMenu::updateButtons(const sf::Time & dt, const sf::Vector2f & mousepo
 {
 	menuButtons.highlightButtonContaining(mousepos);
 	menuButtons.updateWithAnimations(dt);
+}
+
+unsigned FinishMenu::giveStars(float accuracy) const 
+{
+	unsigned numberOfStars = 1;
+
+	if (accuracy >= 51 * pow((10.0f / mapSize), 2))
+		numberOfStars = 5;
+	else if (accuracy >= 44 * pow((10.0f / mapSize), 2))
+		numberOfStars = 4;
+	else if (accuracy >= 37 * pow((10.0f / mapSize), 2))
+		numberOfStars = 3;
+	else if (accuracy >= 30 * pow((10.0f / mapSize), 2))
+		numberOfStars = 2;
+
+	return numberOfStars;
 }

@@ -20,10 +20,6 @@ class StatisticsMenu
 
 	void setStringsAfterAddingPlayers();
 
-	// returns a wstring representing given value with only 2 decimal places
-	// e.g. function returns 70.51 for value 70.515040
-	std::wstring floatWith2DecimalPlaces(float value);
-
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 public:

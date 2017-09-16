@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <memory>
+#include "SimpleLogger.h"
 #include "Player.h"
 #include "DestroyedShipsWithBackground.h"
 #include "AdditionalSubMenu.h"
@@ -12,7 +14,6 @@
 #include "rectangleWithTextAndFrames.h"
 #include "enumLevelsDifficulty.h"
 #include "AI.h"
-
 
 class Input;
 class LanguageManager;
@@ -34,9 +35,13 @@ class GamePlayerVsAI
 	SetShipsAd advertPlayer1, advertPlayer2;
 	bool player1Won, player2Won;
 	bool aiFinishesMove = false, shouldAIWait = false;
+	bool wasGameLogged, wasAIUsingSuperPowers;
+	int mapSize;
 	FinishMenu finishMenu;
 	StatisticsMenu statisticsMenu;
 	LevelsDifficulty level;
+
+	std::shared_ptr<SimpleLogger> logger;
 
 	std::vector<RectangleWithTextAndFrames> helpInformationPlayer1, helpInformationPlayer2;
 	sf::RectangleShape helpButtonPlayer1, helpButtonPlayer2;
@@ -48,7 +53,7 @@ class GamePlayerVsAI
 	GameTime gameTimer;
 
 	sf::Time PausedSetShipsTime = sf::seconds(2.0f);
-	sf::Time TurnInfoTime = sf::seconds(0.5f);
+	sf::Time TurnInfoTime = sf::seconds(0.6f);
 	sf::Time AIDelay = sf::seconds(0.7f);
 	sf::Clock utilityClock, utilityClock2;
 
@@ -76,6 +81,8 @@ public:
 		const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
 		const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim, const GeneralOptions& genOpt,
 		LevelsDifficulty level);
+	
+	void attachLogger(const std::shared_ptr<SimpleLogger>& newLogger) { logger = newLogger; }
 
 };
 

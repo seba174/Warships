@@ -154,11 +154,13 @@
     <ClCompile Include="SetShipsAd.cpp" />
     <ClCompile Include="Ships.cpp" />
     <ClCompile Include="Ships_HP.cpp" />
+    <ClCompile Include="SimpleLogger.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="StatisticsMenu.cpp" />
     <ClCompile Include="SubMenu.cpp" />
     <ClCompile Include="TextureHandler.cpp" />
     <ClCompile Include="Translation.cpp" />
+    <ClCompile Include="UtilityFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AdditionalMenu.h" />
@@ -181,6 +183,8 @@
     <ClInclude Include="GamePlayerVsAI.h" />
     <ClInclude Include="GameTime.h" />
     <ClInclude Include="GeneralOptions.h" />
+    <ClInclude Include="UtilityFunctions.h" />
+    <ClInclude Include="iniFileStructure.h" />
     <ClInclude Include="INI_Reader.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="IrregularShip2.h" />
@@ -201,6 +205,7 @@
     <ClInclude Include="SetShipsAd.h" />
     <ClInclude Include="Ships.h" />
     <ClInclude Include="Ships_HP.h" />
+    <ClInclude Include="SimpleLogger.h" />
     <ClInclude Include="StatisticsMenu.h" />
     <ClInclude Include="SubMenu.h" />
     <ClInclude Include="TextureHandler.h" />

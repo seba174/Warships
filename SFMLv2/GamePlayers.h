@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <memory>
+#include "SimpleLogger.h"
 #include "Player.h"
 #include "DestroyedShipsWithBackground.h"
 #include "AdditionalSubMenu.h"
@@ -36,7 +38,11 @@ class GamePlayers
 	sf::RectangleShape helpButtonPlayer1, helpButtonPlayer2;
 	bool shouldDisplayHelpPlayer1, shouldDisplayHelpPlayer2;
 
+	bool wasGameLogged;
+	int mapSize;
 	gamePlayersState currentState;
+
+	std::shared_ptr<SimpleLogger> logger;
 
 	sf::Time lastFrameTime, utilityTime;
 	GameTime gameTimer;
@@ -69,5 +75,12 @@ public:
 		const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
 		const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale, LanguageManager& langMan,const sf::Vector2f& screenDim, const GeneralOptions& genOpt);
 
+	/*GamePlayers(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& player1_setpoints, const sf::Vector2f& player2_setpoints,
+		const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape** player1Square_tab_2, sf::RectangleShape** player2Square_tab_2,
+		sf::RectangleShape& player1Rect, sf::RectangleShape& player2Rect, const Mouse_S& pl1Mouse, const Mouse_S& pl2Mouse,
+		const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
+		const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim, const GeneralOptions& genOpt);*/
+
+	void attachLogger(const std::shared_ptr<SimpleLogger>& newLogger) { logger = newLogger; }
 };
 

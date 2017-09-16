@@ -1,4 +1,5 @@
 #include "AI.h"
+#include <math.h>
 #include "IrregularShip2.h"
 #include "IrregularShip3.h"
 #include "TextureHandler.h"
@@ -74,7 +75,6 @@ void AI::actionsAfterHittingIrregular2()
 	++count;
 	if (count == 3)
 	{
-		//ai_ships_destroyed++;
 		count = 0;
 		copyPlayerShips();
 		shootWithBounds = false;
@@ -176,6 +176,17 @@ Info AI::attack()
 				return Info(rand, modifiedEnemyShips[rand.x][rand.y]);
 		}
 		++counter;
+	}
+}
+
+Info AI::attackWithBounds(const sf::Vector2i& boundsX, const sf::Vector2i& boundsY)
+{
+	std::uniform_int_distribution<int> dist_num_x(boundsX.x, boundsX.y), dist_num_y(boundsY.x, boundsY.y);
+	while (true)
+	{
+		sf::Vector2i rand(dist_num_x(mt), dist_num_y(mt));
+		if (modifiedEnemyShips[rand.x][rand.y] != -1 && modifiedEnemyShips[rand.x][rand.y] != -2)
+			return Info(rand, modifiedEnemyShips[rand.x][rand.y]);
 	}
 }
 
@@ -390,9 +401,104 @@ bool AI::AIMovesLevelMedium()
 	return true;
 }
 
-bool AI::AIMovesLevelHard()
+bool AI::AIMovesLevelHard(bool& wasAIUsingSuperPowers)
 {
-	return false;
+	Info info;
+
+	if (first)
+	{
+		for (int i = 0; i < AI::number; i++)
+		{
+			for (int j = 0; j < AI::number; j++)
+				modifiedEnemyShips[i][j] = enemyShips[i][j];
+		}
+		first = false;
+	}
+
+	if (!shootWithBounds)
+		info = AI::attack();
+	else
+		info = AI::attackWithBounds(giveBounds(last.position).boundsX, giveBounds(last.position).boundsY);
+
+	// AI has second chance if it has missed for the first time while it has found a ship
+	if (!info.what_hit && shootWithBounds)
+	{
+		info = AI::attackWithBounds(giveBounds(last.position).boundsX, giveBounds(last.position).boundsY);
+	}
+	// or it has shoot for too many times
+	else if (!info.what_hit && static_cast<int>(totalShots) > (static_cast<int>((pow(number, 2)/2.0f)*(10.0f / number))))
+	{
+		wasAIUsingSuperPowers = true;
+		if (!shootWithBounds)
+			info = AI::attack();
+		else
+			info = AI::attackWithBounds(giveBounds(last.position).boundsX, giveBounds(last.position).boundsY);
+	}
+
+		
+	if (info.what_hit)
+	{
+		squareTab2[info.position.x][info.position.y] = hit;
+		squareTab2[info.position.x][info.position.y].setPosition(
+			sf::Vector2f(info.position.x*AI::squareSize.x + enemySetPoints.x, info.position.y*AI::squareSize.y + enemySetPoints.y));
+		modifiedEnemyShips[info.position.x][info.position.y] = -2;
+		rect.setPosition(squareTab2[info.position.x][info.position.y].getPosition());
+		last = info;
+
+		++totalHits;
+		++totalShots;
+		++maximumHitsTemp;
+		updateMaximumMisses();
+
+		switch (info.what_hit)
+		{
+		case 2:
+		{
+			actionsAfterHittingStandardShip(2);
+			HP.size_2--;
+		} break;
+		case 3:
+		{
+			actionsAfterHittingStandardShip(3);
+			HP.size_3--;
+		} break;
+		case 4:
+		{
+			actionsAfterHittingStandardShip(4);
+			HP.size_4--;
+		} break;
+		case 5:
+		{
+			actionsAfterHittingStandardShip(5);
+			HP.size_5--;
+		} break;
+		case 10:
+		{
+			actionsAfterHittingIrregular2();
+			HP.size_ir2--;
+		} break;
+		case 11:
+		{
+			actionsAfterHittingIrregular3();
+			HP.size_ir3--;
+		} break;
+		}
+		return false;
+	}
+	else
+	{
+		squareTab2[info.position.x][info.position.y] = missedShot;
+		squareTab2[info.position.x][info.position.y].setPosition(
+			sf::Vector2f(info.position.x*AI::squareSize.x + enemySetPoints.x, info.position.y*AI::squareSize.y + enemySetPoints.y));
+		rect.setPosition(squareTab2[info.position.x][info.position.y].getPosition());
+		modifiedEnemyShips[info.position.x][info.position.y] = -2;
+
+		++totalShots;
+		++maximumMissesTemp;
+		updateMaximumHits();
+		return true;
+	}
+	return true;
 }
 
 void AI::resetSquareTab(int num, sf::RectangleShape ** newSquareTab)
@@ -426,18 +532,6 @@ AI::~AI()
 	for (int i = 0; i < AI::number; i++)
 		delete[] modifiedEnemyShips[i];
 	delete[] modifiedEnemyShips;
-}
-
-Info AI::attackWithBounds(const sf::Vector2i& boundsX, const sf::Vector2i& boundsY) 
-{
-	
-	std::uniform_int_distribution<int> dist_num_x(boundsX.x, boundsX.y), dist_num_y(boundsY.x, boundsY.y);
-	while (true)
-	{
-		sf::Vector2i rand(dist_num_x(mt), dist_num_y(mt));
-		if (modifiedEnemyShips[rand.x][rand.y] != -1 && modifiedEnemyShips[rand.x][rand.y] != -2)
-			return Info(rand, modifiedEnemyShips[rand.x][rand.y]);
-	}
 }
 
 Info::Info(const sf::Vector2i & position, int what_hit): position(position), what_hit(what_hit)

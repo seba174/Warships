@@ -110,7 +110,7 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubOptions.setInteriorColorAllButtons(buttonColor);
 
-	SubChooseMapSize.construct(langMan.getText("Choose map size"), L"10 x 10,20 x 20,40 x 40,"+ langMan.getText("Back"), submenuCharacterSize, submenuCharacterSize,
+	SubChooseMapSize.construct(langMan.getText("Choose map size"), L"8 x 8,10 x 10,12 x 12,"+ langMan.getText("Back"), submenuCharacterSize, submenuCharacterSize,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y - 1.8f*submenuCharacterSize),
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons / 1.5f - submenuCharacterSize),
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
@@ -382,9 +382,9 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 		if (input.isMouseLeftButtonPressed())
 		{
-			if (SubChooseMapSize.contains(0, mousepos)) // 10 x 10 button
+			if (SubChooseMapSize.contains(0, mousepos)) // 8 x 8 button
 			{
-				mapsize = 10;
+				mapsize = 8;
 				if (choosedGamemode == Gamestates::playerVsPlayer)
 				{
 					newGamestate = Gamestates::loadGameVariables;
@@ -397,9 +397,9 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 					previousMenustate = Menustates::CHOOSE_MAPSIZE;
 				}
 			}
-			else if (SubChooseMapSize.contains(1, mousepos)) // 20 x 20 button
+			else if (SubChooseMapSize.contains(1, mousepos)) // 10 x 10 button
 			{
-				mapsize = 20;
+				mapsize = 10;
 
 				if (choosedGamemode == Gamestates::playerVsPlayer)
 				{
@@ -413,9 +413,9 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 					previousMenustate = Menustates::CHOOSE_MAPSIZE;
 				}
 			}
-			else if (SubChooseMapSize.contains(2, mousepos)) // 40 x 40 button
+			else if (SubChooseMapSize.contains(2, mousepos)) // 12 x 12 button
 			{
-				mapsize = 40;
+				mapsize = 12;
 
 				if (choosedGamemode == Gamestates::playerVsPlayer)
 				{

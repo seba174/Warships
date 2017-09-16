@@ -15,16 +15,20 @@
 #include "Menu.h"
 #include "AdditionalMenu.h"
 #include "Mouse_S.h"
+#include "SimpleLogger.h"
 #include "enumLevelsDifficulty.h"
 #include "enumGamestate.h"
 #include "enumAdditionalVisualInformation.h"
 
+#define WARSHIPS_VERSION std::string("0.9")
+#define LOGS_FILE_PATH std::string("Logs/logs.ini")
+#define CONFIG_FILE_PATH std::string("Config/config.ini")
 
 int main()
 {
 	FontHandler& fonthandler = FontHandler::getInstance();
 	TextureHandler& textures = TextureHandler::getInstance();
-	INI_Reader reader("Config/config.ini");
+	INI_Reader reader(CONFIG_FILE_PATH);
 	GraphicsOptions graphicsOpt(reader);
 	graphicsOpt.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
 	GeneralOptions generalOpt(reader);
@@ -43,6 +47,7 @@ int main()
 	std::unique_ptr<Menu> mainMenu = nullptr;
 	std::unique_ptr<AdditionalMenu> additionalmenu = nullptr;
 	std::unique_ptr<Mouse_S> mousePlayer1, mousePlayer2;
+	std::shared_ptr<SimpleLogger> logger = std::make_shared<SimpleLogger>(LOGS_FILE_PATH, WARSHIPS_VERSION);
 
 	sf::Vector2i screenDimensions;
 	sf::Vector2i StandardWindowDimensions;
@@ -52,6 +57,7 @@ int main()
 	Window.create(sf::VideoMode(0, 0), "", sf::Style::None);
 
 	sf::Vector2f squareSize;
+	std::vector<std::vector<sf::RectangleShape>> squareTabv2, squareTab2v2;
 	sf::RectangleShape **squareTab = nullptr, **squareTab2 = nullptr;	
 	sf::RectangleShape rect, rect2, hit, missedShot;   
 	sf::RectangleShape boardForPlayer1, boardForPlayer2, menuTexture;
@@ -148,6 +154,9 @@ int main()
 				squareTab2[i] = new sf::RectangleShape[mapSize];
 			}
 
+			squareTabv2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
+			squareTab2v2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
+
 			switch (mainMenu->getChoosedGamemode())
 			{
 			case playerVsAI:
@@ -168,6 +177,7 @@ int main()
 				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)),
 				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), static_cast<float>(StandardWindowDimensions.y / 2)),
 				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)), generalOpt, level);
+			gamePlayerVsAI->attachLogger(logger);
 
 			additionalVisualInfo = AdditionalVisualInformations::NONE;
 			Gamestate = Gamestates::playerVsAI;
@@ -183,6 +193,7 @@ int main()
 				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)),
 				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), static_cast<float>(StandardWindowDimensions.y / 2)),
 				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)), generalOpt);
+			gamePlayers->attachLogger(logger);
 
 			additionalVisualInfo = AdditionalVisualInformations::NONE;
 			Gamestate = Gamestates::playerVsPlayer;
@@ -391,4 +402,5 @@ int main()
 
 	graphicsOpt.saveToFile();
 	generalOpt.saveToFile();
+	logger->saveToFile();
 }

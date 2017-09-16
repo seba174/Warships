@@ -444,6 +444,12 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 
 	case gamePlayersState::finish:
 	{
+		if (!wasGameLogged)
+		{
+			logger->logPlayerVsPlayerGame(mapSize, player1.returnAccuracy(), finishMenu.giveStars(player1.returnAccuracy()),
+				player2.returnAccuracy(), finishMenu.giveStars(player2.returnAccuracy()));
+			wasGameLogged = true;
+		}
 		if (input.isMouseLeftButtonPressed())
 		{
 			if (finishMenu.menuButtons.PushButtonContains(0, mousepos))
@@ -510,10 +516,12 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	player1Won(false), player2Won(false),
 	advertPlayer1(dim, player2_setpoints, interfaceScale),
 	advertPlayer2(dim, player1_setpoints, interfaceScale),
-	finishMenu(screenDim, langMan, interfaceScale),
+	finishMenu(screenDim, langMan, interfaceScale, static_cast<int>(dim.x/SquareSize.x)),
 	statisticsMenu(screenDim, langMan, interfaceScale),
 	helpInformationPlayer1(2),
-	helpInformationPlayer2(2)
+	helpInformationPlayer2(2),
+	wasGameLogged(false),
+	mapSize(static_cast<int>(dim.x / SquareSize.x))
 {
 	player1.setPlayerName(stringToWstringConversion(genOpt.getPlayer1Name()));
 	player2.setPlayerName(stringToWstringConversion(genOpt.getPlayer2Name()));
