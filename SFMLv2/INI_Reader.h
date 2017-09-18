@@ -1,26 +1,8 @@
 #pragma once
 #include <string>
-#include <list>
 #include <fstream>
+#include "iniFileStructure.h"
 
-
-struct SettingLine
-{
-	std::string name;
-	std::string value;
-};
-
-struct SettingGroup
-{
-	std::string groupName;
-	std::list<SettingLine> lines;
-};
-
-struct SettingFile
-{
-	std::string filePath;
-	std::list<SettingGroup> groups;
-};
 
 class INI_Reader
 {

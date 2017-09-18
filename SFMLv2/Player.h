@@ -1,87 +1,62 @@
 #pragma once
+#include <vector>
+#include <memory>
 #include "Ships_HP.h"
 #include "Ships.h"
-
-
-
-enum pos { Left, Up, Right, Down, Hold };
-
-typedef struct Position
-{
-	bool key_pressed = false;
-	float allign = 0;    // polozenie do ktorego ma sie dosunac kwadrat
-	sf::Time time;
-	bool towards = false;  // czy trzeba sie dosunac
-	float move_speed = 0;
-}Position;
 
 
 class Player
 {
 public:
 	Ships_HP HP;
+	static const int maximumPlayerNameSize = 10;
 
-protected:
-	sf::Vector2i BoardDimensions;
-	sf::Vector2f SquareSize;
-	sf::Vector2f Enemy_SetPoints;
-	sf::Vector2f Player_setPoints;
+private:
+	sf::Vector2i boardDimensions;
+	sf::Vector2f squareSize;
+	sf::Vector2f enemySetPoints;
+	sf::Vector2f playerSetPoints;
+	sf::RectangleShape missedShot;
+	sf::RectangleShape hit;
 
-	Board** set_ships; //tablica do rysowania
-	bool ships_set_up;
+	sf::RectangleShape& rect;
+	std::wstring name;
+	sf::Vector2i cursorPosition;
+	bool playerMoved = false;
+	unsigned int totalShots, totalHits;
+	bool counterToSet = false;
+	unsigned int maximumHitsTemp, maximumHits, maximumMissesTemp, maximumMisses;
+
+	//number of ships in game
+	const int countOfShips = 6;
+
+	int mapSize;
+	bool shipsSetUp;
 	int counter = 0;
 
-	const int count_of_ships = 6; //ilosc statkow w grze
+	std::vector<std::unique_ptr<Board>> setShips;
+	std::vector<std::vector<int>> playerShips;
+	std::vector<std::vector<int>>* enemyShips;
+	std::vector<std::vector<sf::RectangleShape>> squareTab2;
 
-	int** player_ships;
-	int **enemy_ships;
-	sf::RectangleShape** square_tab_2;
-	sf::RectangleShape pudlo;
-	sf::RectangleShape trafienie;
-	bool plmoved = false;
-	int number;
-	sf::Vector2i cursorPosition;
-	std::wstring name;
+		// FUNCTIONS
+	void updateMaximumHits();
 
-	float speed_ratio;	// mnoznik szybkosci ruchu w zaleznosci od mapy
-	int where_move = pos::Hold;  // w ktora strone rusza sie kwadrat
-	int check_rate = 20;   // czestotliwosc rysowania kwadratu (wiecej - mniejsze szarpanie ruchu)
-	Position position[4];	// opcje dla poszczegolnych kierunkow ruchu
-	int allign_speed = 100;		// minimalna szybkosc dosuwania kwadratu do krawedzi
-	int max_speed = 700;
-	int min_speed = 90;
-	int bar;
-	sf::RectangleShape& rect;
+	void updateMaximumMisses();
 
-	
 public:
-	Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, int** enemy_ships, const sf::Vector2f& player_setpoints,
-		const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape** square_tab_2, int bar, sf::RectangleShape& rect);
-	
-	bool Player_moves(const sf::Vector2i& position);
-	void Player_input(const sf::Time& dt);
+	Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships,
+		const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect);
 
-	void PlayerMouseInput(const sf::Time& dt, const sf::Vector2f& mousepos);
-	void Player_Set_ships(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw);
-	
-	void Draw(sf::RenderTarget& Window) const;
-	
-	void setplaceship() { set_ships[counter]->setplaceShip(true); }
+	bool playerMoves(const sf::Vector2i& position);
 
-	int** getplayerships() { return player_ships; }
+	void playerMouseInput(const sf::Time& dt, const sf::Vector2f& mousepos);
 
-	void setenemyships(int ** ships) { enemy_ships = ships; }
+	void playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw);
 
-	bool get_ships_set_up() const { return ships_set_up; }
+	void draw(sf::RenderTarget& Window) const;
 
-	bool& getplmoved() { return plmoved; }
-
-	void rotateShip() { set_ships[counter]->rotate_ship(); }
-
-	sf::Vector2i getRectPositionInGame() const 
-	{
-		return sf::Vector2i(static_cast<int>(round((rect.getPosition().x - Enemy_SetPoints.x) / SquareSize.x)), static_cast<int>(round((rect.getPosition().y - Enemy_SetPoints.y) / SquareSize.y)));
-	}
+	void drawSquareTab(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	void setPlayersCursorPositon(const sf::Vector2i& newPos) { cursorPosition = newPos; }
 
@@ -89,14 +64,43 @@ public:
 
 	bool isMouseInEnemyBounds(const sf::Vector2f& mousepos) const;
 
-	void resetSquareTab(int num, sf::RectangleShape** newSquareTab);
-	
-	sf::RectangleShape** returnSquareTab() { return square_tab_2; }
+	void resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab);
+
+	// returns accuracy of Player in range [0-100]
+	float returnAccuracy() const;
+
+	sf::Vector2i getRectPositionInGame() const
+	{
+		return sf::Vector2i(static_cast<int>(round((rect.getPosition().x - enemySetPoints.x) / squareSize.x)),
+			static_cast<int>(round((rect.getPosition().y - enemySetPoints.y) / squareSize.y)));
+	}
+
+	void setPlaceShip() { setShips[counter]->setPlaceShip(true); }
+
+	std::vector<std::vector<int>>* getPlayerShips() { return &playerShips;}
+
+	void setEnemyShips(std::vector<std::vector<int>>* ships) { enemyShips = ships; }
+
+	// returns true if Player has set its ships
+	// returns false otherwise
+	bool getShipsSetUp() const { return shipsSetUp; }
+
+	bool& getPlayerMoved() { return playerMoved; }
+
+	void rotateShip() { setShips[counter]->rotateShip(); }
+
+	std::vector<std::vector<sf::RectangleShape>>& returnSquareTab() { return squareTab2; }
 
 	void setPlayerName(const std::wstring& newName) { name = newName; }
 
 	std::wstring getPlayerName() const { return name; }
 
-	 ~Player();
+	unsigned int returnTotalShotsNumber()const { return totalShots; }
+
+	unsigned int returnTotalHitsNumber() const { return totalHits; }
+
+	unsigned int retrunMaximumHits() { updateMaximumHits(); return maximumHits; }
+
+	unsigned int returnMaximumMisses() { updateMaximumMisses(); return maximumMisses; }
 };
 

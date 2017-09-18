@@ -33,9 +33,6 @@
     <ClCompile Include="AI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,9 +43,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextureHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Options.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OptionButton.cpp">
@@ -99,13 +93,43 @@
     <ClCompile Include="LanguageManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Translation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="enumLanguagesCodes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneralOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FinishStars.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FinishMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FinishStarsWithText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StatisticsMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleWithTextAndFrames.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleWithText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultipleTextFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayerVsAI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleLogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,9 +152,6 @@
     <ClInclude Include="AI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -141,9 +162,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextureHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OptionButton.h">
@@ -159,9 +177,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Menu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="enumGamestate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="enumAdditionalVisualInformation.h">
@@ -213,6 +228,51 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneralOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FinishStars.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FinishMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FinishStarsWithText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="playersInformations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatisticsMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleWithText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleWithTextAndFrames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultipleTextFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayerVsAI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="iniFileStructure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilityFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enumGameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

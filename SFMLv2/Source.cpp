@@ -1,951 +1,360 @@
 ﻿#include <vld.h>
 #include <iostream>
 #include <memory>
-#include <vector>
-#include <cstring>
 #include <SFML/Graphics.hpp>
 
-#include "Ships.h"
-#include "Mouse_S.h"
-#include "IrregularShip2.h"
-#include "IrregularShip3.h"
-#include "AI.h"
-#include "Game.h"
-#include "Player.h"
-#include "TextureHandler.h"
 #include "FontHandler.h"
-#include "enumGamestate.h"
-#include "enumLevelsDifficulty.h"
-#include "enumAdditionalVisualInformation.h"
+#include "TextureHandler.h"
+#include "INI_Reader.h"
+#include "GraphicsOptions.h"
+#include "GeneralOptions.h"
+#include "Input.h"
+#include "LanguageManager.h"
+#include "GamePlayerVsAI.h"
+#include "GamePlayers.h"
 #include "Menu.h"
 #include "AdditionalMenu.h"
-#include "OptionButton.h"
-#include "Input.h"
+#include "Mouse_S.h"
+#include "SimpleLogger.h"
+#include "enumLevelsDifficulty.h"
+#include "enumGameState.h"
+#include "enumAdditionalVisualInformation.h"
 
-#include "INI_Reader.h"
-#include "OptionNameWithButton.h"
-#include "OptionsSubMenu.h"
-#include "Options.h"
-#include "GamePlayers.h"
-#include "DestroyedShips.h"
-#include "DestroyedShipsWithBackground.h"
-#include "LanguageManager.h"
-#include "GeneralOptions.h"
-
+#define WARSHIPS_VERSION std::string("0.9")
+#define LOGS_FILE_PATH std::string("Logs/logs.ini")
+#define CONFIG_FILE_PATH std::string("Config/config.ini")
 
 int main()
 {
-	INI_Reader reader("Config/config.ini");
-	Options graphicsOpt(reader);
-	graphicsOpt.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
-	GeneralOptions generalOpt(reader);
-	std::unique_ptr<LanguageManager> languageManager = nullptr;
-
-	int map_size = 0;
-	int barSize = 3;
-	const int line_thicknessSize = 10;
-	float interfaceScale = graphicsOpt.getResolution().x / 1920.0f;
-
-	int bar = static_cast<int>(barSize * interfaceScale);
-	int line_thickness = static_cast<int>(line_thicknessSize * interfaceScale);
-
 	FontHandler& fonthandler = FontHandler::getInstance();
 	TextureHandler& textures = TextureHandler::getInstance();
+	INI_Reader reader(CONFIG_FILE_PATH);
+	GraphicsOptions graphicsOpt(reader);
+	graphicsOpt.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
+	GeneralOptions generalOpt(reader);
+	Input input;
 
-	sf::RectangleShape bImage, bImage2;
-	bImage.setTexture(&textures.texture_handler["nowefalev5"]);
-	bImage2.setTexture(&textures.texture_handler["nowefalev5"]);
+	int mapSize = 0;
+	int barSize = 0;
+	float interfaceScale = graphicsOpt.getResolution().x / 1920.0f;
+	int bar = static_cast<int>(barSize * interfaceScale);
+	bool fullyLoad = true, shouldReloadGraphicsOptions = false, shouldReloadGeneralOptions = false, shouldRestoreGeneralOptions = false, menuReset = false;
 
-	std::vector<Board*> vect_ship_to_draw;
+	std::unique_ptr<LanguageManager> languageManager = nullptr;
+	std::unique_ptr<GamePlayerVsAI> gamePlayerVsAI;
+	std::unique_ptr<GamePlayers> gamePlayers;
+	std::unique_ptr<Menu> mainMenu = nullptr;
+	std::unique_ptr<AdditionalMenu> additionalMenu = nullptr;
+	std::unique_ptr<Mouse_S> mousePlayer1, mousePlayer2;
+	std::shared_ptr<SimpleLogger> logger = std::make_shared<SimpleLogger>(LOGS_FILE_PATH, WARSHIPS_VERSION);
 
 	sf::Vector2i screenDimensions;
-	sf::Vector2i StandardWindowDimensions;
-
-	sf::RenderWindow Window;
-	Window.create(sf::VideoMode(0, 0), "", sf::Style::None);
+	sf::Vector2i standardWindowDimensions;
 
 	sf::View view;
+	sf::RenderWindow window;
+	window.create(sf::VideoMode(0, 0), "", sf::Style::None);
 
-	// PASEK MIEDZY PLANSZAMI
-	sf::ConvexShape line(4);
-	sf::Vector2f square_size;
-
-	sf::RectangleShape **square_tab = nullptr, **square_tab_2 = nullptr;	// tablice kwadratow do rysowania
-	sf::RectangleShape rect, rect2, trafienie, pudlo;     // kwadraty pudla, trafienia, i kwadratu do przesuwania
-
-	pudlo.setTexture(&textures.texture_handler["X"]);
-	trafienie.setTexture(&textures.texture_handler["fire5"]);
-
-	sf::Clock clock;	// czas klatki
-
-	Input input;
-	std::unique_ptr<Mouse_S> mouse, mouse_pl;
-
-	// TABLICA STATKOW DO STAWIANIA PRZEZ GRACZA
-
-	int count_of_ships = 6;
-	Board** AI_set_ships = nullptr;
-	bool AI_set = false;
+	sf::Vector2f squareSize;
+	sf::RectangleShape rect, rect2, hit, missedShot;
+	sf::RectangleShape boardForPlayer1, boardForPlayer2, menuTexture;
 
 	LevelsDifficulty level = LevelsDifficulty::EASY;
-	Gamestates Gamestate = RELOAD_GRAPHICS, drawnGamestate = MENU;
-	AdditionalVisualInformations additional_vs_info = NONE;
+	GameStates gameState = GameStates::reloadOptions, drawnGameState = GameStates::menu;
+	AdditionalVisualInformations additionalVisualInfo = NONE;
 
-	std::unique_ptr<Game> game;
-	std::unique_ptr<GamePlayers> gamePlayers;
 
-	std::unique_ptr<Menu> MainMenu = nullptr;
-	std::unique_ptr<AdditionalMenu> Additionalmenu = nullptr;
-
-	bool menureset = false;
-
-	sf::Event Event;
-	while (Window.isOpen())
+	sf::Clock clock;
+	sf::Event event;
+	while (window.isOpen())
 	{
-		sf::Time dt = clock.restart();		// czas klatki
+		// Frame time
+		sf::Time dt = clock.restart();
 		input.ResetKeys();
-		static bool first = true, reloaded = false, reloadGeneral = false, restoredGeneral = false;
 
-		while (Window.pollEvent(Event))
+		while (window.pollEvent(event))
 		{
-			if (Event.type == sf::Event::Closed)
-				additional_vs_info = EXIT_INFO;
-			else if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Escape)
-			{
+			if (event.type == sf::Event::Closed)
+				additionalVisualInfo = EXIT_INFO;
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 				input.setKeyboardEscapeKeyPressed();
-				//additional_vs_info = EXIT_INFO;
-			}
-			else if (Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
+			if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left)
 				input.setMouseLeftButtonPressed();
-			else if (Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Right)
+			if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Right)
 				input.setMouseRightButtonPressed();
-			else if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Return)
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace)
+				input.setKeyboardBackspaceKeyPressed();
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
 				input.setKeyboardReturnKeyPressed();
+			if (event.type == sf::Event::TextEntered)
+				// only specific ASCII characters
+				if (event.text.unicode > 32 && event.text.unicode < 127)
+					input.setInputText(static_cast<char>(event.text.unicode));
 		}
-		if (Additionalmenu)
+		if (additionalMenu)
 		{
-			Additionalmenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input.isMouseLeftButtonPressed(), input, graphicsOpt, generalOpt);
-			Additionalmenu->updateAdditionalMenuWithAnimations(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
-			Additionalmenu->updateGamestate(Gamestate);
+			additionalMenu->runMenu(window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, graphicsOpt, generalOpt);
+			additionalMenu->updateAdditionalMenuWithAnimations(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+			additionalMenu->updateGamestate(gameState);
 		}
 
-		// Handling 
-		switch (Gamestate)
+		switch (gameState)
 		{
-		case PlvsAI:
+		case GameStates::playerVsAI:
 		{
-			if (input.isMouseLeftButtonPressed() && mouse->isMouseWithinArea() && !game->get_ships_set_up())
-				game->set_player_placeships();
-
-			if (input.isMouseRightButtonPressed() && mouse->isMouseWithinArea() && !game->get_ships_set_up())
-				game->rotate_player_ship();
-
-			if (input.isMouseLeftButtonPressed() && AI_set)
-				game->setplmoved() = true;
-
-			if (!game->get_ships_set_up())
-			{
-				if (mouse->isMouseWithinArea())
-					game->Player_set_ships(mouse->returnPositionInBounds(), vect_ship_to_draw);
-			}
-			else if (!AI_set)
-			{
-				game->place_ships(vect_ship_to_draw, AI_set_ships, count_of_ships);
-				AI_set = true;
-			}
-			else
-			{
-				sf::Vector2i tmp_vec(static_cast<int>(round(rect.getPosition().x / square_size.x)), static_cast<int>(round((rect.getPosition().y - bar) / square_size.y)));
-				game->play(dt, tmp_vec, mouse_pl->returnPositionInBounds());
-				if (game->getGameState() == AI_win)
-				{
-					additional_vs_info = AdditionalVisualInformations::AI_WON;
-				}
-				else if (game->getGameState() == Player_win)
-				{
-					additional_vs_info = AdditionalVisualInformations::PLAYER_WON;
-				}
-			}
-			drawnGamestate = PlvsAI;
+			gamePlayerVsAI->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState);
+			drawnGameState = GameStates::playerVsAI;
 		}
 		break;
 
-		case loadGameVariables:
+		case GameStates::playerVsPlayer:
 		{
-			bImage.setSize(sf::Vector2f(screenDimensions.x, screenDimensions.y));
-			bImage2.setSize(sf::Vector2f(screenDimensions.x, screenDimensions.y));
+			gamePlayers->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState);
+			drawnGameState = GameStates::playerVsPlayer;
+		}
+		break;
 
-			square_size = sf::Vector2f(static_cast<float>(screenDimensions.x) / map_size, static_cast<float>(screenDimensions.y) / map_size); // rozmiar 1 kwadratu mapy)
+		case GameStates::loadGameVariables:
+		{
+			missedShot.setTexture(&textures.texture_handler["X"]);
+			hit.setTexture(&textures.texture_handler["fire5"]);
+			boardForPlayer1.setTexture(&textures.texture_handler["nowefalev5"]);
+			boardForPlayer2.setTexture(&textures.texture_handler["nowefalev5"]);
+			rect.setTexture(&textures.texture_handler["crosshair"]);
+			rect2.setTexture(&textures.texture_handler["crosshair"]);
 
-			rect.setSize(square_size);
-			rect2.setSize(square_size);
-			trafienie.setSize(square_size);
-			pudlo.setSize(square_size);
+			squareSize = sf::Vector2f(static_cast<float>(screenDimensions.x) / mapSize, static_cast<float>(screenDimensions.y) / mapSize);
+			boardForPlayer1.setSize(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(screenDimensions.y)));
+			boardForPlayer2.setSize(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(screenDimensions.y)));
+			rect.setSize(squareSize);
+			rect2.setSize(squareSize);
+			hit.setSize(squareSize);
+			missedShot.setSize(squareSize);
 
-			rect.setFillColor(sf::Color::Black);
-			rect2.setFillColor(sf::Color::Black);
 			rect.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
-			rect2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, static_cast<float>(bar)));
-			//trafienie.setFillColor(sf::Color::Red);
-			pudlo.setFillColor(sf::Color(255, 255, 255, 170));
+			rect2.setPosition(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(bar)));
+			boardForPlayer1.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
+			boardForPlayer2.setPosition(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(bar)));
 
-			line.setPoint(0, sf::Vector2f(screenDimensions.x, 0));
-			line.setPoint(1, sf::Vector2f(screenDimensions.x, screenDimensions.y + bar));
-			line.setPoint(2, sf::Vector2f(screenDimensions.x + line_thickness, screenDimensions.y + bar));
-			line.setPoint(3, sf::Vector2f(screenDimensions.x + line_thickness, 0));
-			line.setOutlineColor(sf::Color::Red);
+			missedShot.setFillColor(sf::Color(255, 255, 255, 170));
 
-			bImage.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
-			bImage2.setPosition(sf::Vector2f(screenDimensions.x + line_thickness, static_cast<float>(bar)));
+			mousePlayer1 = std::make_unique<Mouse_S>(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(2 * screenDimensions.x)),
+				sf::Vector2f(static_cast<float>(bar), static_cast<float>(screenDimensions.y + bar)), &window);
+			mousePlayer2 = std::make_unique<Mouse_S>(sf::Vector2f(0, static_cast<float>(screenDimensions.x)),
+				sf::Vector2f(static_cast<float>(bar), static_cast<float>(screenDimensions.y + bar)), &window);
 
-			mouse = std::make_unique<Mouse_S>(sf::Vector2f(screenDimensions.x + line_thickness, 2 * screenDimensions.x + line_thickness),
-				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
-			mouse_pl = std::make_unique<Mouse_S>(sf::Vector2f(0, screenDimensions.x),
-				sf::Vector2f(bar, screenDimensions.y + bar), &Window);
-
-			square_tab = new sf::RectangleShape*[map_size];
-			square_tab_2 = new sf::RectangleShape*[map_size];
-
-			for (int i = 0; i < map_size; i++)
+			switch (mainMenu->getChoosedGamemode())
 			{
-				square_tab[i] = new sf::RectangleShape[map_size];
-				square_tab_2[i] = new sf::RectangleShape[map_size];
+			case playerVsAI:
+				gameState = GameStates::loadPlayerVsAI; break;
+			case playerVsPlayer:
+				gameState = GameStates::loadPlayerVsPlayer; break;
 			}
 
-			drawnGamestate = Gamestates::NOTHING;
-
-			switch (MainMenu->getChoosedGamemode())
-			{
-			case PlvsAI:
-				Gamestate = loadPlvsAI; break;
-			case PlvsPl:
-				Gamestate = loadPlvsPl; break;
-			}
-
+			drawnGameState = GameStates::nothing;
 		}
 		break;
 
-		case loadPlvsAI:
+		case GameStates::loadPlayerVsAI:
 		{
-			AI_set_ships = new Board*[count_of_ships];
-			AI_set_ships[0] = new Ships(5, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[1] = new Ships(4, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[2] = new Ships(3, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[3] = new Ships(2, square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["big_body_final"]);
-			AI_set_ships[4] = new IrregularShip2(square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["irregular2"]);
-			AI_set_ships[5] = new IrregularShip3(square_size, screenDimensions, sf::Vector2f(0, bar), &textures.texture_handler["irregular3"]);
+			gamePlayerVsAI = std::make_unique<GamePlayerVsAI>(screenDimensions, squareSize, sf::Vector2f(0, static_cast<float>(bar)),
+				sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(bar)),
+				missedShot, hit, rect, rect2, *mousePlayer2, *mousePlayer1, sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+				sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)),
+				sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), static_cast<float>(standardWindowDimensions.y / 2)),
+				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)), generalOpt, level);
+			gamePlayerVsAI->attachLogger(logger);
 
-			game = std::make_unique<Game>(screenDimensions, square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar),
-				pudlo, trafienie, square_tab, square_tab_2, bar, rect, level);
-
-			additional_vs_info = AdditionalVisualInformations::NONE;
-			Gamestate = PlvsAI;
-			drawnGamestate = Gamestates::NOTHING;
+			additionalVisualInfo = AdditionalVisualInformations::NONE;
+			gameState = GameStates::playerVsAI;
+			drawnGameState = GameStates::nothing;
 		}
 		break;
 
-		case loadPlvsPl:
+		case GameStates::loadPlayerVsPlayer:
 		{
-			std::cout << "loadplvspl" << std::endl;
-			gamePlayers = std::make_unique<GamePlayers>(screenDimensions, square_size, sf::Vector2f(0, bar), sf::Vector2f(screenDimensions.x + line_thickness, bar),
-				pudlo, trafienie, square_tab, square_tab_2, bar, rect, rect2, *mouse_pl, *mouse,sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-				sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),	sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2),
-				interfaceScale, *languageManager);
+			gamePlayers = std::make_unique<GamePlayers>(screenDimensions, squareSize, sf::Vector2f(0, static_cast<float>(bar)),
+				sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(bar)),
+				missedShot, hit, rect, rect2, *mousePlayer2, *mousePlayer1, sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+				sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)),
+				sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), static_cast<float>(standardWindowDimensions.y / 2)),
+				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)), generalOpt);
+			gamePlayers->attachLogger(logger);
 
-			additional_vs_info = AdditionalVisualInformations::NONE;
-			Gamestate = PlvsPl;
-			drawnGamestate = Gamestates::NOTHING;
+			additionalVisualInfo = AdditionalVisualInformations::NONE;
+			gameState = GameStates::playerVsPlayer;
+			drawnGameState = GameStates::nothing;
 		}
 		break;
 
-		case PlvsPl:
+		case GameStates::menu:
 		{
-			gamePlayers->play(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input);
-			drawnGamestate = PlvsPl;
+			mainMenu->runMenu(window.mapPixelToCoords(sf::Mouse::getPosition(window)), mapSize, level, input, graphicsOpt, generalOpt);
+			mainMenu->updateGamestate(gameState, additionalVisualInfo);
+			mainMenu->updateMenuWithAnimates(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+			drawnGameState = GameStates::menu;
 		}
 		break;
 
-		case MENU:
+		case GameStates::breakAndGoToMenu:
 		{
-			MainMenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), map_size, level, input.isMouseLeftButtonPressed(), graphicsOpt, generalOpt);
-			MainMenu->updateGamestate(Gamestate, additional_vs_info);
-			MainMenu->updateMenuWithAnimates(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
-			drawnGamestate = MENU;
+			mainMenu->Reset();
+			gameState = GameStates::menu;
+			drawnGameState = GameStates::nothing;
 		}
 		break;
 
-		case BREAK_AND_GO_TO_MENU:
+		case GameStates::reloadOptions:
 		{
-			AI_set = false;
-			vect_ship_to_draw.clear();
-
-			if (AI_set_ships)
-				for (int i = 0; i < count_of_ships; i++)
-				{
-					delete AI_set_ships[i];
-				}
-			delete[] AI_set_ships;
-			AI_set_ships = nullptr;
-
-			if (square_tab && square_tab_2)
-				for (int i = 0; i < map_size; i++)
-				{
-					delete[]square_tab[i];
-					delete[]square_tab_2[i];
-				}
-			delete[]square_tab;
-			delete[]square_tab_2;
-			square_tab = nullptr;
-			square_tab_2 = nullptr;
-
-			MainMenu->Reset();
-			Gamestate = MENU;
-			drawnGamestate = Gamestates::NOTHING;
-		}
-		break;
-
-		case RELOAD_GRAPHICS:
-		{
-			if (first || reloadGeneral)
+			if (fullyLoad || shouldReloadGeneralOptions)
 				languageManager = std::make_unique<LanguageManager>(generalOpt.getLanguage());
 
 			bool wasResolutionChanged = graphicsOpt.wasResolutionChanged();
 			bool wasFullScreenChanged = graphicsOpt.wasFullScreenChanged();
 
-			if ((wasFullScreenChanged && graphicsOpt.isFullScreenEnabled()) || (graphicsOpt.isFullScreenEnabled() && first))
+			TextureHandler::setSmooth(graphicsOpt.isAntialiasingEnabled());
+
+			sf::Vector2f temporaryMenuSize = menuTexture.getSize();
+			menuTexture = sf::RectangleShape();
+			menuTexture.setSize(temporaryMenuSize);
+			switch (generalOpt.getMenuTextureNumber())
+			{
+			case 0:
+				menuTexture.setTexture(&textures.texture_handler["menuTexture0"]); break;
+			case 1:
+				menuTexture.setTexture(&textures.texture_handler["menuTexture1"]); break;
+			case 2:
+				menuTexture.setTexture(&textures.texture_handler["menuTexture2"]); break;
+			}
+
+			if ((wasFullScreenChanged && graphicsOpt.isFullScreenEnabled()) || (graphicsOpt.isFullScreenEnabled() && fullyLoad))
 			{
 				sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 				graphicsOpt.setDesktopResolution(sf::Vector2i(desktop.width, desktop.height));
 				interfaceScale = desktop.width / 1920.0f;
-				screenDimensions = sf::Vector2i(desktop.width / 2 - line_thickness / 2, desktop.height - bar);
-				StandardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);
-				Window.create(desktop, L"Warships", sf::Style::Fullscreen);
-				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
+				screenDimensions = sf::Vector2i(desktop.width / 2, desktop.height - bar);
+				standardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);
+				window.create(desktop, L"Warships", sf::Style::Fullscreen);
+				menuTexture.setSize(sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)));
+				window.setPosition(sf::Vector2i(window.getPosition().x, 0));
 			}
-			else if ((wasResolutionChanged || first || wasFullScreenChanged) && !graphicsOpt.isFullScreenEnabled())
+			else if ((wasResolutionChanged || fullyLoad || wasFullScreenChanged) && !graphicsOpt.isFullScreenEnabled())
 			{
 				interfaceScale = graphicsOpt.getResolution().x / 1920.0f;
-				screenDimensions = sf::Vector2i(graphicsOpt.getResolution().x / 2 - line_thickness / 2, graphicsOpt.getResolution().y - bar);
-				StandardWindowDimensions = sf::Vector2i(graphicsOpt.getResolution());
-				Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), L"Warships", sf::Style::Close);
-				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
+				screenDimensions = sf::Vector2i(graphicsOpt.getResolution().x / 2, graphicsOpt.getResolution().y - bar);
+				standardWindowDimensions = sf::Vector2i(graphicsOpt.getResolution());
+				window.create(sf::VideoMode(standardWindowDimensions.x, standardWindowDimensions.y), L"Warships", sf::Style::Close);
+				menuTexture.setSize(sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)));
+				window.setPosition(sf::Vector2i(window.getPosition().x, 0));
 			}
 
-			bar = barSize * interfaceScale;
-			line_thickness = line_thicknessSize * interfaceScale;
-
-			Window.setVerticalSyncEnabled(graphicsOpt.isVerticalSyncEnabled());
-
-			view = Window.getDefaultView();
+			bar = static_cast<int>(barSize * interfaceScale);
+			window.setVerticalSyncEnabled(graphicsOpt.isVerticalSyncEnabled());
+			view = window.getDefaultView();
 			view.zoom(100.0f / graphicsOpt.getResolutionScale());
-			Window.setView(view);
+			window.setView(view);
 
-			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || first)
+			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || fullyLoad)
 			{
-				MainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(StandardWindowDimensions.x / 2, 20 * interfaceScale),
-					sf::Vector2f(StandardWindowDimensions.x / 2, 290 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
-				Additionalmenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-					sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y),
-					sf::Vector2f(StandardWindowDimensions.x / 2, StandardWindowDimensions.y / 2), additional_vs_info, interfaceScale, *languageManager);
+				mainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 20 * interfaceScale),
+					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 300 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
+				additionalMenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+					sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)),
+					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), static_cast<float>(standardWindowDimensions.y / 2)),
+					additionalVisualInfo, interfaceScale, *languageManager);
 			}
-			if (!first || reloaded)
+			if (!fullyLoad || shouldReloadGraphicsOptions)
 			{
-				MainMenu->setMenustate(Menustates::OPT_GRAPHICS);
-				reloaded = false;
+				mainMenu->setMenustate(Menustates::OPT_GRAPHICS);
+				shouldReloadGraphicsOptions = false;
 			}
-			if (reloadGeneral)
-				MainMenu->setMenustate(Menustates::OPT_GENERAL);
+			if (shouldReloadGeneralOptions)
+				mainMenu->setMenustate(Menustates::OPT_GENERAL);
+			if (!fullyLoad)
+				additionalVisualInfo = AdditionalVisualInformations::APPLY_CHANGES_GRAPHICS;
+			if (shouldReloadGeneralOptions && !shouldRestoreGeneralOptions)
+				additionalVisualInfo = AdditionalVisualInformations::APPLY_CHANGES_GENERAL;
 
-			Gamestate = MENU;
-			if (!first)
-				additional_vs_info = AdditionalVisualInformations::APPLY_CHANGES_GRAPHICS;
+			shouldRestoreGeneralOptions = false;
+			shouldReloadGeneralOptions = false;
+			fullyLoad = false;
 
-			if (reloadGeneral && !restoredGeneral)
-			{
-				additional_vs_info = AdditionalVisualInformations::APPLY_CHANGES_GENERAL;
-				
-			}
-
-			restoredGeneral = false;
-			reloadGeneral = false;
-			first = false;
+			gameState = GameStates::menu;
 		}
 		break;
 
-		case RESTORE_GRAPHICS:
+		case GameStates::restoreGraphicsOptions:
 		{
-			first = true;
-			reloaded = true;
-			Gamestate = RELOAD_GRAPHICS;
+			fullyLoad = true;
+			shouldReloadGraphicsOptions = true;
+			gameState = GameStates::reloadOptions;
 		}
 		break;
 
-		case RELOAD_GENERAL:
+		case GameStates::reloadGeneralOptions:
 		{
-			reloadGeneral = true;
-			Gamestate = RESTORE_GRAPHICS;
+			shouldReloadGeneralOptions = true;
+			gameState = GameStates::restoreGraphicsOptions;
 		} break;
 
-		case RESTORE_GENERAL:
+		case GameStates::restoreGeneralOptions:
 		{
-			restoredGeneral = true;
-			Gamestate = RELOAD_GENERAL;
+			shouldRestoreGeneralOptions = true;
+			gameState = GameStates::reloadGeneralOptions;
 		} break;
 
-		case EXIT:
+		case GameStates::Exit:
 		{
-			if (AI_set_ships)
-				for (int i = 0; i < count_of_ships; i++)
-				{
-					delete[]AI_set_ships[i];
-				}
-			delete AI_set_ships;
-
-			if (square_tab && square_tab_2)
-				for (int i = 0; i < map_size; i++)
-				{
-					delete[]square_tab[i];
-					delete[]square_tab_2[i];
-				}
-			delete[]square_tab;
-			delete[]square_tab_2;
-
-			drawnGamestate = Gamestates::NOTHING;
-			Window.close();
+			drawnGameState = GameStates::nothing;
+			window.close();
 		}
 		break;
 
-		case PAUSED:
+		case GameStates::paused:
 		{
-			Gamestate = drawnGamestate;
+			gameState = drawnGameState;
 		}
 		break;
 		}
 
 		// DRAWING
-		switch (drawnGamestate)
+		switch (drawnGameState)
 		{
-		case PlvsAI:
+		case GameStates::playerVsAI:
 		{
-			Window.draw(bImage2);
-			Window.draw(line);
-			Window.draw(bImage);
+			window.draw(boardForPlayer2);
+			window.draw(boardForPlayer1);
 
-			if (!AI_set)
-			{
-				for (auto it = vect_ship_to_draw.begin(); it != vect_ship_to_draw.end(); it++)
-				{
-					(*it)->updateTexture(dt);
-					Window.draw((*it)->return_ship());
-				}
-			}
-			else
-			{
-				for (auto it = vect_ship_to_draw.begin(); it != vect_ship_to_draw.end() - 6; it++)
-				{
-					(*it)->updateTexture(dt);
-					Window.draw((*it)->return_ship());
-				}
-			}
-
-			for (int i = 0; i < map_size; i++)
-				for (int j = 0; j < map_size; j++)
-				{
-					Window.draw(square_tab[i][j]);
-					Window.draw(square_tab_2[i][j]);
-				}
-			game->Draw(Window);
+			window.draw(*gamePlayerVsAI);
 		}
 		break;
 
-		case PlvsPl:
+		case GameStates::playerVsPlayer:
 		{
-			Window.draw(bImage2);
-			Window.draw(line);
-			Window.draw(bImage);
+			window.draw(boardForPlayer2);
+			window.draw(boardForPlayer1);
 
-			for (int i = 0; i < map_size; i++)
-				for (int j = 0; j < map_size; j++)
-				{
-					Window.draw(square_tab[i][j]);
-					Window.draw(square_tab_2[i][j]);
-				}
-
-			Window.draw(*gamePlayers);
+			window.draw(*gamePlayers);
 		}
 		break;
 
-		case MENU:
+		case GameStates::menu:
 		{
-			if (MainMenu)
-				Window.draw(*MainMenu);
+			window.draw(menuTexture);
+			if (mainMenu)
+				window.draw(*mainMenu);
 		}
 		break;
 		}
 
-		if (Additionalmenu)
-			Window.draw(*Additionalmenu);
+		if (additionalMenu)
+			window.draw(*additionalMenu);
 
-		Window.display();
-		Window.clear();
+		window.display();
+		window.clear();
 	}
 
 	graphicsOpt.saveToFile();
 	generalOpt.saveToFile();
+	logger->saveToFile();
 }
-
-
-/*switch (additional_vs_info)
-{
-case EXIT_INFO:
-{
-std::cout << "EXIT_INFO" << endl;
-sf::Vector2i exp = sf::Mouse::getPosition(Window);
-sf::Vector2f mouse2 = (Window).mapPixelToCoords(exp);
-
-sf::RectangleShape background(sf::Vector2f(StandardWindowDimensions.x, StandardWindowDimensions.y)),
-background_for_text(sf::Vector2f(StandardWindowDimensions.x / 3, StandardWindowDimensions.y / 3));
-background.setFillColor(sf::Color(0, 0, 0, 200));
-background_for_text.setPosition(StandardWindowDimensions.x / 2 - background_for_text.getSize().x / 2, StandardWindowDimensions.y / 2 - background_for_text.getSize().y / 2);
-background_for_text.setFillColor(sf::Color::Red);
-
-sf::Text title("What do you want to do?", mecha, 50);
-title.setStyle(sf::Text::Bold);
-title.setPosition(StandardWindowDimensions.x / 2 - title.getGlobalBounds().width / 2, background_for_text.getPosition().y);
-
-const int ile = 3;
-
-sf::Text tekst[ile];
-
-string str[] = { "Return to Main Menu","Quit a game", "Resume" };
-
-for (int i = 0; i<ile; i++)
-{
-tekst[i].setFont(font);
-tekst[i].setCharacterSize(35);
-
-tekst[i].setString(str[i]);
-tekst[i].setPosition(StandardWindowDimensions.x / 2- tekst[i].getGlobalBounds().width/2, title.getPosition().y+title.getGlobalBounds().height+50 + i * 50);
-}
-
-
-//kliknięcie Return to Main Menu
-if (tekst[0].getGlobalBounds().contains(mouse2) &&
-MouseLeftButtonPressed)
-{
-state = BREAK_AND_GO_TO_MENU;
-menureset = true;
-additional_vs_info = NONE;
-}
-
-//kliknięcie Quit a game
-else if (tekst[1].getGlobalBounds().contains(mouse2) &&
-MouseLeftButtonPressed)
-{
-state = EXIT;
-additional_vs_info = NONE;
-}
-
-// kliknięcie Resume
-else if (tekst[2].getGlobalBounds().contains(mouse2) &&
-MouseLeftButtonPressed)
-{
-additional_vs_info = NONE;
-}
-
-
-
-for (int i = 0; i < ile; i++)
-if (tekst[i].getGlobalBounds().contains(Window.mapPixelToCoords(sf::Mouse::getPosition(Window))))
-tekst[i].setFillColor(sf::Color::Cyan);
-else tekst[i].setFillColor(sf::Color::White);
-
-Window.draw(background);
-Window.draw(background_for_text);
-Window.draw(title);
-for (int i = 0; i < ile; ++i)
-Window.draw(tekst[i]);
-}
-break;
-}*/
-
-
-/*
-case MENU:
-{
-std::cout << "MENU" << endl;
-enum menuGamestate{DEFAULT, CHOOSE_GAMETYPE, CHOOSE_MAPSIZE, CHOOSE_AILEVEL, LOADING_GAME_VARIABLES, OPTIONS};
-static menuGamestate menustate = DEFAULT;
-static Gamestate tmpgamestate = Gamestate::MENU;
-
-if (menureset)
-{
-menustate = DEFAULT;
-menureset = false;
-}
-
-sf::Vector2i exp = sf::Mouse::getPosition(Window);
-sf::Vector2f mouse2 = (Window).mapPixelToCoords(exp);
-
-sf::Text title("Warships", mecha, 100);
-title.setStyle(sf::Text::Bold);
-title.setPosition(StandardWindowDimensions.x/2 - title.getGlobalBounds().width / 2, 20);
-
-
-
-// Zarzadzanie Menu
-switch (menustate)
-{
-case DEFAULT:
-{
-std::cout << "DEFAULT" << endl;
-const int ile = 3;
-
-sf::Text tekst[ile];
-
-string str[] = { "Play","Options","Exit" };
-for (int i = 0; i<ile; i++)
-{
-tekst[i].setFont(font);
-tekst[i].setCharacterSize(65);
-
-tekst[i].setString(str[i]);
-tekst[i].setPosition(StandardWindowDimensions.x / 2 - tekst[i].getGlobalBounds().width / 2, 250 + i * 120);
-}
-
-if(additional_vs_info == NONE)
-while (Window.pollEvent(Event))
-{
-//Wciśnięcie ESC lub przycisk X
-if (Event.type == sf::Event::Closed || Event.type == sf::Event::KeyPressed &&
-Event.key.code == sf::Keyboard::Escape)
-additional_vs_info = EXIT_INFO;
-
-//kliknięcie PLAY
-else if (tekst[0].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = CHOOSE_GAMETYPE;
-}
-
-else if (tekst[1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = OPTIONS;
-}
-
-//kliknięcie EXIT
-else if (tekst[ile-1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-state = EXIT;
-}
-}
-
-for (int i = 0; i < ile; i++)
-if (tekst[i].getGlobalBounds().contains(mouse2))
-tekst[i].setFillColor(sf::Color::Cyan);
-else tekst[i].setFillColor(sf::Color::White);
-
-Window.draw(title);
-for (int i = 0; i < ile; ++i)
-Window.draw(tekst[i]);
-}
-break;
-
-case CHOOSE_GAMETYPE:
-{
-std::cout << "CHOOSE_GAMETYPE"<<endl;
-const int ile = 3;
-
-sf::Text tekst[ile];
-
-string str[] = { "Solo Game","Player vs Player", "Back" };
-for (int i = 0; i<ile; i++)
-{
-tekst[i].setFont(font);
-tekst[i].setCharacterSize(65);
-
-tekst[i].setString(str[i]);
-tekst[i].setPosition(StandardWindowDimensions.x / 2 - tekst[i].getGlobalBounds().width / 2, 250 + i * 120);
-}
-if (additional_vs_info == NONE)
-while (Window.pollEvent(Event))
-{
-//Wciśnięcie ESC lub przycisk X
-if (Event.type == sf::Event::Closed || Event.type == sf::Event::KeyPressed &&
-Event.key.code == sf::Keyboard::Escape)
-additional_vs_info = EXIT_INFO;
-
-//kliknięcie SOLO GAME
-else if (tekst[0].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = menuGamestate::CHOOSE_MAPSIZE;
-tmpgamestate = Gamestate::PlvsAI;
-}
-
-//kliknięcie PLAYER VS PLAYER
-else if (tekst[1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = menuGamestate::CHOOSE_MAPSIZE;
-tmpgamestate = Gamestate::PlvsPl;
-}
-
-//kliknięcie Back
-else if (tekst[ile-1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = DEFAULT;
-tmpgamestate = Gamestate::MENU;
-}
-}
-
-for (int i = 0; i < ile; i++)
-if (tekst[i].getGlobalBounds().contains(mouse2))
-tekst[i].setFillColor(sf::Color::Cyan);
-else tekst[i].setFillColor(sf::Color::White);
-
-Window.draw(title);
-for (int i = 0; i < ile; ++i)
-Window.draw(tekst[i]);
-}
-break;
-
-case CHOOSE_MAPSIZE:
-{
-std::cout << "CHOOSE_MAPSIZE"<<endl;
-const int ile = 4;
-
-sf::Text tekst[ile];
-
-string str[] = { "10 x 10","20 x 20", "40 x 40", "Back" };
-for (int i = 0; i<ile; i++)
-{
-tekst[i].setFont(font);
-tekst[i].setCharacterSize(65);
-
-tekst[i].setString(str[i]);
-tekst[i].setPosition(StandardWindowDimensions.x / 2 - tekst[i].getGlobalBounds().width / 2, 250 + i * 120);
-}
-
-if (additional_vs_info == NONE)
-while (Window.pollEvent(Event))
-{
-//Wciśnięcie ESC lub przycisk X
-if (Event.type == sf::Event::Closed || Event.type == sf::Event::KeyPressed &&
-Event.key.code == sf::Keyboard::Escape)
-additional_vs_info = EXIT_INFO;
-
-//kliknięcie 10 x 10
-else if (tekst[0].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-map_size = 10;
-if (tmpgamestate == PlvsAI)
-menustate = menuGamestate::CHOOSE_AILEVEL;
-else
-{
-menustate = menuGamestate::LOADING_GAME_VARIABLES;
-state = Gamestate::loadGameVariables;
-}
-}
-
-//kliknięcie 20 x 20
-else if (tekst[1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-map_size = 20;
-if (tmpgamestate == PlvsAI)
-menustate = menuGamestate::CHOOSE_AILEVEL;
-else
-{
-menustate = menuGamestate::LOADING_GAME_VARIABLES;
-state = Gamestate::loadGameVariables;
-}
-}
-
-//kliknięcie 40 x 40
-else if (tekst[2].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-map_size = 40;
-if (tmpgamestate == PlvsAI)
-menustate = menuGamestate::CHOOSE_AILEVEL;
-else
-{
-menustate = menuGamestate::LOADING_GAME_VARIABLES;
-state = Gamestate::loadGameVariables;
-}
-}
-
-else if (tekst[ile - 1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = CHOOSE_GAMETYPE;
-tmpgamestate = Gamestate::MENU;
-}
-}
-
-for (int i = 0; i < ile; i++)
-if (tekst[i].getGlobalBounds().contains(mouse2))
-tekst[i].setFillColor(sf::Color::Cyan);
-else tekst[i].setFillColor(sf::Color::White);
-
-Window.draw(title);
-for (int i = 0; i < ile; ++i)
-Window.draw(tekst[i]);
-}
-break;
-
-case LOADING_GAME_VARIABLES:
-{
-std::cout << "LOADING_GAME_VARIABLES"<<endl;
-if (tmpgamestate == PlvsPl)
-{
-menustate = DEFAULT;
-state = loadPlvsPl;
-}
-else if (tmpgamestate == PlvsAI)
-{
-menustate = DEFAULT;
-state = loadPlvsAI;
-}
-}
-break;
-
-case CHOOSE_AILEVEL:
-{
-std::cout << "CHOOSE_AILEVEL" << endl;
-const int ile = 4;
-
-sf::Text tekst[ile];
-
-string str[] = { "Easy","Medium", "Hard", "Back" };
-
-for (int i = 0; i < ile; i++)
-{
-tekst[i].setFont(font);
-tekst[i].setCharacterSize(65);
-
-tekst[i].setString(str[i]);
-tekst[i].setPosition(StandardWindowDimensions.x / 2 - tekst[i].getGlobalBounds().width / 2, 250 + i * 120);
-}
-
-if (additional_vs_info == NONE)
-while (Window.pollEvent(Event))
-{
-//Wciśnięcie ESC lub przycisk X
-if (Event.type == sf::Event::Closed || Event.type == sf::Event::KeyPressed &&
-Event.key.code == sf::Keyboard::Escape)
-additional_vs_info = EXIT_INFO;
-
-//kliknięcie EASY
-else if (tekst[0].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = menuGamestate::LOADING_GAME_VARIABLES;
-state = Gamestate::loadGameVariables;
-level = EASY;
-}
-
-//kliknięcie MEDIUM
-else if (tekst[1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = menuGamestate::LOADING_GAME_VARIABLES;
-state = Gamestate::loadGameVariables;
-level = MEDIUM;
-}
-
-//kliknięcie HARD
-else if (tekst[2].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = menuGamestate::LOADING_GAME_VARIABLES;
-state = Gamestate::loadGameVariables;
-level = HARD;
-}
-
-else if (tekst[ile - 1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = CHOOSE_MAPSIZE;
-}
-}
-
-for (int i = 0; i < ile; i++)
-if (tekst[i].getGlobalBounds().contains(mouse2))
-tekst[i].setFillColor(sf::Color::Cyan);
-else tekst[i].setFillColor(sf::Color::White);
-
-Window.draw(title);
-for (int i = 0; i < ile; ++i)
-Window.draw(tekst[i]);
-}
-break;
-
-case OPTIONS:
-{
-
-std::cout << "DEFAULT" << endl;
-const int ile = 3;
-
-sf::Text tekst[ile];
-
-string str[] = { "Play","Optioaaans","Exit" };
-for (int i = 0; i<ile; i++)
-{
-tekst[i].setFont(font);
-tekst[i].setCharacterSize(65);
-
-tekst[i].setString(str[i]);
-tekst[i].setPosition(StandardWindowDimensions.x / 2 - tekst[i].getGlobalBounds().width / 2, 250 + i * 120);
-}
-
-if (additional_vs_info == NONE)
-while (Window.pollEvent(Event))
-{
-//Wciśnięcie ESC lub przycisk X
-if (Event.type == sf::Event::Closed || Event.type == sf::Event::KeyPressed &&
-Event.key.code == sf::Keyboard::Escape)
-additional_vs_info = EXIT_INFO;
-
-//kliknięcie PLAY
-else if (tekst[0].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = CHOOSE_GAMETYPE;
-}
-
-else if (tekst[1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-menustate = OPTIONS;
-}
-
-//kliknięcie EXIT
-else if (tekst[ile - 1].getGlobalBounds().contains(mouse2) &&
-Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
-{
-state = EXIT;
-}
-}
-
-for (int i = 0; i < ile; i++)
-if (tekst[i].getGlobalBounds().contains(mouse2))
-tekst[i].setFillColor(sf::Color::Cyan);
-else tekst[i].setFillColor(sf::Color::White);
-
-Window.draw(title);
-for (int i = 0; i < ile; ++i)
-Window.draw(tekst[i]);
-}
-break;
-
-}
-}
-break;
-
-*/

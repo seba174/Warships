@@ -14,6 +14,6 @@ public:
 
 	LanguageManager(enumLanguagesCodes code);
 
-	std::wstring getText(const std::string& code);
+	std::wstring getText(const std::string& code) const;
 };
 

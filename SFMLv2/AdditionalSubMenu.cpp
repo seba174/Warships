@@ -11,11 +11,11 @@ AdditionalSubMenu::AdditionalSubMenu(const sf::Vector2f & backgroundSize, const 
 	const sf::Vector2f & backgroundForSubMenuPosition, const sf::Color& backgroundForSubMenuColor, const sf::Color & backgroundColor,
 	const sf::Vector2f & backgroundPosition, const std::wstring & title, const std::wstring & buttons_text, int title_character_size, int char_size,
 	const sf::Vector2f & title_position, const sf::Vector2f & first_button_position, const sf::Vector2f & button_size, int space_between_buttons, 
-	const sf::Color & bounds_color, const sf::Font & font, sf::Uint32 title_style, sf::Uint32 buttons_style) 
+	const sf::Color & bounds_color, const sf::Font & font, float interfaceScale, sf::Uint32 title_style, sf::Uint32 buttons_style)
 {
 	construct(backgroundSize, backgroundForSubMenuSize, backgroundForSubMenuPosition, backgroundForSubMenuColor, backgroundColor, backgroundPosition,
 		title, buttons_text, title_character_size, char_size, title_position, first_button_position, button_size, space_between_buttons, bounds_color,
-		font, title_style, buttons_style);
+		font, interfaceScale, title_style, buttons_style);
 
 	SubMenu::isConstructed = true;
 }
@@ -26,7 +26,7 @@ void AdditionalSubMenu::construct(const sf::Vector2f & backgroundSize, const sf:
 	const sf::Vector2f & title_position, const sf::Vector2f & first_button_position, const sf::Vector2f & button_size, int space_between_buttons,
 	const sf::Color & bounds_color, const sf::Font & font, float interfaceScale, sf::Uint32 title_style, sf::Uint32 buttons_style)
 {
-	int spaceFromBackgroundForSubMenuEdge = 10 * interfaceScale;
+	int spaceFromBackgroundForSubMenuEdge = static_cast<int>(10 * interfaceScale);
 
 	if (isConstructed)
 		return;
@@ -40,7 +40,8 @@ void AdditionalSubMenu::construct(const sf::Vector2f & backgroundSize, const sf:
 	SubMenu::isConstructed = true;
 }
 
-AdditionalSubMenu::AdditionalSubMenu() : SubMenu()
+AdditionalSubMenu::AdditionalSubMenu() 
+	: SubMenu()
 {
 }
 

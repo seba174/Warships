@@ -12,6 +12,8 @@ void Input::ResetKeys()
 	MouseRightButtonPressed = false;
 	KeyboardReturnKeyPressed = false;
 	KeyboardEscapeKeyPressed = false;
+	KeyboardBackspaceKeyPressed = false;
+	inputText = NULL;
 }
 
 

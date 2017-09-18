@@ -37,13 +37,13 @@ public:
 		const sf::Font& font, sf::Uint32 title_style = sf::Text::Regular, sf::Uint32 buttons_style = sf::Text::Regular);
 
 	// checks if any button in SubMenu contains mousepos
-	// returns number of a button which contains mousepos
+	// returns mapSize of a button which contains mousepos
 	// if no button is pressed, returns -1
 	int contains(const sf::Vector2f& mousepos) const;
 
-	// checks if button of given number contains mousepos
+	// checks if button of given mapSize contains mousepos
 	// if button does not exists, returns false
-	bool contains(int number, const sf::Vector2f& mousepos) const;
+	bool contains(unsigned int number, const sf::Vector2f& mousepos) const;
 
 	// updates information about OutlineColor for every button
 	void updateButtons();
@@ -56,6 +56,10 @@ public:
 	void highlightButtonContaining(const sf::Vector2f& mousepos);
 
 	// sets isPressed = true for indicated button
-	void highlightButton(int number);
+	void highlightButton(unsigned int number);
+
+	void coverButtonWithColor(unsigned int number, bool shouldApplyColor, const sf::Color& color);
+
+	void setInteriorColorAllButtons(const sf::Color& color);
 };
 

@@ -2,12 +2,13 @@
 #include "SubMenu.h"
 #include "OptionsSubMenu.h"
 #include "enumMenustate.h"
-#include "enumGamestate.h"
+#include "enumGameState.h"
 #include "enumAdditionalVisualInformation.h"
 #include "enumLevelsDifficulty.h"
 
 class LanguageManager;
-class Options;
+class GraphicsOptions;
+class Input;
 class GeneralOptions;
 
 class Menu :
@@ -16,7 +17,7 @@ class Menu :
 	sf::Text MainTitle;
 	
 	Menustates menustate, previousMenustate;
-	Gamestates newGamestate, choosedGamemode;
+	GameStates newGamestate, choosedGamemode;
 	AdditionalVisualInformations newVSinfo;
 	
 	// SubMenus which Standard Menu contains
@@ -28,19 +29,19 @@ class Menu :
 	// You need to use updateMenu() function before drawing
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	bool hasVisibleOptionChanged(const Options& options);
+	bool hasVisibleOptionChanged(const GraphicsOptions& options);
 
 	bool hasVisibleGeneralOptionChanged(const GeneralOptions& options);
 
 
 public:
 	Menu(const std::wstring& main_title, const sf::Vector2f& main_title_position, const sf::Vector2f& title_or1st_button_position, int space_between_buttons,
-		float interfaceScale, const Options& opt, LanguageManager& languageManager, const GeneralOptions& genOpt);
+		float interfaceScale, const GraphicsOptions& opt, LanguageManager& languageManager, const GeneralOptions& genOpt);
 
 	// function deals with running menu 
 	// check if user clicks on buttons and does appropriate acctions
 	// in order to updateGamestates, use updateGamestate() function
-	void runMenu(const sf::Vector2f& mousepos, int& mapsize, LevelsDifficulty& level, bool leftButtonPressed, Options& opt, GeneralOptions& generalOpt);
+	void runMenu(const sf::Vector2f& mousepos, int& mapsize, LevelsDifficulty& level, const Input& input, GraphicsOptions& opt, GeneralOptions& generalOpt);
 
 	// updates information about OutlineColor for every SubMenu
 	void updateMenu();
@@ -58,9 +59,9 @@ public:
 	void setMenustate(Menustates newState) { menustate = newState; }
 
 	// returns Gamestate choosed by user
-	Gamestates getChoosedGamemode();
+	GameStates getChoosedGamemode();
 
 	// updates Gamestate and AdditionalVisualInformation
-	void updateGamestate(Gamestates& gamestate, AdditionalVisualInformations& additionalvsinfo);
+	void updateGamestate(GameStates& gamestate, AdditionalVisualInformations& additionalvsinfo);
 };
 

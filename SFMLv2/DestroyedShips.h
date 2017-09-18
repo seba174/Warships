@@ -8,7 +8,7 @@ class DestroyedShips
 	: public sf::Drawable
 {
 protected:
-	// number of ships in game
+	// mapSize of ships in game
 	const int count_of_ships = 6;
 
 	std::vector<sf::RectangleShape> vec_ships;
@@ -31,8 +31,8 @@ public:
 	// sets additional Y offset to setPoint position given while constructing
 	void setPosition(int y);
 
-	// marks ship of given number destroyed
-	void markDestroyed(int number);
+	// marks ship of given mapSize destroyed
+	void markDestroyed(unsigned int number);
 
 	void setDisplayedString(const std::wstring& str) { info.setString(str); setPosition(0); }
 

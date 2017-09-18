@@ -1,6 +1,11 @@
 #pragma once
+#include <vector>
+#include <memory>
 #include <random>
-#include "Board.h"
+#include "Ships_HP.h"
+#include "Ships.h"
+
+class DVector2i;
 
 class Info
 {
@@ -13,32 +18,111 @@ public:
 
 
 class AI
+	: public sf::Drawable
 {
-protected:
-	sf::Vector2i BoardDimensions;
-	sf::Vector2f SquareSize;
-	sf::Vector2f Player_SetPoints;
-	
-	int** ships;
+public:
+	Ships_HP HP;
+private:
 
-	int number;
+	sf::Vector2i boardDimensions;
+	sf::Vector2f squareSize;
+	sf::Vector2f enemySetPoints;
+	sf::Vector2f AISetPoints;
+	sf::RectangleShape missedShot;
+	sf::RectangleShape hit;
+	bool shipsSetUp;
+	bool first = true;
+
+	std::vector<std::vector<sf::RectangleShape>> squareTab2;
+	std::vector<std::unique_ptr<Board>> setShips;
+	std::vector<std::vector<int>> AIShips;
+	std::vector<std::vector<int>>* enemyShips;
+	std::vector<std::vector<int>> modifiedEnemyShips;
+	int mapSize;
+
+	//number of ships in game
+	const int countOfShips = 6;
+
+	std::wstring name;
+	unsigned int totalShots, totalHits;
+	unsigned int maximumHitsTemp, maximumHits, maximumMissesTemp, maximumMisses;
+	sf::RectangleShape& rect;
+
+	Info last;
+	int count = 0;
+	bool shootWithBounds = false;
 	std::random_device rd;
 	std::mt19937 mt;
 
-	// checks if there is any ship or missed shot in surrounding of given position
-	bool checkSurround(const sf::Vector2i& pos, int** ships) const;
+	// FUNCTIONS
+
+// checks if there is any ship or missed shot in surrounding of given position
+	bool checkSurround(const sf::Vector2i& pos, const std::vector<std::vector<int>>& ships) const;
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	void updateMaximumHits();
+	void updateMaximumMisses();
+	void actionsAfterHittingStandardShip(int size);
+	void actionsAfterHittingIrregular2();
+	void actionsAfterHittingIrregular3();
+
+	Info attackWithBounds(const sf::Vector2i& boundsX, const sf::Vector2i& boundsY);
+
+	Info attack();
+
+	void modifiedSetMinus1();
+
+	void copyPlayerShips();
+
+	bool isOnMap(const sf::Vector2i& pos) const;
+
+	void setModifiedValue(const sf::Vector2i& pos, int num, int ship_num);
+
+	DVector2i giveBounds(const sf::Vector2i& pos) const;
 
 public:
 
-	AI(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& player_setpoints);
+	AI(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships,
+		const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect);
 
-	void place_ships(std::vector<Board*>& VectRect, Board**, int);
+	void placeShips(std::vector<Board*>& VectRect);
 
-	Info attack_with_bounds(int ** ships, const sf::Vector2i& boundsX, const sf::Vector2i& boundsY);
+	// returns true when AI misses
+	bool AIMovesLevelEasy();
 
-	Info attack(int **ships);
+	// returns true when AI misses
+	bool AIMovesLevelMedium();
 
-	int** get_AI_ships() { return ships; }
+	// returns true when AI misses
+	bool AIMovesLevelHard(bool& wasAIUsingSuperPowers);
 
-	virtual ~AI();
+	void resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab);
+
+	// returns accuracy of AI in range [0-100]
+	float returnAccuracy() const;
+
+	void drawSquareTab(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	std::vector<std::vector<sf::RectangleShape>>& returnSquareTab() { return squareTab2; }
+
+	// returns true if AI has set its ships
+	// returns false otherwise
+	bool getShipsSetUp() const { return shipsSetUp; }
+
+	std::vector<std::vector<int>>* getAIShips() { return &AIShips; }
+
+	void setEnemyShips(std::vector<std::vector<int>>* ships) { enemyShips = ships; }
+
+	void setPlayerName(const std::wstring& newName) { name = newName; }
+
+	std::wstring getPlayerName() const { return name; }
+
+	unsigned int returnTotalShotsNumber() const { return totalShots; }
+
+	unsigned int returnTotalHitsNumber() const { return totalHits; }
+
+	unsigned int retrunMaximumHits() { updateMaximumHits(); return maximumHits; }
+
+	unsigned int returnMaximumMisses() { updateMaximumMisses(); return maximumMisses; }
 };

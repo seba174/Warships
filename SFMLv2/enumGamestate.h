@@ -1,4 +1,4 @@
 #pragma once
 
-enum Gamestates { MENU, PlvsAI, PlvsPl, loadPlvsPl, loadPlvsAI, loadGameVariables, BREAK_AND_GO_TO_MENU, EXIT,
-	NOTHING, PAUSED, RELOAD_GRAPHICS, RESTORE_GRAPHICS, RELOAD_GENERAL, RESTORE_GENERAL };
+enum GameStates { menu, playerVsAI, playerVsPlayer, loadPlayerVsPlayer, loadPlayerVsAI, loadGameVariables, breakAndGoToMenu, Exit,
+	nothing, paused, reloadOptions, restoreGraphicsOptions, reloadGeneralOptions, restoreGeneralOptions };

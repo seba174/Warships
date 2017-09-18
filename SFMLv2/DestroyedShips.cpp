@@ -18,7 +18,7 @@ DestroyedShips::DestroyedShips(const sf::Vector2i & boardDimensions, const sf::V
 {
 	destroyed = sf::Color(255, 0, 0, 190);
 
-	int char_size = 45 * interfaceScale;
+	int char_size = static_cast<int>(45 * interfaceScale);
 	info.setFont(FontHandler::getInstance().font_handler["Mecha"]);
 	info.setCharacterSize(char_size);
 
@@ -67,7 +67,7 @@ void DestroyedShips::setPosition(int y)
 	}
 }
 
-void DestroyedShips::markDestroyed(int number)
+void DestroyedShips::markDestroyed(unsigned int number)
 {
 	if (number >= 0 && number < vec_ships.size())
 	{

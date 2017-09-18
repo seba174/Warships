@@ -1,6 +1,6 @@
 #include "AdditionalMenu.h"
 #include "Input.h"
-#include "Options.h"
+#include "GraphicsOptions.h"
 #include "LanguageManager.h"
 #include "GeneralOptions.h"
 
@@ -26,12 +26,12 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	: state(additionalvsinfo)
 {
 	// SubMenu title character size
-	int title_size_1 = 50 * interfaceScale;
-	int title_size_2 = 50 * interfaceScale;
+	int title_size_1 = static_cast<int>(50 * interfaceScale);
+	int title_size_2 = static_cast<int>(50 * interfaceScale);
 
 
 	// SubMenu character size
-	int submenu_size = 32 * interfaceScale;
+	int submenu_size = static_cast<int>(32 * interfaceScale);
 
 	// Background for SubMenu Exit size
 	sf::Vector2f backgroundForSubmenuExitSize(600 * interfaceScale, 380 * interfaceScale);
@@ -45,6 +45,8 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	// Background Color for Exit
 	sf::Color backgroundExitColor = sf::Color(0, 0, 0, 200);
 
+	sf::Color buttonInteriorColor = sf::Color(0, 0, 0, 150);
+
 	// Button size
 	sf::Vector2f button_size(360 * interfaceScale, 70 * interfaceScale);
 
@@ -54,7 +56,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	FontHandler& handler = FontHandler::getInstance();
 
 	state = AdditionalVisualInformations::NONE;
-	newGamestate = Gamestates::NOTHING;
+	newGamestate = GameStates::nothing;
 
 	// Position of title and button is based on backgroundForSubMenuPosition!
 
@@ -62,6 +64,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 		langMan.getText("What do you want to do") + L'?', langMan.getText("Resume") + L',' + langMan.getText("Return to Main Menu") + L',' + langMan.getText("Quit the game"),
 		title_size_1, submenu_size, title_or1st_button_position, sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons),
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
+	Exit.setInteriorColorAllButtons(buttonInteriorColor);
 
 	Loading.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_1),
 		sf::Color::Transparent, sf::Color::Black, sf::Vector2f(0, 0), langMan.getText("Loading") + L"...", L"", title_size_1, submenu_size,
@@ -71,6 +74,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 		langMan.getText("Do you wish to save changes") + L'?', langMan.getText("Yes") + L',' + langMan.getText("No"), title_size_2, submenu_size, title_or1st_button_position,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons), button_size, space_between_buttons,
 		bounds_color, handler.font_handler["Mecha"], interfaceScale);
+	ApplyChanges.setInteriorColorAllButtons(buttonInteriorColor);
 
 }
 
@@ -91,29 +95,29 @@ void AdditionalMenu::updateAdditionalMenuWithAnimations(const sf::Time & time, c
 	Loading.updateButtonsWithAnimations(time);
 }
 
-void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPressed, Input& input, Options& options, GeneralOptions& genOptions)
+void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, GraphicsOptions& options, GeneralOptions& genOptions)
 {
 	if (state == AdditionalVisualInformations::NONE && input.isKeyboardEscapeKeyPressed())
 		state = AdditionalVisualInformations::EXIT_INFO;
 	else if (state == AdditionalVisualInformations::EXIT_INFO && input.isKeyboardEscapeKeyPressed())
 		state = AdditionalVisualInformations::NONE;
-
+	
 	switch (state)
 	{
 	case EXIT_INFO: {
-		newGamestate = PAUSED;
-		if (leftButtonPressed)
+		newGamestate = paused;
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (Exit.contains(0, mousepos)) // Resume button
 				state = AdditionalVisualInformations::NONE;
 			else if (Exit.contains(1, mousepos)) // Return to main menu button
 			{
-				newGamestate = Gamestates::BREAK_AND_GO_TO_MENU;
+				newGamestate = GameStates::breakAndGoToMenu;
 				state = AdditionalVisualInformations::NONE;
 			}
 			else if (Exit.contains(2, mousepos)) // Quit the game button
 			{
-				newGamestate = EXIT;
+				newGamestate = GameStates::Exit;
 				state = AdditionalVisualInformations::NONE;
 			}
 		}
@@ -123,19 +127,19 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPress
 
 	case APPLY_CHANGES_GRAPHICS:
 	{
-		newGamestate = PAUSED;
-		if (leftButtonPressed)
+		newGamestate = paused;
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (ApplyChanges.contains(0, mousepos)) // Yes button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::MENU;
+				newGamestate = GameStates::menu;
 				options.saveToPreviousOptions();
 			}
 			else if (ApplyChanges.contains(1, mousepos)) // No button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::RESTORE_GRAPHICS;
+				newGamestate = GameStates::restoreGraphicsOptions;
 				options.restorePreviousOptions();
 			}
 		}
@@ -143,19 +147,19 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPress
 
 	case APPLY_CHANGES_GENERAL:
 	{
-		newGamestate = PAUSED;
-		if (leftButtonPressed)
+		newGamestate = paused;
+		if (input.isMouseLeftButtonPressed())
 		{
 			if (ApplyChanges.contains(0, mousepos)) // Yes button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::MENU;
+				newGamestate = GameStates::menu;
 				genOptions.saveToPreviousOptions();
 			}
 			else if (ApplyChanges.contains(1, mousepos)) // No button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::RESTORE_GENERAL;
+				newGamestate = GameStates::restoreGeneralOptions;
 				genOptions.restorePreviousOptions();
 			}
 		}
@@ -168,9 +172,9 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, bool leftButtonPress
 		input.ResetKeys();
 }
 
-void AdditionalMenu::updateGamestate(Gamestates & gamestate)
+void AdditionalMenu::updateGamestate(GameStates & gamestate)
 {
-	if (newGamestate != Gamestates::NOTHING)
+	if (newGamestate != GameStates::nothing)
 		gamestate = newGamestate;
-	newGamestate = Gamestates::NOTHING;
+	newGamestate = GameStates::nothing;
 }

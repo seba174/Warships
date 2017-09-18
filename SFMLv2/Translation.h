@@ -9,11 +9,10 @@ class Translation
 	std::wstring translation;
 
 public:
-	Translation(enumLanguagesCodes, const std::wstring& translation);
+	Translation(enumLanguagesCodes code, const std::wstring& translation) : languageCode(code), translation(translation) {}
 
-	enumLanguagesCodes getLanguageCode() const{ return languageCode; }
+	enumLanguagesCodes getLanguageCode() const { return languageCode; }
 
 	std::wstring getTranslation() const { return translation; }
-
 };
 
