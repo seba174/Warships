@@ -3,7 +3,7 @@
 
 
 Ships::Ships(int size, const sf::Vector2f& squaresize, const sf::Vector2i& boarddimensions, const sf::Vector2f& setPoints, sf::Texture* texture)
-	:rotation_horizontally(false), Board(boarddimensions, squaresize, setPoints), size(size), placeShip(false)
+	:rotationHorizontally(false), Board(boarddimensions, squaresize, setPoints), size(size), placeShip(false)
 {
 	shipv2 = sf::RectangleShape(sf::Vector2f(squaresize.x, size*squaresize.y));
 	shipv2.setTexture(texture);
@@ -17,24 +17,24 @@ void Ships::setPosition(const sf::Vector2f& mousepos)
 	
 	if (CanChangePositionX(newposition))
 		shipv2.setPosition(sf::Vector2f(setPoints.x + newposition.x, shipv2.getPosition().y));
-	else if(rotation_horizontally)
+	else if(rotationHorizontally)
 		shipv2.setPosition(sf::Vector2f(setPoints.x + boardDimensions.x - size*squareSize.x, shipv2.getPosition().y));
 
 	if (CanChangePositionY(newposition))
 	{
-		if (!rotation_horizontally)
+		if (!rotationHorizontally)
 			shipv2.setPosition(sf::Vector2f(shipv2.getPosition().x, setPoints.y + newposition.y));
 		else
 			shipv2.setPosition(sf::Vector2f(shipv2.getPosition().x, setPoints.y + newposition.y + squareSize.y));
 	}
-	else if(!rotation_horizontally)
+	else if(!rotationHorizontally)
 		shipv2.setPosition(sf::Vector2f(shipv2.getPosition().x, setPoints.y + boardDimensions.y - size*squareSize.y));
 }
 
 bool Ships::CanChangePositionX(const sf::Vector2f& newposition) const
 {
 	sf::Vector2f PixelSize;
-	if (!rotation_horizontally)
+	if (!rotationHorizontally)
 		PixelSize = sf::Vector2f(squareSize.x, size*squareSize.y);
 	else
 		PixelSize = sf::Vector2f(size*squareSize.x, squareSize.y);
@@ -48,7 +48,7 @@ bool Ships::CanChangePositionX(const sf::Vector2f& newposition) const
 bool Ships::CanChangePositionY(const sf::Vector2f& newposition) const
 {
 	sf::Vector2f PixelSize;
-	if (!rotation_horizontally)
+	if (!rotationHorizontally)
 		PixelSize = sf::Vector2f(squareSize.x, size*squareSize.y);
 	else
 		PixelSize = sf::Vector2f(size*squareSize.y, squareSize.x);
@@ -59,11 +59,11 @@ bool Ships::CanChangePositionY(const sf::Vector2f& newposition) const
 	return false;
 }
 
-void Ships::rotate_ship()
+void Ships::rotateShip()
 {
-	if (!rotation_horizontally)
+	if (!rotationHorizontally)
 	{
-		rotation_horizontally = true;
+		rotationHorizontally = true;
 		if (!CanChangePositionX(sf::Vector2f(shipv2.getPosition().x - setPoints.x, shipv2.getPosition().y - setPoints.y)))
 			setPositionWithoutCheck(sf::Vector2f(setPoints.x + boardDimensions.x - size*squareSize.x, shipv2.getPosition().y));
 
@@ -72,7 +72,7 @@ void Ships::rotate_ship()
 	}
 	else
 	{
-		rotation_horizontally = false;
+		rotationHorizontally = false;
 		if (!CanChangePositionY(sf::Vector2f(shipv2.getPosition().x - setPoints.x, shipv2.getPosition().y - setPoints.y - squareSize.y)))
 			setPositionWithoutCheck(sf::Vector2f(shipv2.getPosition().x, setPoints.y + boardDimensions.y - size*squareSize.y));
 
@@ -81,14 +81,14 @@ void Ships::rotate_ship()
 	}
 }
 
-bool Ships::placePlayerShip(int **ships, int tabs_size, std::vector<Board*>& VectRect)
+bool Ships::placePlayerShip(std::vector<std::vector<int>>& ships, int tabs_size, std::vector<Board*>& VectRect)
 {
 	float accuracy = 0.97f;
 	int x = static_cast<int>(floor((shipv2.getPosition().x - setPoints.x) / (accuracy*squareSize.x)));
 	int y;
 	placeShip = false;
 	
-	if (!rotation_horizontally)
+	if (!rotationHorizontally)
 	{
 		y = static_cast<int>(floor((shipv2.getPosition().y - setPoints.y) / (accuracy*squareSize.y)));
 		for (int i = y; i < y + size; i++)

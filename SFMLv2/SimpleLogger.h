@@ -1,5 +1,5 @@
 #pragma once
-#include <cstring>
+#include <string>
 #include <SFML/Graphics.hpp>
 #include "iniFileStructure.h"
 #include "enumLevelsDifficulty.h"
@@ -22,12 +22,12 @@ class SimpleLogger
 
 public:
 
-	SimpleLogger(const std::string& filePath, std::string version);
+	SimpleLogger(const std::string& filePath, const std::string& version);
 
 	void logPlayerVsAIGame(int mapSize, LevelsDifficulty level, unsigned AIShotsFired, bool activated, float AccuracyPlayer, unsigned starsPlayer, float AccuracyAI, unsigned starsAI);
 
 	void logPlayerVsPlayerGame(int mapSize, float AccuracyPlayer1, unsigned starsPlayer1, float AccuracyPlayer2, unsigned starsPlayer2);
 
-	void saveToFile();
+	void saveToFile() const;
 };
 

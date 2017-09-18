@@ -1,11 +1,5 @@
 #include "GameTime.h"
 
-
-
-GameTime::GameTime()
-{
-}
-
 void GameTime::runGameTimer(const sf::Time & dt)
 {
 	timer += dt;

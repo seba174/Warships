@@ -159,7 +159,6 @@
     <ClCompile Include="StatisticsMenu.cpp" />
     <ClCompile Include="SubMenu.cpp" />
     <ClCompile Include="TextureHandler.cpp" />
-    <ClCompile Include="Translation.cpp" />
     <ClCompile Include="UtilityFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +170,7 @@
     <ClInclude Include="DestroyedShipsWithBackground.h" />
     <ClInclude Include="DVector2i.h" />
     <ClInclude Include="enumAdditionalVisualInformation.h" />
-    <ClInclude Include="enumGamestate.h" />
+    <ClInclude Include="enumGameState.h" />
     <ClInclude Include="enumLanguagesCodes.h" />
     <ClInclude Include="enumLevelsDifficulty.h" />
     <ClInclude Include="enumMenustate.h" />

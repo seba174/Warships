@@ -56,7 +56,7 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	FontHandler& handler = FontHandler::getInstance();
 
 	state = AdditionalVisualInformations::NONE;
-	newGamestate = Gamestates::nothing;
+	newGamestate = GameStates::nothing;
 
 	// Position of title and button is based on backgroundForSubMenuPosition!
 
@@ -112,12 +112,12 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, Graphi
 				state = AdditionalVisualInformations::NONE;
 			else if (Exit.contains(1, mousepos)) // Return to main menu button
 			{
-				newGamestate = Gamestates::breakAndGoToMenu;
+				newGamestate = GameStates::breakAndGoToMenu;
 				state = AdditionalVisualInformations::NONE;
 			}
 			else if (Exit.contains(2, mousepos)) // Quit the game button
 			{
-				newGamestate = Gamestates::Exit;
+				newGamestate = GameStates::Exit;
 				state = AdditionalVisualInformations::NONE;
 			}
 		}
@@ -133,13 +133,13 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, Graphi
 			if (ApplyChanges.contains(0, mousepos)) // Yes button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::menu;
+				newGamestate = GameStates::menu;
 				options.saveToPreviousOptions();
 			}
 			else if (ApplyChanges.contains(1, mousepos)) // No button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::restoreGraphicsOptions;
+				newGamestate = GameStates::restoreGraphicsOptions;
 				options.restorePreviousOptions();
 			}
 		}
@@ -153,13 +153,13 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, Graphi
 			if (ApplyChanges.contains(0, mousepos)) // Yes button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::menu;
+				newGamestate = GameStates::menu;
 				genOptions.saveToPreviousOptions();
 			}
 			else if (ApplyChanges.contains(1, mousepos)) // No button
 			{
 				state = AdditionalVisualInformations::NONE;
-				newGamestate = Gamestates::restoreGeneralOptions;
+				newGamestate = GameStates::restoreGeneralOptions;
 				genOptions.restorePreviousOptions();
 			}
 		}
@@ -172,9 +172,9 @@ void AdditionalMenu::runMenu(const sf::Vector2f & mousepos, Input& input, Graphi
 		input.ResetKeys();
 }
 
-void AdditionalMenu::updateGamestate(Gamestates & gamestate)
+void AdditionalMenu::updateGamestate(GameStates & gamestate)
 {
-	if (newGamestate != Gamestates::nothing)
+	if (newGamestate != GameStates::nothing)
 		gamestate = newGamestate;
-	newGamestate = Gamestates::nothing;
+	newGamestate = GameStates::nothing;
 }

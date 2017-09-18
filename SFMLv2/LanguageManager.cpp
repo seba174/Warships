@@ -67,16 +67,24 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 	hashMap.insert(make_pair("AI", lT(inT({ Tr(eLC::PL,L"AI"), Tr(eLC::EN,L"AI") }))));
 }
 
-std::wstring LanguageManager::getText(const std::string & code) 
+std::wstring LanguageManager::getText(const std::string & code) const
 {
-	std::list<Translation>&  translations = hashMap[code];
-	for (auto translation = translations.begin();translation != translations.end(); ++translation)
-	{
-		if (translation->getLanguageCode() == lang)
-		{	
-			return translation->getTranslation();
-		}
+	const std::list<Translation>*  translations = nullptr;
+	try {
+		translations = &hashMap.at(code);
 	}
+	catch (const std::out_of_range& oor) {
+		std::cerr << "Out of range error: " << oor.what() << "when tried to get key: " << code << '\n';
+	}
+	
+	if(translations!=nullptr)
+		for (auto translation = translations->begin(); translation != translations->end(); ++translation)
+		{
+			if (translation->getLanguageCode() == lang)
+			{
+				return translation->getTranslation();
+			}
+		}
 	return std::wstring();
 }
 

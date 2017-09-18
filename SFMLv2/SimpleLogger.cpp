@@ -14,7 +14,7 @@ const std::string SimpleLogger::playerVsAIString = "PlayerVsAIMode";
 const std::string SimpleLogger::playerVsPlayerString = "PlayerVsPlayerMode";
 
 
-SimpleLogger::SimpleLogger(const std::string & filePath, std::string version)
+SimpleLogger::SimpleLogger(const std::string & filePath, const std::string& version)
 {
 	logFile.filePath = filePath;
 	gameVersion = version;
@@ -89,12 +89,12 @@ void SimpleLogger::logPlayerVsPlayerGame(int mapSize, float AccuracyPlayer1, uns
 	group.lines.push_back(SettingLine(versionString, gameVersion));
 	group.lines.push_back(SettingLine(mapSizeString, std::to_string(mapSize)));
 	group.lines.push_back(SettingLine(accuracyPlayer1String, floatWith2DecimalPlaces(AccuracyPlayer1, std::string()) + " (" + std::to_string(starsPlayer1) + " stars)"));
-	group.lines.push_back(SettingLine(accuracyAIString, floatWith2DecimalPlaces(AccuracyPlayer2, std::string()) + " (" + std::to_string(starsPlayer2) + " stars)"));
+	group.lines.push_back(SettingLine(accuracyPlayer2String, floatWith2DecimalPlaces(AccuracyPlayer2, std::string()) + " (" + std::to_string(starsPlayer2) + " stars)"));
 
 	logFile.groups.push_back(group);
 }
 
-void SimpleLogger::saveToFile()
+void SimpleLogger::saveToFile() const
 {
 	std::ofstream out(logFile.filePath, std::ios::out | std::ios::app);
 

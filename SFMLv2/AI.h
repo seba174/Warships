@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include <memory>
 #include <random>
 #include "Ships_HP.h"
 #include "Ships.h"
@@ -20,24 +22,25 @@ class AI
 {
 public:
 	Ships_HP HP;
-protected:
+private:
 
 	sf::Vector2i boardDimensions;
 	sf::Vector2f squareSize;
 	sf::Vector2f enemySetPoints;
 	sf::Vector2f AISetPoints;
-	sf::RectangleShape** squareTab2;
 	sf::RectangleShape missedShot;
 	sf::RectangleShape hit;
-	Board** setShips;
 	bool shipsSetUp;
 	bool first = true;
-	int** AIShips;
-	int** enemyShips;
-	int** modifiedEnemyShips;
-	int number;
 
-	//mapSize of ships in game
+	std::vector<std::vector<sf::RectangleShape>> squareTab2;
+	std::vector<std::unique_ptr<Board>> setShips;
+	std::vector<std::vector<int>> AIShips;
+	std::vector<std::vector<int>>* enemyShips;
+	std::vector<std::vector<int>> modifiedEnemyShips;
+	int mapSize;
+
+	//number of ships in game
 	const int countOfShips = 6;
 
 	std::wstring name;
@@ -54,7 +57,7 @@ protected:
 	// FUNCTIONS
 
 // checks if there is any ship or missed shot in surrounding of given position
-	bool checkSurround(const sf::Vector2i& pos, int** ships) const;
+	bool checkSurround(const sf::Vector2i& pos, const std::vector<std::vector<int>>& ships) const;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -80,41 +83,46 @@ protected:
 
 public:
 
-	AI(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, int** enemy_ships, const sf::Vector2f& player_setpoints,
-		const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape** square_tab_2, sf::RectangleShape& rect);
+	AI(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships,
+		const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect);
 
 	void placeShips(std::vector<Board*>& VectRect);
 
 	// returns true when AI misses
 	bool AIMovesLevelEasy();
+
 	// returns true when AI misses
 	bool AIMovesLevelMedium();
+
 	// returns true when AI misses
 	bool AIMovesLevelHard(bool& wasAIUsingSuperPowers);
 
-	void resetSquareTab(int num, sf::RectangleShape** newSquareTab);
+	void resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab);
 
+	// returns accuracy of AI in range [0-100]
 	float returnAccuracy() const;
 
-	sf::RectangleShape** returnSquareTab() { return squareTab2; }
+	void drawSquareTab(sf::RenderTarget& target, sf::RenderStates states) const;
 
+	std::vector<std::vector<sf::RectangleShape>>& returnSquareTab() { return squareTab2; }
+
+	// returns true if AI has set its ships
+	// returns false otherwise
 	bool getShipsSetUp() const { return shipsSetUp; }
 
-	int** getAIShips() { return AIShips; }
+	std::vector<std::vector<int>>* getAIShips() { return &AIShips; }
 
-	void setEnemyShips(int ** ships) { enemyShips = ships; }
+	void setEnemyShips(std::vector<std::vector<int>>* ships) { enemyShips = ships; }
 
 	void setPlayerName(const std::wstring& newName) { name = newName; }
 
 	std::wstring getPlayerName() const { return name; }
 
-	unsigned int returnTotalShotsNumber()const { return totalShots; }
+	unsigned int returnTotalShotsNumber() const { return totalShots; }
 
 	unsigned int returnTotalHitsNumber() const { return totalHits; }
 
 	unsigned int retrunMaximumHits() { updateMaximumHits(); return maximumHits; }
 
 	unsigned int returnMaximumMisses() { updateMaximumMisses(); return maximumMisses; }
-
-	virtual ~AI();
 };

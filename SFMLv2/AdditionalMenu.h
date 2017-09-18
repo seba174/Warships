@@ -1,7 +1,7 @@
 #pragma once
 #include "AdditionalSubMenu.h"
 #include "enumAdditionalVisualInformation.h"
-#include "enumGamestate.h"
+#include "enumGameState.h"
 
 class GraphicsOptions;
 class LanguageManager;
@@ -15,7 +15,7 @@ class AdditionalMenu
 	AdditionalVisualInformations& state;
 	AdditionalSubMenu Exit, Loading, ApplyChanges;
 
-	Gamestates newGamestate;
+	GameStates newGamestate;
 
 		// FUNCTIONS
 
@@ -38,6 +38,6 @@ public:
 	void runMenu(const sf::Vector2f& mousepos, Input& input, GraphicsOptions& options, GeneralOptions& genOptions);
 
 	// updates Gamestate
-	void updateGamestate(Gamestates& gamestate);
+	void updateGamestate(GameStates& gamestate);
 };
 

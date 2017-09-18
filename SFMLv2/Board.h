@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <SFML/Graphics.hpp>
 
 class Board
@@ -18,17 +19,17 @@ public:
 		counter = 0; shouldDraw = true;
 	}
 	
-	virtual bool getplaceShip() const = 0;
+	virtual bool getPlaceShip() const = 0;
 
 	virtual void setPosition(const sf::Vector2f& mousepos) = 0;
 
-	virtual bool placePlayerShip(int **ships, int tabs_size, std::vector<Board*>&) = 0;
+	virtual bool placePlayerShip(std::vector<std::vector<int>>&, int tabs_size, std::vector<Board*>&) = 0;
 
-	virtual void setplaceShip(bool set) = 0;
+	virtual void setPlaceShip(bool set) = 0;
 
-	virtual void rotate_ship() = 0;
+	virtual void rotateShip() = 0;
 
-	virtual sf::RectangleShape& return_ship() = 0;
+	virtual sf::RectangleShape& returnShip() = 0;
 
 	virtual void updateTexture(const sf::Time&) = 0;
 

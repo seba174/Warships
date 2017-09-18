@@ -1,10 +1,10 @@
 #include "GamePlayerVsAI.h"
 #include <random>
-#include <codecvt>
 #include "Input.h"
 #include "LanguageManager.h"
 #include "TextureHandler.h"
 #include "GeneralOptions.h"
+#include "UtilityFunctions.h"
 
 
 int GamePlayerVsAI::whoStarts() const
@@ -32,12 +32,14 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 	{
 	case gamePlayersState::player1Moves:
 	{
+		player1.drawSquareTab(target, states);
+		player2.drawSquareTab(target, states);
 		for (Board* ship : vectShipsToDrawPlayer1)
 		{
 			if (ship->shouldBeDrawed())
 			{
 				ship->updateTexture(lastFrameTime);
-				target.draw(ship->return_ship(), states);
+				target.draw(ship->returnShip(), states);
 			}
 		}
 		for (Board* ship : vectShipsToDrawPlayer2)
@@ -45,7 +47,7 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 			if (ship->shouldBeDrawed())
 			{
 				ship->updateTexture(lastFrameTime);
-				target.draw(ship->return_ship(), states);
+				target.draw(ship->returnShip(), states);
 			}
 		}
 
@@ -58,12 +60,14 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 
 	case gamePlayersState::AIMoves:
 	{
+		player1.drawSquareTab(target, states);
+		player2.drawSquareTab(target, states);
 		for (Board* ship : vectShipsToDrawPlayer1)
 		{
 			if (ship->shouldBeDrawed())
 			{
 				ship->updateTexture(lastFrameTime);
-				target.draw(ship->return_ship(), states);
+				target.draw(ship->returnShip(), states);
 			}
 		}
 		for (Board* ship : vectShipsToDrawPlayer2)
@@ -71,7 +75,7 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 			if (ship->shouldBeDrawed())
 			{
 				ship->updateTexture(lastFrameTime);
-				target.draw(ship->return_ship(), states);
+				target.draw(ship->returnShip(), states);
 			}
 		}
 
@@ -87,7 +91,7 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 		for (Board* ship : vectShipsToDrawPlayer1)
 		{
 			ship->updateTexture(lastFrameTime);
-			target.draw(ship->return_ship(), states);
+			target.draw(ship->returnShip(), states);
 		}
 		player1.draw(target);
 		target.draw(advertPlayer1, states);
@@ -107,7 +111,7 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 		for (Board* ship : vectShipsToDrawPlayer2)
 		{
 			ship->updateTexture(lastFrameTime);
-			target.draw(ship->return_ship(), states);
+			target.draw(ship->returnShip(), states);
 		}
 		//target.draw(player2, states);
 		target.draw(advertPlayer2, states);
@@ -276,13 +280,7 @@ void GamePlayerVsAI::updatePlayersFinishInformations(LanguageManager& langMan)
 		finishMenu.setTitle(player2.getPlayerName() + L' ' + langMan.getText("has won the game") + L'!');
 }
 
-std::wstring GamePlayerVsAI::stringToWstringConversion(const std::string & s)
-{
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	return std::wstring(converter.from_bytes(s));
-}
-
-void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, Gamestates& gamestate)
+void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate)
 {
 	lastFrameTime = dt;
 	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
@@ -480,7 +478,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 
 	case gamePlayersState::finish:
 	{
-		if (!wasGameLogged)
+		if (!wasGameLogged && logger)
 		{
 			logger->logPlayerVsAIGame(mapSize, level, player2.returnTotalShotsNumber(), wasAIUsingSuperPowers, player1.returnAccuracy(),
 				finishMenu.giveStars(player1.returnAccuracy()), player2.returnAccuracy(), finishMenu.giveStars(player2.returnAccuracy()));
@@ -495,12 +493,12 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 
 			if (finishMenu.menuButtons.PushButtonContains(1, mousepos))
 			{
-				gamestate = Gamestates::breakAndGoToMenu;
+				gamestate = GameStates::breakAndGoToMenu;
 			} // Return to Main Menu
 
 			if (finishMenu.menuButtons.PushButtonContains(2, mousepos))
 			{
-				gamestate = Gamestates::Exit;
+				gamestate = GameStates::Exit;
 			} // Quit the game
 		}
 
@@ -520,12 +518,12 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 
 			if (statisticsMenu.menuButtons.PushButtonContains(1, mousepos))
 			{
-				gamestate = Gamestates::breakAndGoToMenu;
+				gamestate = GameStates::breakAndGoToMenu;
 			} // Return to Main Menu
 
 			if (statisticsMenu.menuButtons.PushButtonContains(2, mousepos))
 			{
-				gamestate = Gamestates::Exit;
+				gamestate = GameStates::Exit;
 			} // Quit the game
 		}
 
@@ -534,15 +532,14 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 	}
 }
 
-GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & SquareSize, const sf::Vector2f & player1_setpoints,
-	const sf::Vector2f & player2_setpoints, const sf::RectangleShape & pudlo, const sf::RectangleShape & trafienie, sf::RectangleShape ** player1Square_tab_2,
-	sf::RectangleShape ** player2Square_tab_2, sf::RectangleShape & player1Rect, sf::RectangleShape & player2Rect, const Mouse_S& pl1Mouse,
-	const Mouse_S& pl2Mouse, const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
-	const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim, const GeneralOptions& genOpt,
-	LevelsDifficulty level)
+GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & SquareSize,
+	const sf::Vector2f & player1_setpoints, const sf::Vector2f & player2_setpoints, const sf::RectangleShape & pudlo, const sf::RectangleShape & trafienie,
+	sf::RectangleShape & player1Rect, sf::RectangleShape & player2Rect, const Mouse_S& pl1Mouse, const Mouse_S& pl2Mouse,
+	const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize, const sf::Vector2f& backgroundForSubMenuPosition,
+	float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim, const GeneralOptions& genOpt, LevelsDifficulty level)
 
-	: player1(dim, SquareSize, player2_setpoints, nullptr, player1_setpoints, pudlo, trafienie, player1Square_tab_2, player1Rect),
-	player2(dim, SquareSize, player1_setpoints, nullptr, player2_setpoints, pudlo, trafienie, player2Square_tab_2, player2Rect),
+	: player1(dim, SquareSize, player2_setpoints, nullptr, player1_setpoints, pudlo, trafienie, player1Rect),
+	player2(dim, SquareSize, player1_setpoints, nullptr, player2_setpoints, pudlo, trafienie, player2Rect),
 	mousePlayer1(pl1Mouse),
 	mousePlayer2(pl2Mouse),
 	player1Background(dim, SquareSize, player1_setpoints, interfaceScale, langMan),

@@ -17,7 +17,7 @@
 #include "Mouse_S.h"
 #include "SimpleLogger.h"
 #include "enumLevelsDifficulty.h"
-#include "enumGamestate.h"
+#include "enumGameState.h"
 #include "enumAdditionalVisualInformation.h"
 
 #define WARSHIPS_VERSION std::string("0.9")
@@ -36,7 +36,6 @@ int main()
 
 	int mapSize = 0;
 	int barSize = 0;
-	int countOfShips = 6;
 	float interfaceScale = graphicsOpt.getResolution().x / 1920.0f;
 	int bar = static_cast<int>(barSize * interfaceScale);
 	bool fullyLoad = true, shouldReloadGraphicsOptions = false, shouldReloadGeneralOptions = false, shouldRestoreGeneralOptions = false, menuReset = false;
@@ -45,79 +44,77 @@ int main()
 	std::unique_ptr<GamePlayerVsAI> gamePlayerVsAI;
 	std::unique_ptr<GamePlayers> gamePlayers;
 	std::unique_ptr<Menu> mainMenu = nullptr;
-	std::unique_ptr<AdditionalMenu> additionalmenu = nullptr;
+	std::unique_ptr<AdditionalMenu> additionalMenu = nullptr;
 	std::unique_ptr<Mouse_S> mousePlayer1, mousePlayer2;
 	std::shared_ptr<SimpleLogger> logger = std::make_shared<SimpleLogger>(LOGS_FILE_PATH, WARSHIPS_VERSION);
 
 	sf::Vector2i screenDimensions;
-	sf::Vector2i StandardWindowDimensions;
+	sf::Vector2i standardWindowDimensions;
 
 	sf::View view;
-	sf::RenderWindow Window;
-	Window.create(sf::VideoMode(0, 0), "", sf::Style::None);
+	sf::RenderWindow window;
+	window.create(sf::VideoMode(0, 0), "", sf::Style::None);
 
 	sf::Vector2f squareSize;
-	std::vector<std::vector<sf::RectangleShape>> squareTabv2, squareTab2v2;
-	sf::RectangleShape **squareTab = nullptr, **squareTab2 = nullptr;	
-	sf::RectangleShape rect, rect2, hit, missedShot;   
+	sf::RectangleShape rect, rect2, hit, missedShot;
 	sf::RectangleShape boardForPlayer1, boardForPlayer2, menuTexture;
 
 	LevelsDifficulty level = LevelsDifficulty::EASY;
-	Gamestates Gamestate = Gamestates::reloadOptions, drawnGamestate = Gamestates::menu;
+	GameStates gameState = GameStates::reloadOptions, drawnGameState = GameStates::menu;
 	AdditionalVisualInformations additionalVisualInfo = NONE;
 
 
 	sf::Clock clock;
-	sf::Event Event;
-	while (Window.isOpen())
+	sf::Event event;
+	while (window.isOpen())
 	{
 		// Frame time
 		sf::Time dt = clock.restart();
 		input.ResetKeys();
-		
-		while (Window.pollEvent(Event))
+
+		while (window.pollEvent(event))
 		{
-			if (Event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed)
 				additionalVisualInfo = EXIT_INFO;
-			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Escape)
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 				input.setKeyboardEscapeKeyPressed();
-			if (Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Left)
+			if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left)
 				input.setMouseLeftButtonPressed();
-			if (Event.type == sf::Event::MouseButtonPressed && Event.key.code == sf::Mouse::Right)
+			if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Right)
 				input.setMouseRightButtonPressed();
-			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::BackSpace)
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace)
 				input.setKeyboardBackspaceKeyPressed();
-			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Return)
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
 				input.setKeyboardReturnKeyPressed();
-			if (Event.type == sf::Event::TextEntered)
+			if (event.type == sf::Event::TextEntered)
 				// only specific ASCII characters
-				if (Event.text.unicode < 127 && Event.text.unicode > 32)
-					input.setInputText(static_cast<char>(Event.text.unicode));
+				if (event.text.unicode > 32 && event.text.unicode < 127)
+					input.setInputText(static_cast<char>(event.text.unicode));
 		}
-		if (additionalmenu)
+		if (additionalMenu)
 		{
-			additionalmenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input, graphicsOpt, generalOpt);
-			additionalmenu->updateAdditionalMenuWithAnimations(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
-			additionalmenu->updateGamestate(Gamestate);
+			additionalMenu->runMenu(window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, graphicsOpt, generalOpt);
+			additionalMenu->updateAdditionalMenuWithAnimations(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+			additionalMenu->updateGamestate(gameState);
 		}
 
-		switch (Gamestate)
+		switch (gameState)
 		{
-		case Gamestates::playerVsAI:
+		case GameStates::playerVsAI:
 		{
-			gamePlayerVsAI->play(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input, *languageManager, Gamestate);
-			drawnGamestate = Gamestates::playerVsAI;
+			gamePlayerVsAI->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState);
+			drawnGameState = GameStates::playerVsAI;
 		}
 		break;
 
-		case Gamestates::playerVsPlayer:
+		case GameStates::playerVsPlayer:
 		{
-			gamePlayers->play(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), input, *languageManager, Gamestate);
-			drawnGamestate = Gamestates::playerVsPlayer;
+			gamePlayers->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState);
+			drawnGameState = GameStates::playerVsPlayer;
 		}
 		break;
 
-		case Gamestates::loadGameVariables:
+		case GameStates::loadGameVariables:
 		{
 			missedShot.setTexture(&textures.texture_handler["X"]);
 			hit.setTexture(&textures.texture_handler["fire5"]);
@@ -133,103 +130,81 @@ int main()
 			rect2.setSize(squareSize);
 			hit.setSize(squareSize);
 			missedShot.setSize(squareSize);
-		
+
 			rect.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
 			rect2.setPosition(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(bar)));
 			boardForPlayer1.setPosition(sf::Vector2f(0, static_cast<float>(bar)));
 			boardForPlayer2.setPosition(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(bar)));
-			
+
 			missedShot.setFillColor(sf::Color(255, 255, 255, 170));
 
 			mousePlayer1 = std::make_unique<Mouse_S>(sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(2 * screenDimensions.x)),
-				sf::Vector2f(static_cast<float>(bar), static_cast<float>(screenDimensions.y + bar)), &Window);
+				sf::Vector2f(static_cast<float>(bar), static_cast<float>(screenDimensions.y + bar)), &window);
 			mousePlayer2 = std::make_unique<Mouse_S>(sf::Vector2f(0, static_cast<float>(screenDimensions.x)),
-				sf::Vector2f(static_cast<float>(bar), static_cast<float>(screenDimensions.y + bar)), &Window);
-
-			squareTab = new sf::RectangleShape*[mapSize];
-			squareTab2 = new sf::RectangleShape*[mapSize];
-			for (int i = 0; i < mapSize; ++i)
-			{
-				squareTab[i] = new sf::RectangleShape[mapSize];
-				squareTab2[i] = new sf::RectangleShape[mapSize];
-			}
-
-			squareTabv2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
-			squareTab2v2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
+				sf::Vector2f(static_cast<float>(bar), static_cast<float>(screenDimensions.y + bar)), &window);
 
 			switch (mainMenu->getChoosedGamemode())
 			{
 			case playerVsAI:
-				Gamestate = Gamestates::loadPlayerVsAI; break;
+				gameState = GameStates::loadPlayerVsAI; break;
 			case playerVsPlayer:
-				Gamestate = Gamestates::loadPlayerVsPlayer; break;
+				gameState = GameStates::loadPlayerVsPlayer; break;
 			}
 
-			drawnGamestate = Gamestates::nothing;
+			drawnGameState = GameStates::nothing;
 		}
 		break;
 
-		case Gamestates::loadPlayerVsAI:
+		case GameStates::loadPlayerVsAI:
 		{
 			gamePlayerVsAI = std::make_unique<GamePlayerVsAI>(screenDimensions, squareSize, sf::Vector2f(0, static_cast<float>(bar)),
 				sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(bar)),
-				missedShot, hit, squareTab, squareTab2, rect, rect2, *mousePlayer2, *mousePlayer1, sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)),
-				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), static_cast<float>(StandardWindowDimensions.y / 2)),
-				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)), generalOpt, level);
+				missedShot, hit, rect, rect2, *mousePlayer2, *mousePlayer1, sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+				sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)),
+				sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), static_cast<float>(standardWindowDimensions.y / 2)),
+				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)), generalOpt, level);
 			gamePlayerVsAI->attachLogger(logger);
 
 			additionalVisualInfo = AdditionalVisualInformations::NONE;
-			Gamestate = Gamestates::playerVsAI;
-			drawnGamestate = Gamestates::nothing;
+			gameState = GameStates::playerVsAI;
+			drawnGameState = GameStates::nothing;
 		}
 		break;
 
-		case Gamestates::loadPlayerVsPlayer:
+		case GameStates::loadPlayerVsPlayer:
 		{
 			gamePlayers = std::make_unique<GamePlayers>(screenDimensions, squareSize, sf::Vector2f(0, static_cast<float>(bar)),
 				sf::Vector2f(static_cast<float>(screenDimensions.x), static_cast<float>(bar)),
-				missedShot, hit, squareTab, squareTab2, rect, rect2, *mousePlayer2, *mousePlayer1, sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)),
-				sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), static_cast<float>(StandardWindowDimensions.y / 2)),
-				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)), generalOpt);
+				missedShot, hit, rect, rect2, *mousePlayer2, *mousePlayer1, sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+				sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)),
+				sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), static_cast<float>(standardWindowDimensions.y / 2)),
+				interfaceScale, *languageManager, sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)), generalOpt);
 			gamePlayers->attachLogger(logger);
 
 			additionalVisualInfo = AdditionalVisualInformations::NONE;
-			Gamestate = Gamestates::playerVsPlayer;
-			drawnGamestate = Gamestates::nothing;
+			gameState = GameStates::playerVsPlayer;
+			drawnGameState = GameStates::nothing;
 		}
 		break;
 
-		case Gamestates::menu:
+		case GameStates::menu:
 		{
-			mainMenu->runMenu(Window.mapPixelToCoords(sf::Mouse::getPosition(Window)), mapSize, level, input, graphicsOpt, generalOpt);
-			mainMenu->updateGamestate(Gamestate, additionalVisualInfo);
-			mainMenu->updateMenuWithAnimates(dt, Window.mapPixelToCoords(sf::Mouse::getPosition(Window)));
-			drawnGamestate = Gamestates::menu;
+			mainMenu->runMenu(window.mapPixelToCoords(sf::Mouse::getPosition(window)), mapSize, level, input, graphicsOpt, generalOpt);
+			mainMenu->updateGamestate(gameState, additionalVisualInfo);
+			mainMenu->updateMenuWithAnimates(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+			drawnGameState = GameStates::menu;
 		}
 		break;
 
-		case Gamestates::breakAndGoToMenu:
+		case GameStates::breakAndGoToMenu:
 		{
-			if (squareTab && squareTab2)
-				for (int i = 0; i < mapSize; i++)
-				{
-					delete[]squareTab[i];
-					delete[]squareTab2[i];
-				}
-			delete[]squareTab;
-			delete[]squareTab2;
-			squareTab = nullptr;
-			squareTab2 = nullptr;
-
 			mainMenu->Reset();
-			Gamestate = Gamestates::menu;
-			drawnGamestate = Gamestates::nothing;
+			gameState = GameStates::menu;
+			drawnGameState = GameStates::nothing;
 		}
 		break;
 
-		case Gamestates::reloadOptions:
+		case GameStates::reloadOptions:
 		{
 			if (fullyLoad || shouldReloadGeneralOptions)
 				languageManager = std::make_unique<LanguageManager>(generalOpt.getLanguage());
@@ -258,34 +233,34 @@ int main()
 				graphicsOpt.setDesktopResolution(sf::Vector2i(desktop.width, desktop.height));
 				interfaceScale = desktop.width / 1920.0f;
 				screenDimensions = sf::Vector2i(desktop.width / 2, desktop.height - bar);
-				StandardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);
-				Window.create(desktop, L"Warships", sf::Style::Fullscreen);
-				menuTexture.setSize(sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)));
-				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
+				standardWindowDimensions = sf::Vector2i(desktop.width, desktop.height);
+				window.create(desktop, L"Warships", sf::Style::Fullscreen);
+				menuTexture.setSize(sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)));
+				window.setPosition(sf::Vector2i(window.getPosition().x, 0));
 			}
 			else if ((wasResolutionChanged || fullyLoad || wasFullScreenChanged) && !graphicsOpt.isFullScreenEnabled())
 			{
 				interfaceScale = graphicsOpt.getResolution().x / 1920.0f;
-				screenDimensions = sf::Vector2i(graphicsOpt.getResolution().x / 2 , graphicsOpt.getResolution().y - bar);
-				StandardWindowDimensions = sf::Vector2i(graphicsOpt.getResolution());
-				Window.create(sf::VideoMode(StandardWindowDimensions.x, StandardWindowDimensions.y), L"Warships", sf::Style::Close);
-				menuTexture.setSize(sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)));
-				Window.setPosition(sf::Vector2i(Window.getPosition().x, 0));
+				screenDimensions = sf::Vector2i(graphicsOpt.getResolution().x / 2, graphicsOpt.getResolution().y - bar);
+				standardWindowDimensions = sf::Vector2i(graphicsOpt.getResolution());
+				window.create(sf::VideoMode(standardWindowDimensions.x, standardWindowDimensions.y), L"Warships", sf::Style::Close);
+				menuTexture.setSize(sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)));
+				window.setPosition(sf::Vector2i(window.getPosition().x, 0));
 			}
 
 			bar = static_cast<int>(barSize * interfaceScale);
-			Window.setVerticalSyncEnabled(graphicsOpt.isVerticalSyncEnabled());
-			view = Window.getDefaultView();
+			window.setVerticalSyncEnabled(graphicsOpt.isVerticalSyncEnabled());
+			view = window.getDefaultView();
 			view.zoom(100.0f / graphicsOpt.getResolutionScale());
-			Window.setView(view);
+			window.setView(view);
 
 			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || fullyLoad)
 			{
-				mainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), 20 * interfaceScale),
-					sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), 300 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
-				additionalmenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
-					sf::Vector2f(static_cast<float>(StandardWindowDimensions.x), static_cast<float>(StandardWindowDimensions.y)),
-					sf::Vector2f(static_cast<float>(StandardWindowDimensions.x / 2), static_cast<float>(StandardWindowDimensions.y / 2)),
+				mainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 20 * interfaceScale),
+					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 300 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
+				additionalMenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
+					sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)),
+					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), static_cast<float>(standardWindowDimensions.y / 2)),
 					additionalVisualInfo, interfaceScale, *languageManager);
 			}
 			if (!fullyLoad || shouldReloadGraphicsOptions)
@@ -304,100 +279,79 @@ int main()
 			shouldReloadGeneralOptions = false;
 			fullyLoad = false;
 
-			Gamestate = Gamestates::menu;
+			gameState = GameStates::menu;
 		}
 		break;
 
-		case Gamestates::restoreGraphicsOptions:
+		case GameStates::restoreGraphicsOptions:
 		{
 			fullyLoad = true;
 			shouldReloadGraphicsOptions = true;
-			Gamestate = Gamestates::reloadOptions;
+			gameState = GameStates::reloadOptions;
 		}
 		break;
 
-		case Gamestates::reloadGeneralOptions:
+		case GameStates::reloadGeneralOptions:
 		{
 			shouldReloadGeneralOptions = true;
-			Gamestate = Gamestates::restoreGraphicsOptions;
+			gameState = GameStates::restoreGraphicsOptions;
 		} break;
 
-		case Gamestates::restoreGeneralOptions:
+		case GameStates::restoreGeneralOptions:
 		{
 			shouldRestoreGeneralOptions = true;
-			Gamestate = Gamestates::reloadGeneralOptions;
+			gameState = GameStates::reloadGeneralOptions;
 		} break;
 
-		case Gamestates::Exit:
+		case GameStates::Exit:
 		{
-			if (squareTab && squareTab2)
-				for (int i = 0; i < mapSize; i++)
-				{
-					delete[]squareTab[i];
-					delete[]squareTab2[i];
-				}
-			delete[]squareTab;
-			delete[]squareTab2;
-
-			drawnGamestate = Gamestates::nothing;
-			Window.close();
+			drawnGameState = GameStates::nothing;
+			window.close();
 		}
 		break;
 
-		case Gamestates::paused:
+		case GameStates::paused:
 		{
-			Gamestate = drawnGamestate;
+			gameState = drawnGameState;
 		}
 		break;
 		}
 
 		// DRAWING
-		switch (drawnGamestate)
+		switch (drawnGameState)
 		{
-		case Gamestates::playerVsAI:
+		case GameStates::playerVsAI:
 		{
-			Window.draw(boardForPlayer2);
-			Window.draw(boardForPlayer1);
+			window.draw(boardForPlayer2);
+			window.draw(boardForPlayer1);
 
-			for (int i = 0; i < mapSize; i++)
-				for (int j = 0; j < mapSize; j++)
-				{
-					Window.draw(squareTab[i][j]);
-					Window.draw(squareTab2[i][j]);
-				}
-			Window.draw(*gamePlayerVsAI);
+			window.draw(*gamePlayerVsAI);
 		}
 		break;
 
-		case Gamestates::playerVsPlayer:
+		case GameStates::playerVsPlayer:
 		{
-			Window.draw(boardForPlayer2);
-			Window.draw(boardForPlayer1);
+			window.draw(boardForPlayer2);
+			window.draw(boardForPlayer1);
 
-			for (int i = 0; i < mapSize; i++)
-				for (int j = 0; j < mapSize; j++)
-				{
-					Window.draw(squareTab[i][j]);
-					Window.draw(squareTab2[i][j]);
-				}
-			Window.draw(*gamePlayers);
+			window.draw(*gamePlayers);
 		}
 		break;
 
-		case Gamestates::menu:
+		case GameStates::menu:
 		{
-			Window.draw(menuTexture);
+			window.draw(menuTexture);
 			if (mainMenu)
-				Window.draw(*mainMenu);
+				window.draw(*mainMenu);
 		}
 		break;
 		}
 
-		if (additionalmenu)
-			Window.draw(*additionalmenu);
+		if (additionalMenu)
+			window.draw(*additionalMenu);
 
-		Window.display();
-		Window.clear();
+		window.display();
+		window.clear();
 	}
 
 	graphicsOpt.saveToFile();

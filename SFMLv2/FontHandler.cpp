@@ -1,8 +1,7 @@
 #include "FontHandler.h"
 
-FontHandler::FontHandler()
-{
-}
+using std::make_pair;
+
 
 FontHandler & FontHandler::getInstance()
 {

@@ -1,4 +1,5 @@
 #include "UtilityFunctions.h"
+#include <codecvt>
 
 std::wstring floatWith2DecimalPlaces(float value, const std::wstring& onlyToReturnWstring)
 {
@@ -30,4 +31,10 @@ std::string floatWith2DecimalPlaces(float value, const std::string & string)
 
 	temp = static_cast<int>(afterDecimalPoint * 100);
 	return std::to_string(integer) + '.' + std::to_string(temp);
+}
+
+std::wstring stringToWstringConversion(const std::string & s)
+{
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	return std::wstring(converter.from_bytes(s));
 }

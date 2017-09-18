@@ -4,8 +4,9 @@
 class GameTime
 {
 	sf::Time timer;
+
 public:
-	GameTime();
+	GameTime() {};
 
 	void runGameTimer(const sf::Time& dt);
 

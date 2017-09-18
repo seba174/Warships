@@ -22,31 +22,26 @@ void Player::updateMaximumMisses()
 	maximumMissesTemp = 0;
 }
 
-Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, int ** enemy_ships,
-	const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape ** square_tab_2,
-	sf::RectangleShape& rect)
-	: boardDimensions(dim), squareSize(SquareSize), enemySetPoints(enemy_setpoints), playerSetPoints(player_setpoints), enemyShips(enemy_ships),
-	missedShot(missedShot), hit(hit), squareTab2(square_tab_2), rect(rect), totalHits(0),totalShots(0)
+Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
+ const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships, const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect)
+	: boardDimensions(dim), squareSize(SquareSize), enemySetPoints(enemy_setpoints), playerSetPoints(player_setpoints), 
+	missedShot(missedShot), hit(hit), rect(rect), totalHits(0),totalShots(0), enemyShips(enemy_ships)
 {
 	rect.setPosition(enemySetPoints);
 	mapSize = static_cast<int>(boardDimensions.x / SquareSize.x);
 
-	TextureHandler& textures = TextureHandler::getInstance();
-	setShips = new Board*[countOfShips];
-	setShips[0] = new Ships(5, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]);
-	setShips[1] = new Ships(4, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]);
-	setShips[2] = new Ships(3, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]);
-	setShips[3] = new Ships(2, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]);
-	setShips[4] = new IrregularShip2(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular2"]);
-	setShips[5] = new IrregularShip3(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular3"]);
+	squareTab2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
+	playerShips = std::vector<std::vector<int>>(mapSize, std::vector<int>(mapSize, 0));
 
-	playerShips = new int*[mapSize];
-	for (int i = 0; i < mapSize; i++)
-	{
-		playerShips[i] = new int[mapSize];
-		for (int j = 0; j < mapSize; j++)
-			playerShips[i][j] = 0;
-	}
+	TextureHandler& textures = TextureHandler::getInstance();
+
+	setShips.push_back(std::make_unique<Ships>(5, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
+	setShips.push_back(std::make_unique<Ships>(4, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
+	setShips.push_back(std::make_unique<Ships>(3, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
+	setShips.push_back(std::make_unique<Ships>(2, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
+	setShips.push_back(std::make_unique<IrregularShip2>(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular2"]));
+	setShips.push_back(std::make_unique<IrregularShip3>(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular3"]));
+	
 	this->shipsSetUp = false;
 }
 
@@ -56,23 +51,23 @@ bool Player::playerMoves(const sf::Vector2i & position)
 	if (!getPlayerMoved())
 		return false;
 
-	if (enemyShips[position.x][position.y] == -2)
+	if ((*enemyShips)[position.x][position.y] == -2)
 	{
 	}
-	else if (enemyShips[position.x][position.y] == 0)
+	else if ((*enemyShips)[position.x][position.y] == 0)
 	{
 		squareTab2[position.x][position.y] = missedShot;
 		squareTab2[position.x][position.y].setPosition(sf::Vector2f(enemySetPoints.x + squareSize.x*position.x, enemySetPoints.y + squareSize.y*position.y));
-		enemyShips[position.x][position.y] = -2;
+		(*enemyShips)[position.x][position.y] = -2;
 		playerMoved = false;
 		++totalShots;
 		++maximumMissesTemp;
 		updateMaximumHits();
 		return true;
 	}
-	else if (enemyShips[position.x][position.y])
+	else if ((*enemyShips)[position.x][position.y])
 	{
-		switch (enemyShips[position.x][position.y])
+		switch ((*enemyShips)[position.x][position.y])
 		{
 		case 2: HP.size_2--; break;
 		case 3: HP.size_3--; break;
@@ -81,7 +76,7 @@ bool Player::playerMoves(const sf::Vector2i & position)
 		case 10: HP.size_ir2--; break;
 		case 11: HP.size_ir3--; break;
 		}
-		enemyShips[position.x][position.y] = -2;
+		(*enemyShips)[position.x][position.y] = -2;
 		squareTab2[position.x][position.y] = hit;
 		squareTab2[position.x][position.y].setPosition(sf::Vector2f(enemySetPoints.x + squareSize.x*position.x, enemySetPoints.y + squareSize.y*position.y));
 		++totalHits;
@@ -111,16 +106,15 @@ void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& 
 		{
 		case 0:; case 1:; case 2:; case 3:
 			setShips[counter]->setPosition(position);
-			if (setShips[counter]->getplaceShip())
+			if (setShips[counter]->getPlaceShip())
 			{
 				if (setShips[counter]->placePlayerShip(playerShips, mapSize, vect_ship_to_draw))
 					counterToSet = true;
 			}
-
 			break;
 		case 4:; case 5:
 			setShips[counter]->setPosition(position);
-			if (setShips[counter]->getplaceShip())
+			if (setShips[counter]->getPlaceShip())
 			{
 				if (setShips[counter]->placePlayerShip(playerShips, mapSize, vect_ship_to_draw))
 					counterToSet = true;
@@ -145,7 +139,14 @@ void Player::draw(sf::RenderTarget & Window) const
 	if (shipsSetUp)
 		Window.draw(rect);
 	else
-		Window.draw(setShips[counter]->return_ship());
+		Window.draw(setShips[counter]->returnShip());
+}
+
+void Player::drawSquareTab(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	for (const std::vector<sf::RectangleShape>& i : squareTab2)
+		for (const sf::RectangleShape& rect : i)
+			target.draw(rect, states);
 }
 
 bool Player::isMouseInEnemyBounds(const sf::Vector2f& mousepos) const
@@ -155,12 +156,12 @@ bool Player::isMouseInEnemyBounds(const sf::Vector2f& mousepos) const
 	return false;
 }
 
-void Player::resetSquareTab(int num, sf::RectangleShape** newSquareTab)
+void Player::resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab)
 {
 	for (int i = 0; i < mapSize; ++i)
 		for (int j = 0; j < mapSize; ++j)
 		{
-			if (setShips[num]->return_ship().getGlobalBounds().contains(playerSetPoints.x + squareSize.x / 2 + squareSize.x*j, playerSetPoints.y + squareSize.y / 2 + squareSize.y*i))
+			if (setShips[num]->returnShip().getGlobalBounds().contains(playerSetPoints.x + squareSize.x / 2 + squareSize.x*j, playerSetPoints.y + squareSize.y / 2 + squareSize.y*i))
 				if (newSquareTab[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
 					newSquareTab[j][i] = sf::RectangleShape();
 		}
@@ -171,16 +172,5 @@ float Player::returnAccuracy() const
 	if (totalShots != 0)
 		return (static_cast<float>(totalHits) / static_cast<float>(totalShots)) * 100;
 	else return 0;
-}
-
-Player::~Player()
-{
-	for (int i = 0; i < countOfShips; i++)
-		delete setShips[i];
-	delete[] setShips;
-	
-	for (int i = 0; i < mapSize; i++)
-		delete[] playerShips[i];
-	delete[] playerShips;
 }
 

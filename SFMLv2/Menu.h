@@ -2,7 +2,7 @@
 #include "SubMenu.h"
 #include "OptionsSubMenu.h"
 #include "enumMenustate.h"
-#include "enumGamestate.h"
+#include "enumGameState.h"
 #include "enumAdditionalVisualInformation.h"
 #include "enumLevelsDifficulty.h"
 
@@ -17,7 +17,7 @@ class Menu :
 	sf::Text MainTitle;
 	
 	Menustates menustate, previousMenustate;
-	Gamestates newGamestate, choosedGamemode;
+	GameStates newGamestate, choosedGamemode;
 	AdditionalVisualInformations newVSinfo;
 	
 	// SubMenus which Standard Menu contains
@@ -59,9 +59,9 @@ public:
 	void setMenustate(Menustates newState) { menustate = newState; }
 
 	// returns Gamestate choosed by user
-	Gamestates getChoosedGamemode();
+	GameStates getChoosedGamemode();
 
 	// updates Gamestate and AdditionalVisualInformation
-	void updateGamestate(Gamestates& gamestate, AdditionalVisualInformations& additionalvsinfo);
+	void updateGamestate(GameStates& gamestate, AdditionalVisualInformations& additionalvsinfo);
 };
 

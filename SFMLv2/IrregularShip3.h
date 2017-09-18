@@ -8,26 +8,26 @@ class IrregularShip3 :
 	sf::RectangleShape shipv2;
 	bool placeShip;
 
-public:
-	IrregularShip3(const sf::Vector2f& squaresize, const  sf::Vector2i& boarddimensions, const sf::Vector2f& setPoints, sf::Texture* texture);
+	void setPositionWithoutCheck(const sf::Vector2f& newposition) { shipv2.setPosition(newposition); }
 
 	bool CanChangePositionX(const sf::Vector2f& newposition) const;
 
 	bool CanChangePositionY(const sf::Vector2f& newposition) const;
 
+public:
+	IrregularShip3(const sf::Vector2f& squaresize, const  sf::Vector2i& boarddimensions, const sf::Vector2f& setPoints, sf::Texture* texture);
+
 	void setPosition(const sf::Vector2f& mousepos);
 
-	void setPositionWithoutCheck(const sf::Vector2f& newposition) { shipv2.setPosition(newposition); }
+	sf::RectangleShape& returnShip() { return shipv2; }
 
-	sf::RectangleShape& return_ship() { return shipv2; }
+	bool getPlaceShip() const { return placeShip; }
 
-	bool getplaceShip() const { return placeShip; }
+	void setPlaceShip(bool set) { placeShip = set; }
 
-	void setplaceShip(bool set) { placeShip = set; }
+	void rotateShip();
 
-	void rotate_ship();
-
-	bool placePlayerShip(int **ships, int tabs_size, std::vector<Board*>&);
+	bool placePlayerShip(std::vector<std::vector<int>>& ships, int tabs_size, std::vector<Board*>&);
 
 	void updateTexture(const sf::Time&);
 

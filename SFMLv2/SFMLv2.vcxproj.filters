@@ -93,9 +93,6 @@
     <ClCompile Include="LanguageManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Translation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneralOptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -180,9 +177,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Menu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="enumGamestate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="enumAdditionalVisualInformation.h">
@@ -276,6 +270,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SimpleLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enumGameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,11 +1,11 @@
 #include "GamePlayers.h"
 #include <random>
-#include <codecvt>
 #include <Windows.h>
 #include "Input.h"
 #include "LanguageManager.h"
 #include "TextureHandler.h"
 #include "GeneralOptions.h"
+#include "UtilityFunctions.h"
 
 
 int GamePlayers::whoStarts() const
@@ -33,12 +33,14 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	{
 	case gamePlayersState::player1Moves:
 	{
+		player1.drawSquareTab(target, states);
+		player2.drawSquareTab(target, states);
 		for (Board* ship : vectShipsToDrawPlayer1)
 		{
 			if (ship->shouldBeDrawed())
 			{
 				ship->updateTexture(lastFrameTime);
-				target.draw(ship->return_ship(), states);
+				target.draw(ship->returnShip(), states);
 			}
 		}
 		for (Board* ship : vectShipsToDrawPlayer2)
@@ -46,7 +48,7 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 			if (ship->shouldBeDrawed())
 			{
 				ship->updateTexture(lastFrameTime);
-				target.draw(ship->return_ship(), states);
+				target.draw(ship->returnShip(), states);
 			}
 		}
 		target.draw(player1Background, states);
@@ -58,12 +60,14 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 	case gamePlayersState::player2Moves:
 	{
+		player1.drawSquareTab(target, states);
+		player2.drawSquareTab(target, states);
 		for (Board* ship : vectShipsToDrawPlayer1)
 		{
 			if (ship->shouldBeDrawed())
 			{
 				ship->updateTexture(lastFrameTime);
-				target.draw(ship->return_ship(), states);
+				target.draw(ship->returnShip(), states);
 			}
 		}
 		for (Board* ship : vectShipsToDrawPlayer2)
@@ -71,7 +75,7 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 			if (ship->shouldBeDrawed())
 			{
 				ship->updateTexture(lastFrameTime);
-				target.draw(ship->return_ship(), states);
+				target.draw(ship->returnShip(), states);
 			}
 		}
 		target.draw(player2Background, states);
@@ -86,7 +90,7 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		for (Board* ship : vectShipsToDrawPlayer1)
 		{
 			ship->updateTexture(lastFrameTime);
-			target.draw(ship->return_ship(), states);
+			target.draw(ship->returnShip(), states);
 		}
 		player1.draw(target);
 		target.draw(advertPlayer1, states);
@@ -106,7 +110,7 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		for (Board* ship : vectShipsToDrawPlayer2)
 		{
 			ship->updateTexture(lastFrameTime);
-			target.draw(ship->return_ship(), states);
+			target.draw(ship->returnShip(), states);
 		}
 		player2.draw(target);
 		target.draw(advertPlayer2, states);
@@ -280,13 +284,7 @@ void GamePlayers::updatePlayersFinishInformations(LanguageManager& langMan)
 		finishMenu.setTitle(player2.getPlayerName() + L' ' + langMan.getText("has won the game") + L'!');
 }
 
-std::wstring GamePlayers::stringToWstringConversion(const std::string & s)
-{
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	return std::wstring(converter.from_bytes(s));
-}
-
-void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, Gamestates& gamestate)
+void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate)
 {
 	lastFrameTime = dt;
 	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
@@ -444,7 +442,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 
 	case gamePlayersState::finish:
 	{
-		if (!wasGameLogged)
+		if (!wasGameLogged && logger)
 		{
 			logger->logPlayerVsPlayerGame(mapSize, player1.returnAccuracy(), finishMenu.giveStars(player1.returnAccuracy()),
 				player2.returnAccuracy(), finishMenu.giveStars(player2.returnAccuracy()));
@@ -459,12 +457,12 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 
 			if (finishMenu.menuButtons.PushButtonContains(1, mousepos))
 			{
-				gamestate = Gamestates::breakAndGoToMenu;
+				gamestate = GameStates::breakAndGoToMenu;
 			} // Return to Main Menu
 
 			if (finishMenu.menuButtons.PushButtonContains(2, mousepos))
 			{
-				gamestate = Gamestates::Exit;
+				gamestate = GameStates::Exit;
 			} // Quit the game
 		}
 
@@ -484,12 +482,12 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 
 			if (statisticsMenu.menuButtons.PushButtonContains(1, mousepos))
 			{
-				gamestate = Gamestates::breakAndGoToMenu;
+				gamestate = GameStates::breakAndGoToMenu;
 			} // Return to Main Menu
 
 			if (statisticsMenu.menuButtons.PushButtonContains(2, mousepos))
 			{
-				gamestate = Gamestates::Exit;
+				gamestate = GameStates::Exit;
 			} // Quit the game
 		}
 
@@ -498,15 +496,14 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	}
 }
 
+GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSize,
+	const sf::Vector2f & player1_setpoints, const sf::Vector2f & player2_setpoints, const sf::RectangleShape & pudlo, const sf::RectangleShape & trafienie,
+	sf::RectangleShape & player1Rect, sf::RectangleShape & player2Rect, const Mouse_S& pl1Mouse, const Mouse_S& pl2Mouse,
+	const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize, const sf::Vector2f& backgroundForSubMenuPosition,
+	float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim, const GeneralOptions& genOpt)
 
-GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSize, const sf::Vector2f & player1_setpoints,
-	const sf::Vector2f & player2_setpoints, const sf::RectangleShape & pudlo, const sf::RectangleShape & trafienie, sf::RectangleShape ** player1Square_tab_2,
-	sf::RectangleShape ** player2Square_tab_2, sf::RectangleShape & player1Rect, sf::RectangleShape & player2Rect, const Mouse_S& pl1Mouse,
-	const Mouse_S& pl2Mouse, const sf::Vector2f & title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize,
-	const sf::Vector2f& backgroundForSubMenuPosition, float interfaceScale, LanguageManager& langMan, const sf::Vector2f& screenDim, const GeneralOptions& genOpt)
-
-	: player1(dim, SquareSize, player2_setpoints, nullptr, player1_setpoints, pudlo, trafienie, player1Square_tab_2, player1Rect),
-	player2(dim, SquareSize, player1_setpoints, nullptr, player2_setpoints, pudlo, trafienie, player2Square_tab_2, player2Rect),
+	: player1(dim, SquareSize, player2_setpoints, nullptr, player1_setpoints, pudlo, trafienie, player1Rect),
+	player2(dim, SquareSize, player1_setpoints, nullptr, player2_setpoints, pudlo, trafienie, player2Rect),
 	mousePlayer1(pl1Mouse),
 	mousePlayer2(pl2Mouse),
 	player1Background(dim, SquareSize, player1_setpoints, interfaceScale, langMan),
@@ -516,7 +513,7 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	player1Won(false), player2Won(false),
 	advertPlayer1(dim, player2_setpoints, interfaceScale),
 	advertPlayer2(dim, player1_setpoints, interfaceScale),
-	finishMenu(screenDim, langMan, interfaceScale, static_cast<int>(dim.x/SquareSize.x)),
+	finishMenu(screenDim, langMan, interfaceScale, static_cast<int>(dim.x / SquareSize.x)),
 	statisticsMenu(screenDim, langMan, interfaceScale),
 	helpInformationPlayer1(2),
 	helpInformationPlayer2(2),

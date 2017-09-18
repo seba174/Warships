@@ -8,3 +8,6 @@ std::wstring floatWith2DecimalPlaces(float value, const std::wstring& onlyToRetu
 // returns a string representing given value with only 2 decimal places
 // e.g. function returns 70.51 for value 70.515040
 std::string floatWith2DecimalPlaces(float value, const std::string& onlyToReturnString);
+
+// converts string to wstring
+std::wstring stringToWstringConversion(const std::string& s);

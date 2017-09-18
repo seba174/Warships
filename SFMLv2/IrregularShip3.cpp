@@ -131,7 +131,7 @@ void IrregularShip3::setPosition(const sf::Vector2f& mousepos)
 	}
 }
 
-void IrregularShip3::rotate_ship()
+void IrregularShip3::rotateShip()
 {
 	float rotation = shipv2.getRotation();
 
@@ -162,7 +162,7 @@ void IrregularShip3::rotate_ship()
 	}
 }
 
-bool IrregularShip3::placePlayerShip(int ** ships, int tabs_size, std::vector<Board*>&VectRect)
+bool IrregularShip3::placePlayerShip(std::vector<std::vector<int>>& ships, int tabs_size, std::vector<Board*>&VectRect)
 {
 	float accuracy = 0.97f;
 	sf::Vector2i pos(static_cast<int>(floor((shipv2.getPosition().x - setPoints.x) / (accuracy*squareSize.x))), 
@@ -254,6 +254,5 @@ void IrregularShip3::updateTexture(const sf::Time& timen)
 
 void IrregularShip3::setDestroyedTexture()
 {
-	TextureHandler &text = TextureHandler::getInstance();
-	shipv2.setTexture(&text.texture_handler["irregular3_destroyed"]);
+	shipv2.setTexture(&TextureHandler::getInstance().texture_handler["irregular3_destroyed"]);
 }

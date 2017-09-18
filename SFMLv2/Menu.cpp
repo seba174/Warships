@@ -90,14 +90,13 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	menustate = Menustates::DEFAULT;
 	previousMenustate = Menustates::DEFAULT;
 	newVSinfo = AdditionalVisualInformations::NONE;
-	newGamestate = Gamestates::menu;
+	newGamestate = GameStates::menu;
 
 	MainTitle.setFont(handler.font_handler["Mecha"]);
 	MainTitle.setString(main_title);
 	MainTitle.setCharacterSize(titleCharacterSize);
 	MainTitle.setPosition(main_title_position.x - MainTitle.getGlobalBounds().width / 2, main_title_position.y);
 
-	
 	SubHome.construct(L"", langMan.getText("Play") + L',' + langMan.getText("Options") + L',' + langMan.getText("Credits") + L',' + langMan.getText("Exit"), submenuCharacterSize,
 		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubHome.setInteriorColorAllButtons(buttonColor);
@@ -123,7 +122,6 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubChooseAILevel.setInteriorColorAllButtons(buttonColor);
 
 	SubGraphics.Construct(title_or1st_button_position, space_between_buttons, langMan);
-
 	SubGraphics.addOptionNameWithButton(langMan.getText("Resolution"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, AvaliableResolutions::getResolutionString(), handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
@@ -139,6 +137,8 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGraphics.addOptionNameWithButton(langMan.getText("Antialiasing"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, GraphicsOptions::s_yes + ',' + GraphicsOptions::s_no, handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size);
+	SubGraphics.setDictionaryDisabledBool(0, true);
+	SubGraphics.setDictionaryDisabledBool(3, true);
 
 	SubGraphics.addPushButton(langMan.getText("Back"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGraphics.addPushButton(langMan.getText("Apply changes"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
@@ -149,7 +149,6 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 		SubGraphics.setDisplayedOption(0, std::to_string(opt.getResolution().x) + GraphicsOptions::s_x + std::to_string(opt.getResolution().y));
 	else
 		SubGraphics.setArrowsBlockAndDisplayedString(0, true, opt.getDesktopResolution_string());
-
 	SubGraphics.setDisplayedOption(1, opt.isVerticalSyncEnabled_string());
 	SubGraphics.setDisplayedOption(2, opt.isFullScreenEnabled_string());
 	SubGraphics.setDisplayedOption(3, std::to_string(opt.getResolutionScale()));
@@ -163,21 +162,22 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGeneral.addOptionNameWithButton(langMan.getText("Menu desing"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, "0,1,2", handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size, bounds_color);
-	
 	SubGeneral.addOptionNameWithButton(langMan.getText("First player name"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, "Player1", handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size, bounds_color);
-	SubGeneral.shouldOptionButtonDisplayOnlyText(2, true);
-	SubGeneral.disableAnimation(2, true);
-	SubGeneral.setArrowsBlockAndDisplayedString(2, true, genOpt.getPlayer1Name());
-	SubGeneral.setDictionaryDisabledBool(2, true);
 	SubGeneral.addOptionNameWithButton(langMan.getText("Second player name"), handler.font_handler["Mecha"], options_name_with_button_char,
 		opt_name_with_button, "Player1", handler.font_handler["Mecha"],
 		options_name_with_button_char, options_butt_size, bounds_color);
+	SubGeneral.shouldOptionButtonDisplayOnlyText(2, true);
 	SubGeneral.shouldOptionButtonDisplayOnlyText(3, true);
+	SubGeneral.disableAnimation(2, true);
 	SubGeneral.disableAnimation(3, true);
-	SubGeneral.setArrowsBlockAndDisplayedString(3, true, genOpt.getPlayer2Name());
+	SubGeneral.setDictionaryDisabledBool(0, true);
+	SubGeneral.setDictionaryDisabledBool(1, true);
+	SubGeneral.setDictionaryDisabledBool(2, true);
 	SubGeneral.setDictionaryDisabledBool(3, true);
+	SubGeneral.setArrowsBlockAndDisplayedString(2, true, genOpt.getPlayer1Name());
+	SubGeneral.setArrowsBlockAndDisplayedString(3, true, genOpt.getPlayer2Name());
 
 	SubGeneral.addPushButton(langMan.getText("Back"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
 	SubGeneral.addPushButton(langMan.getText("Apply changes"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
@@ -220,7 +220,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			else if (SubHome.contains(2, mousepos)) // Credits
 				;
 			else if (SubHome.contains(3, mousepos)) // Exit button
-				newGamestate = Gamestates::Exit;
+				newGamestate = GameStates::Exit;
 		}
 	} break;
 
@@ -259,14 +259,14 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 				if (opt.hasAnyOptionChanged())
 				{
-					newGamestate = Gamestates::reloadOptions;
+					newGamestate = GameStates::reloadOptions;
 				}
 			} // Apply Changes
 
 			if (SubGraphics.PushButtonContains(2, mousepos))
 			{
 				opt.loadDefaults();
-				newGamestate = Gamestates::restoreGraphicsOptions;
+				newGamestate = GameStates::restoreGraphicsOptions;
 			} // Reset Defaults
 		}
 
@@ -290,7 +290,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 				if (generalOpt.hasAnyOptionChanged())
 				{
-					newGamestate = Gamestates::reloadGeneralOptions;
+					newGamestate = GameStates::reloadGeneralOptions;
 				}
 			} // Apply Changes
 
@@ -363,13 +363,13 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			{
 				menustate = Menustates::CHOOSE_MAPSIZE;
 				previousMenustate = Menustates::CHOOSE_GAMETYPE;
-				choosedGamemode = Gamestates::playerVsAI;
+				choosedGamemode = GameStates::playerVsAI;
 			}
 			else if (SubChooseGametype.contains(1, mousepos)) // Player vs Player button
 			{
 				menustate = Menustates::CHOOSE_MAPSIZE;
 				previousMenustate = Menustates::CHOOSE_GAMETYPE;
-				choosedGamemode = Gamestates::playerVsPlayer;
+				choosedGamemode = GameStates::playerVsPlayer;
 			}
 			else if (SubChooseGametype.contains(2, mousepos)) // Back button
 				menustate = previousMenustate;
@@ -385,9 +385,9 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			if (SubChooseMapSize.contains(0, mousepos)) // 8 x 8 button
 			{
 				mapsize = 8;
-				if (choosedGamemode == Gamestates::playerVsPlayer)
+				if (choosedGamemode == GameStates::playerVsPlayer)
 				{
-					newGamestate = Gamestates::loadGameVariables;
+					newGamestate = GameStates::loadGameVariables;
 					newVSinfo = AdditionalVisualInformations::LOADING;
 					menustate = Menustates::LOADING_GAME_VARIABLES;
 				}
@@ -401,9 +401,9 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			{
 				mapsize = 10;
 
-				if (choosedGamemode == Gamestates::playerVsPlayer)
+				if (choosedGamemode == GameStates::playerVsPlayer)
 				{
-					newGamestate = Gamestates::loadGameVariables;
+					newGamestate = GameStates::loadGameVariables;
 					newVSinfo = AdditionalVisualInformations::LOADING;
 					menustate = Menustates::LOADING_GAME_VARIABLES;
 				}
@@ -417,9 +417,9 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			{
 				mapsize = 12;
 
-				if (choosedGamemode == Gamestates::playerVsPlayer)
+				if (choosedGamemode == GameStates::playerVsPlayer)
 				{
-					newGamestate = Gamestates::loadGameVariables;
+					newGamestate = GameStates::loadGameVariables;
 					newVSinfo = AdditionalVisualInformations::LOADING;
 					menustate = Menustates::LOADING_GAME_VARIABLES;
 				}
@@ -442,21 +442,21 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			if (SubChooseAILevel.contains(0, mousepos)) // Easy button
 			{
 				level = LevelsDifficulty::EASY;
-				newGamestate = Gamestates::loadGameVariables;
+				newGamestate = GameStates::loadGameVariables;
 				newVSinfo = AdditionalVisualInformations::LOADING;
 				menustate = Menustates::DEFAULT;
 			}
 			else if (SubChooseAILevel.contains(1, mousepos)) // Medium button
 			{
 				level = LevelsDifficulty::MEDIUM;
-				newGamestate = Gamestates::loadGameVariables;
+				newGamestate = GameStates::loadGameVariables;
 				newVSinfo = AdditionalVisualInformations::LOADING;
 				menustate = Menustates::DEFAULT;
 			}
 			else if (SubChooseAILevel.contains(2, mousepos)) // Hard button
 			{
 				level = LevelsDifficulty::HARD;
-				newGamestate = Gamestates::loadGameVariables;
+				newGamestate = GameStates::loadGameVariables;
 				newVSinfo = AdditionalVisualInformations::LOADING;
 				menustate = Menustates::DEFAULT;
 			}
@@ -502,18 +502,18 @@ void Menu::Reset()
 	menustate = Menustates::DEFAULT;
 	previousMenustate = Menustates::DEFAULT;
 	newVSinfo = AdditionalVisualInformations::NONE;
-	newGamestate = Gamestates::menu;
+	newGamestate = GameStates::menu;
 }
 
-Gamestates Menu::getChoosedGamemode()
+GameStates Menu::getChoosedGamemode()
 {
 	return choosedGamemode;
 }
 
-void Menu::updateGamestate(Gamestates & gamestate, AdditionalVisualInformations & additionalvsinfo)
+void Menu::updateGamestate(GameStates & gamestate, AdditionalVisualInformations & additionalvsinfo)
 {
 	gamestate = newGamestate;
 	if (newVSinfo != AdditionalVisualInformations::NONE)
 		additionalvsinfo = newVSinfo;
-	newGamestate = Gamestates::menu;
+	newGamestate = GameStates::menu;
 }

@@ -17,7 +17,6 @@ void OptionButton::draw(sf::RenderTarget & target, sf::RenderStates states) cons
 	target.draw(drawnOption, states);
 }
 
-
 OptionButton::OptionButton(const std::string & options_list, const sf::Font& font, int characterSize, LanguageManager& langMan, const sf::Vector2f& size,
 	const sf::Color& bounds_color)
 	: isPressed(false), isLeftButtonHighlighted(false), isRightButtonHighlighted(false), shouldUpdateAnimations(false), areArrowsBlocked(false), languageManager(langMan),
@@ -113,9 +112,11 @@ float OptionButton::addScale(const std::string & str)
 void OptionButton::updateDrawnOption()
 {
 	drawnOption = currentDisplayedOption;
-	std::wstring tmp = languageManager.getText(currentDisplayedOption.getString());
-	if (!tmp.empty()&& !isDictionaryDisabled)
-		drawnOption.setString(sf::String(tmp));
+	std::wstring tmp;
+	if (!isDictionaryDisabled)
+		std::wstring tmp = languageManager.getText(currentDisplayedOption.getString());
+	if (!tmp.empty())
+		drawnOption.setString(tmp);
 	setTextPosition();
 }
 
