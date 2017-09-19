@@ -150,7 +150,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[0]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[0]->setShouldDraw(true);
-			player2.resetSquareTab(0, player1.returnSquareTab());
+			player1.resetSquareTab(5);
 		}
 	}
 	if (player1.HP.size_4 == 0)
@@ -160,7 +160,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[1]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[1]->setShouldDraw(true);
-			player2.resetSquareTab(1, player1.returnSquareTab());
+			player1.resetSquareTab(4);
 		}
 	}
 	if (player1.HP.size_3 == 0)
@@ -170,7 +170,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[2]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[2]->setShouldDraw(true);
-			player2.resetSquareTab(2, player1.returnSquareTab());
+			player1.resetSquareTab(3);
 		}
 	}
 	if (player1.HP.size_2 == 0)
@@ -180,7 +180,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[3]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[3]->setShouldDraw(true);
-			player2.resetSquareTab(3, player1.returnSquareTab());
+			player1.resetSquareTab(2);
 		}
 	}
 	if (player1.HP.size_ir2 == 0)
@@ -190,7 +190,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[4]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[4]->setShouldDraw(true);
-			player2.resetSquareTab(4, player1.returnSquareTab());
+			player1.resetSquareTab(10);
 		}
 	}
 	if (player1.HP.size_ir3 == 0)
@@ -200,7 +200,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[5]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[5]->setShouldDraw(true);
-			player2.resetSquareTab(5, player1.returnSquareTab());
+			player1.resetSquareTab(11);
 		}
 	}
 
@@ -211,7 +211,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[0]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[0]->setShouldDraw(true);
-			player1.resetSquareTab(0, player2.returnSquareTab());
+			player2.resetSquareTab(5);
 		}
 	}
 	if (player2.HP.size_4 == 0)
@@ -221,7 +221,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[1]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[1]->setShouldDraw(true);
-			player1.resetSquareTab(1, player2.returnSquareTab());
+			player2.resetSquareTab(4);
 		}
 	}
 	if (player2.HP.size_3 == 0)
@@ -231,7 +231,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[2]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[2]->setShouldDraw(true);
-			player1.resetSquareTab(2, player2.returnSquareTab());
+			player2.resetSquareTab(3);
 		}
 	}
 	if (player2.HP.size_2 == 0)
@@ -241,7 +241,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[3]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[3]->setShouldDraw(true);
-			player1.resetSquareTab(3, player2.returnSquareTab());
+			player2.resetSquareTab(2);
 		}
 	}
 	if (player2.HP.size_ir2 == 0)
@@ -251,7 +251,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[4]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[4]->setShouldDraw(true);
-			player1.resetSquareTab(4, player2.returnSquareTab());
+			player2.resetSquareTab(10);
 		}
 	}
 	if (player2.HP.size_ir3 == 0)
@@ -261,7 +261,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[5]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[5]->setShouldDraw(true);
-			player1.resetSquareTab(5, player2.returnSquareTab());
+			player2.resetSquareTab(11);
 		}
 	}
 }

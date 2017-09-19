@@ -75,13 +75,13 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	sf::Vector2f options_butt_size(312 * interfaceScale, 52 * interfaceScale);
 
 	// PushButton in Options size
-	sf::Vector2f push_in_opt_size(320 * interfaceScale, 55 * interfaceScale);
+	sf::Vector2f push_in_opt_size(331 * interfaceScale, 65 * interfaceScale);
 
 	// Size of character in Options in Option button
 	const int options_name_with_button_char = static_cast<int>(35 * interfaceScale);
 
 	// Size of character in Options in PushButton
-	const int options_push_button_char = static_cast<int>(28 * interfaceScale);
+	const int options_push_button_char = static_cast<int>(29 * interfaceScale);
 
 	const int space_between_push_buttons = static_cast<int>(25 * interfaceScale);
 

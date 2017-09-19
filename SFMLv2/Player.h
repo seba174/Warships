@@ -36,6 +36,7 @@ private:
 
 	std::vector<std::unique_ptr<Board>> setShips;
 	std::vector<std::vector<int>> playerShips;
+	std::vector<std::vector<int>> oryginalEnemyShips;
 	std::vector<std::vector<int>>* enemyShips;
 	std::vector<std::vector<sf::RectangleShape>> squareTab2;
 
@@ -64,7 +65,7 @@ public:
 
 	bool isMouseInEnemyBounds(const sf::Vector2f& mousepos) const;
 
-	void resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab);
+	void resetSquareTab(int num);
 
 	// returns accuracy of Player in range [0-100]
 	float returnAccuracy() const;
@@ -80,7 +81,7 @@ public:
 	std::vector<std::vector<int>>* getPlayerShips() { return &playerShips;}
 
 	void setEnemyShips(std::vector<std::vector<int>>* ships) { enemyShips = ships; }
-
+	
 	// returns true if Player has set its ships
 	// returns false otherwise
 	bool getShipsSetUp() const { return shipsSetUp; }
@@ -88,8 +89,6 @@ public:
 	bool& getPlayerMoved() { return playerMoved; }
 
 	void rotateShip() { setShips[counter]->rotateShip(); }
-
-	std::vector<std::vector<sf::RectangleShape>>& returnSquareTab() { return squareTab2; }
 
 	void setPlayerName(const std::wstring& newName) { name = newName; }
 

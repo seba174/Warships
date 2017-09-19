@@ -13,7 +13,6 @@ class PushButton :
 	float interiorScale = 0.93f;
 
 	sf::RectangleShape boundRectangle;
-	sf::RectangleShape additionalEffects;
 	sf::RectangleShape interior;
 	sf::Text displayedText;
 	
@@ -35,8 +34,6 @@ class PushButton :
 
 	// sets displayedText in the center of button (boundRectangle)
 	void setTextPosition();
-
-	float addScale(const std::wstring& str);
 
 	void setInteriorPosition();
 

@@ -1,38 +1,20 @@
 ﻿#include "PushButton.h"
 
 
-
 void PushButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
 	target.draw(interior, states);
-	target.draw(displayedText, states);
-	//target.draw(additionalEffects, states);
 	target.draw(boundRectangle, states);
-
-	
+	target.draw(displayedText, states);
 }
 
 void PushButton::setTextPosition()
 {
-	//// Scale for better visual effect
-	//float newScale = scale;
-	//newScale += addScale(displayedText.getString());
-
-	//displayedText.setPosition(boundRectangle.getPosition().x + boundRectangle.getSize().x / 2 - displayedText.getGlobalBounds().width / 2,
-	//	boundRectangle.getPosition().y + boundRectangle.getSize().y / 2 - displayedText.getGlobalBounds().height / newScale);
-
-	displayedText.setPosition(boundRectangle.getPosition().x + boundRectangle.getSize().x / 2 - displayedText.getGlobalBounds().width / 2,
-		boundRectangle.getPosition().y + boundRectangle.getSize().y / 2 - (displayedText.getLocalBounds().top + displayedText.getGlobalBounds().height / 2.0f));
-}
-
-float PushButton::addScale(const std::wstring & str)
-{
-	float tmp = 0;
-	//if (str.find('y') != std::wstring::npos || str.find('g') != std::wstring::npos || str.find('j') != std::wstring::npos || str.find('p') != std::wstring::npos
-	//	|| str.find(L'ą') != std::wstring::npos || str.find(L'ę') != std::wstring::npos)
-	//	tmp = 0.18;
-	return tmp;
+	displayedText.setPosition(boundRectangle.getPosition().x + boundRectangle.getSize().x / 2 -
+		(displayedText.getLocalBounds().left + displayedText.getGlobalBounds().width / 2.0f),
+		boundRectangle.getPosition().y + boundRectangle.getSize().y / 2 -
+		(displayedText.getLocalBounds().top + displayedText.getGlobalBounds().height / 2.0f));
 }
 
 void PushButton::setInteriorPosition()
@@ -42,7 +24,7 @@ void PushButton::setInteriorPosition()
 }
 
 PushButton::PushButton(const std::wstring& text, int char_size, const sf::Font& font, sf::Vector2f size, const sf::Color& bounds_color,
-	 int line_thickness)
+	int line_thickness)
 	: isPressed(false), shouldUpdateAnimations(false)
 {
 	TextureHandler& texutreHandler = TextureHandler::getInstance();
@@ -53,11 +35,9 @@ PushButton::PushButton(const std::wstring& text, int char_size, const sf::Font& 
 	boundRectangle.setSize(size);
 	interior.setFillColor(sf::Color::Transparent);
 	interior.setSize(sf::Vector2f(interiorScale*boundRectangle.getSize().x, interiorScale*boundRectangle.getSize().y));
-	additionalEffects = interior;
 	setInteriorPosition();
 
 	boundRectangle.setTexture(&texutreHandler.texture_handler["buttonFrame"]);
-
 
 	displayedText.setFont(font);
 	displayedText.setCharacterSize(char_size);
@@ -74,7 +54,6 @@ void PushButton::setPosition(float x, float y)
 	pos = sf::Vector2f(x, y);
 	boundRectangle.setPosition(x - boundRectangle.getSize().x / 2, y - boundRectangle.getSize().y / 2);
 	setInteriorPosition();
-	additionalEffects.setPosition(interior.getPosition());
 	setTextPosition();
 }
 
@@ -83,7 +62,6 @@ void PushButton::setPosition(const sf::Vector2f & position)
 	pos = position;
 	boundRectangle.setPosition(position.x - boundRectangle.getSize().x / 2, position.y - boundRectangle.getSize().y / 2);
 	setInteriorPosition();
-	additionalEffects.setPosition(interior.getPosition());
 	setTextPosition();
 }
 
@@ -126,21 +104,16 @@ void PushButton::updateWithAnimations(const sf::Time & time)
 
 void PushButton::updatePosition()
 {
-	float newScale = scale;
-	newScale += addScale(displayedText.getString());
-
 	boundRectangle.setPosition(pos.x - boundRectangle.getGlobalBounds().width / 2, pos.y - boundRectangle.getGlobalBounds().height / 2);
 	setInteriorPosition();
-	additionalEffects.setPosition(interior.getPosition());
-	displayedText.setPosition(pos.x - displayedText.getGlobalBounds().width / 2, pos.y - (displayedText.getScale().y*displayedText.getLocalBounds().top+displayedText.getGlobalBounds().height / 2));
-	//displayedText.setPosition(pos.x - displayedText.getGlobalBounds().width / 2, pos.y - displayedText.getGlobalBounds().height / newScale);
+	displayedText.setPosition(pos.x - (displayedText.getLocalBounds().left + displayedText.getGlobalBounds().width / 2.0f), pos.y -
+		(displayedText.getScale().y*displayedText.getLocalBounds().top + displayedText.getGlobalBounds().height / 2.0f));
 }
 
 void PushButton::setScale(float x, float y)
 {
 	boundRectangle.setScale(x, y);
 	displayedText.setScale(x, y);
-	additionalEffects.setScale(x, y);
 	interior.setScale(x, y);
 }
 

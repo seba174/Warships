@@ -47,7 +47,7 @@ void SimpleLogger::logPlayerVsAIGame(int mapSize, LevelsDifficulty level, unsign
 		gmtime_s(&ptm, &timer);
 		std::string day(std::to_string(ptm.tm_mday)), month(std::to_string(ptm.tm_mon + 1)), year(std::to_string(ptm.tm_year + 1900)),
 			hours(std::to_string(ptm.tm_hour)), minutes(std::to_string(ptm.tm_min)), seconds(std::to_string(ptm.tm_sec));
-		group.lines.push_back(SettingLine('[' + hours + ':' + minutes + ':' + seconds + ", " + day + "." + month + '.' + year + ']', ""));
+		group.lines.push_back(SettingLine('[' + hours + ':' + minutes + ':' + seconds + " UTC, " + day + "." + month + '.' + year + ']', ""));
 	}
 	else
 		group.lines.push_back(SettingLine("[Error reading date]", ""));
@@ -81,7 +81,7 @@ void SimpleLogger::logPlayerVsPlayerGame(int mapSize, float AccuracyPlayer1, uns
 		gmtime_s(&ptm, &timer);
 		std::string day(std::to_string(ptm.tm_mday)), month(std::to_string(ptm.tm_mon + 1)), year(std::to_string(ptm.tm_year + 1900)),
 			hours(std::to_string(ptm.tm_hour)), minutes(std::to_string(ptm.tm_min)), seconds(std::to_string(ptm.tm_sec));
-		group.lines.push_back(SettingLine('[' + hours + ':' + minutes + ':' + seconds + ", " + day + "." + month + '.' + year + ']', ""));
+		group.lines.push_back(SettingLine('[' + hours + ':' + minutes + ':' + seconds + " UTC, " + day + "." + month + '.' + year + ']', ""));
 	}
 	else
 		group.lines.push_back(SettingLine("[Error reading date]", ""));

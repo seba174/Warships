@@ -11,6 +11,7 @@ class Info
 {
 public:
 	sf::Vector2i position;
+
 	int what_hit;
 
 	Info(const sf::Vector2i & position = sf::Vector2i(0,0), int what_hit = 0);
@@ -36,7 +37,7 @@ private:
 	std::vector<std::vector<sf::RectangleShape>> squareTab2;
 	std::vector<std::unique_ptr<Board>> setShips;
 	std::vector<std::vector<int>> AIShips;
-	std::vector<std::vector<int>>* enemyShips;
+	const std::vector<std::vector<int>>* enemyShips;
 	std::vector<std::vector<int>> modifiedEnemyShips;
 	int mapSize;
 
@@ -97,14 +98,12 @@ public:
 	// returns true when AI misses
 	bool AIMovesLevelHard(bool& wasAIUsingSuperPowers);
 
-	void resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab);
+	void resetSquareTab(int num);
 
 	// returns accuracy of AI in range [0-100]
 	float returnAccuracy() const;
 
 	void drawSquareTab(sf::RenderTarget& target, sf::RenderStates states) const;
-
-	std::vector<std::vector<sf::RectangleShape>>& returnSquareTab() { return squareTab2; }
 
 	// returns true if AI has set its ships
 	// returns false otherwise

@@ -107,13 +107,13 @@ unsigned FinishMenu::giveStars(float accuracy) const
 {
 	unsigned numberOfStars = 1;
 
-	if (accuracy >= 51 * pow((10.0f / mapSize), 2))
+	if (accuracy >= 51 * pow((10.0f / mapSize), 1.5f))
 		numberOfStars = 5;
-	else if (accuracy >= 44 * pow((10.0f / mapSize), 2))
+	else if (accuracy >= 44 * pow((10.0f / mapSize), 1.5f))
 		numberOfStars = 4;
-	else if (accuracy >= 37 * pow((10.0f / mapSize), 2))
+	else if (accuracy >= 37 * pow((10.0f / mapSize), 1.5f))
 		numberOfStars = 3;
-	else if (accuracy >= 30 * pow((10.0f / mapSize), 2))
+	else if (accuracy >= 30 * pow((10.0f / mapSize), 1.5f))
 		numberOfStars = 2;
 
 	return numberOfStars;

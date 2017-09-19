@@ -39,9 +39,6 @@
     <ClCompile Include="Ships_HP.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DVector2i.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TextureHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

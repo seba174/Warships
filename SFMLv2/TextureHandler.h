@@ -14,6 +14,8 @@ private:
 	TextureHandler(TextureHandler const& copy) = delete;            // Not Implemented
 	TextureHandler& operator=(TextureHandler const& copy) = delete; // Not Implemented
 
+	static void addElement(const std::string& textureName, const std::string& texturePath, TextureHandler& instance);
+
 public:
 	
 	// returnsTHE ONLY EXISTING object for handling Textures

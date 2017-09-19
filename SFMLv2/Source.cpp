@@ -118,8 +118,25 @@ int main()
 		{
 			missedShot.setTexture(&textures.texture_handler["X"]);
 			hit.setTexture(&textures.texture_handler["fire5"]);
-			boardForPlayer1.setTexture(&textures.texture_handler["nowefalev5"]);
-			boardForPlayer2.setTexture(&textures.texture_handler["nowefalev5"]);
+			switch (mapSize)
+			{
+			case 8:
+			{
+				boardForPlayer1.setTexture(&textures.texture_handler["mapTexture8x8"]);
+				boardForPlayer2.setTexture(&textures.texture_handler["mapTexture8x8"]);
+			} break;
+			case 10:
+			{
+				boardForPlayer1.setTexture(&textures.texture_handler["mapTexture10x10"]);
+				boardForPlayer2.setTexture(&textures.texture_handler["mapTexture10x10"]);
+			} break;
+			case 12:
+			{
+				boardForPlayer1.setTexture(&textures.texture_handler["mapTexture12x12"]);
+				boardForPlayer2.setTexture(&textures.texture_handler["mapTexture12x12"]);
+			}break;
+			}
+
 			rect.setTexture(&textures.texture_handler["crosshair"]);
 			rect2.setTexture(&textures.texture_handler["crosshair"]);
 

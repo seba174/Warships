@@ -81,7 +81,7 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 	boundRectangleOutline.setOutlineThickness(0);
 	boundRectangleOutline.setOutlineColor(bounds_color);
 
-	boundRectangle.setTexture(&texture.texture_handler["test"]);
+	boundRectangle.setTexture(&texture.texture_handler["buttonInterior"]);
 
 	boundRectangleOutline.setSize(boundRectangle.getSize());
 	boundRectangleOutline.setPosition(boundRectangle.getPosition());
@@ -89,24 +89,13 @@ OptionButton::OptionButton(const std::string & options_list, const sf::Font& fon
 
 void OptionButton::setTextPosition()
 {
-	//float newScale = scale;
-	//newScale += addScale(currentDisplayedOption.getString());
-
 	currentDisplayedOption.setPosition(boundRectangle.getPosition().x + boundRectangle.getSize().x / 2 - currentDisplayedOption.getGlobalBounds().width / 2,
 		boundRectangle.getPosition().y + boundRectangle.getSize().y / 2 - (currentDisplayedOption.getLocalBounds().top*currentDisplayedOption.getScale().y +
 			currentDisplayedOption.getGlobalBounds().height / 2));
 
-	drawnOption.setPosition(boundRectangle.getPosition().x + boundRectangle.getSize().x / 2 - drawnOption.getGlobalBounds().width / 2,
+	drawnOption.setPosition(boundRectangle.getPosition().x + boundRectangle.getSize().x / 2 -
+		(drawnOption.getLocalBounds().left*drawnOption.getScale().x + drawnOption.getGlobalBounds().width / 2),
 		boundRectangle.getPosition().y + boundRectangle.getSize().y / 2 - (drawnOption.getLocalBounds().top*drawnOption.getScale().y + drawnOption.getGlobalBounds().height / 2));
-}
-
-float OptionButton::addScale(const std::string & str)
-{
-	//float tmp = 0;
-	//if (str.find('y') != std::string::npos || str.find('g') != std::string::npos || str.find('j') != std::string::npos || str.find('p') != std::string::npos)
-	//	tmp = 0.18;
-	//return tmp;
-	return 0.0f;
 }
 
 void OptionButton::updateDrawnOption()
@@ -114,7 +103,7 @@ void OptionButton::updateDrawnOption()
 	drawnOption = currentDisplayedOption;
 	std::wstring tmp;
 	if (!isDictionaryDisabled)
-		std::wstring tmp = languageManager.getText(currentDisplayedOption.getString());
+		tmp = languageManager.getText(currentDisplayedOption.getString());
 	if (!tmp.empty())
 		drawnOption.setString(tmp);
 	setTextPosition();
@@ -146,17 +135,13 @@ void OptionButton::setPosition(const sf::Vector2f & position)
 
 void OptionButton::updatePosition()
 {
-	//float newScale = scale;
-	//newScale += addScale(currentDisplayedOption.getString());
-
 	boundRectangle.setPosition(pos.x - boundRectangle.getGlobalBounds().width / 2, pos.y - boundRectangle.getGlobalBounds().height / 2);
-	
-	currentDisplayedOption.setPosition(pos.x - currentDisplayedOption.getGlobalBounds().width / 2, pos.y -
-		(currentDisplayedOption.getLocalBounds().top*currentDisplayedOption.getScale().y + currentDisplayedOption.getGlobalBounds().height / 2));
-	drawnOption.setPosition(pos.x - drawnOption.getGlobalBounds().width / 2, pos.y -
+
+	currentDisplayedOption.setPosition(pos.x - (currentDisplayedOption.getLocalBounds().left*currentDisplayedOption.getScale().x + currentDisplayedOption.getGlobalBounds().width / 2), 
+		pos.y -(currentDisplayedOption.getLocalBounds().top*currentDisplayedOption.getScale().y + currentDisplayedOption.getGlobalBounds().height / 2));
+	drawnOption.setPosition(pos.x - (drawnOption.getLocalBounds().left*drawnOption.getScale().x + drawnOption.getGlobalBounds().width / 2), pos.y -
 		(drawnOption.getLocalBounds().top*drawnOption.getScale().y + drawnOption.getGlobalBounds().height / 2));
 
-	
 	leftbutton.setPosition(boundRectangle.getPosition());
 	rightbutton.setPosition(boundRectangle.getPosition().x + boundRectangle.getGlobalBounds().width - 2 * boundRectangle.getOutlineThickness()
 		- rightbutton.getGlobalBounds().width, pos.y - boundRectangle.getGlobalBounds().height / 2);

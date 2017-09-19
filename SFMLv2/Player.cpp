@@ -32,6 +32,7 @@ Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
 
 	squareTab2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
 	playerShips = std::vector<std::vector<int>>(mapSize, std::vector<int>(mapSize, 0));
+	oryginalEnemyShips = std::vector<std::vector<int>>(mapSize, std::vector<int>(mapSize, 0));
 
 	TextureHandler& textures = TextureHandler::getInstance();
 
@@ -67,6 +68,7 @@ bool Player::playerMoves(const sf::Vector2i & position)
 	}
 	else if ((*enemyShips)[position.x][position.y])
 	{
+		oryginalEnemyShips[position.x][position.y] = (*enemyShips)[position.x][position.y];
 		switch ((*enemyShips)[position.x][position.y])
 		{
 		case 2: HP.size_2--; break;
@@ -156,14 +158,15 @@ bool Player::isMouseInEnemyBounds(const sf::Vector2f& mousepos) const
 	return false;
 }
 
-void Player::resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab)
+void Player::resetSquareTab(int num)
 {
 	for (int i = 0; i < mapSize; ++i)
 		for (int j = 0; j < mapSize; ++j)
 		{
-			if (setShips[num]->returnShip().getGlobalBounds().contains(playerSetPoints.x + squareSize.x / 2 + squareSize.x*j, playerSetPoints.y + squareSize.y / 2 + squareSize.y*i))
-				if (newSquareTab[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
-					newSquareTab[j][i] = sf::RectangleShape();
+			if (oryginalEnemyShips[j][i] == num)
+				//if (setShips[num]->returnShip().getGlobalBounds().contains(playerSetPoints.x + squareSize.x / 2 + squareSize.x*j, playerSetPoints.y + squareSize.y / 2 + squareSize.y*i))
+				if (squareTab2[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
+					squareTab2[j][i] = sf::RectangleShape();
 		}
 }
 

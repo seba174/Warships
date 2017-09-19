@@ -126,7 +126,6 @@
     <ClCompile Include="AI.cpp" />
     <ClCompile Include="DestroyedShips.cpp" />
     <ClCompile Include="DestroyedShipsWithBackground.cpp" />
-    <ClCompile Include="DVector2i.cpp" />
     <ClCompile Include="FinishMenu.cpp" />
     <ClCompile Include="FinishStars.cpp" />
     <ClCompile Include="FinishStarsWithText.cpp" />
