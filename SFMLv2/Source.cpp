@@ -2,7 +2,9 @@
 #include <iostream>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
+#include "SoundManager.h"
 #include "FontHandler.h"
 #include "TextureHandler.h"
 #include "INI_Reader.h"
@@ -26,6 +28,7 @@
 
 int main()
 {
+	SoundManager soundManager;
 	FontHandler& fonthandler = FontHandler::getInstance();
 	TextureHandler& textures = TextureHandler::getInstance();
 	INI_Reader reader(CONFIG_FILE_PATH);
@@ -63,6 +66,14 @@ int main()
 	GameStates gameState = GameStates::reloadOptions, drawnGameState = GameStates::menu;
 	AdditionalVisualInformations additionalVisualInfo = NONE;
 
+	sf::Music music;
+	if (!music.openFromFile("Music/Tower-Defense_Looping.ogg"))
+		std::cerr << "Can't open Tower-Defense_Looping" << std::endl;
+	
+	music.setLoop(true);
+	//music.play();
+
+	
 
 	sf::Clock clock;
 	sf::Event event;
@@ -102,14 +113,14 @@ int main()
 		{
 		case GameStates::playerVsAI:
 		{
-			gamePlayerVsAI->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState);
+			gamePlayerVsAI->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState, soundManager);
 			drawnGameState = GameStates::playerVsAI;
 		}
 		break;
 
 		case GameStates::playerVsPlayer:
 		{
-			gamePlayers->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState);
+			gamePlayers->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState, soundManager);
 			drawnGameState = GameStates::playerVsPlayer;
 		}
 		break;
@@ -215,6 +226,7 @@ int main()
 
 		case GameStates::breakAndGoToMenu:
 		{
+			soundManager.clearManager();
 			mainMenu->Reset();
 			gameState = GameStates::menu;
 			drawnGameState = GameStates::nothing;

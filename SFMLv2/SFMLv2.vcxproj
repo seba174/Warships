@@ -154,6 +154,7 @@
     <ClCompile Include="Ships.cpp" />
     <ClCompile Include="Ships_HP.cpp" />
     <ClCompile Include="SimpleLogger.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="StatisticsMenu.cpp" />
     <ClCompile Include="SubMenu.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="enumLanguagesCodes.h" />
     <ClInclude Include="enumLevelsDifficulty.h" />
     <ClInclude Include="enumMenustate.h" />
+    <ClInclude Include="enumSoundsNames.h" />
     <ClInclude Include="FinishMenu.h" />
     <ClInclude Include="FinishStars.h" />
     <ClInclude Include="FinishStarsWithText.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="GamePlayerVsAI.h" />
     <ClInclude Include="GameTime.h" />
     <ClInclude Include="GeneralOptions.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="UtilityFunctions.h" />
     <ClInclude Include="iniFileStructure.h" />
     <ClInclude Include="INI_Reader.h" />

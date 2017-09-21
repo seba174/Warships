@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "LanguageManager.h"
 #include "TextureHandler.h"
+#include "SoundManager.h"
 #include "GeneralOptions.h"
 #include "UtilityFunctions.h"
 
@@ -21,7 +22,7 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	gamePlayersState drawnState = currentState;
 	if (currentState == gamePlayersState::finish)
-		if (utilityClock.getElapsedTime() <= sf::seconds(0.4f))
+		if (utilityClock.getElapsedTime() <= delayAtFinish)
 		{
 			if (player1Won)
 				drawnState = gamePlayersState::player1Moves;
@@ -284,7 +285,7 @@ void GamePlayers::updatePlayersFinishInformations(LanguageManager& langMan)
 		finishMenu.setTitle(player2.getPlayerName() + L' ' + langMan.getText("has won the game") + L'!');
 }
 
-void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate)
+void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate, SoundManager& soundManager)
 {
 	lastFrameTime = dt;
 	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
@@ -295,7 +296,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	case gamePlayersState::player1SetShips:
 	{
 		utilityTime += dt;
-		if (utilityTime <= PausedSetShipsTime)
+		if (utilityTime <= pausedSetShipsTime)
 			break;
 		else
 			shoudlDrawMenuPlayer1SetShipsInfo = false;
@@ -326,7 +327,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	case gamePlayersState::player2SetShips:
 	{
 		utilityTime += dt;
-		if (utilityTime <= PausedSetShipsTime)
+		if (utilityTime <= pausedSetShipsTime)
 			break;
 		else
 			shoudlDrawMenuPlayer2SetShipsInfo = false;
@@ -367,7 +368,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	{
 		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
-		if (utilityTime <= TurnInfoTime)
+		if (utilityTime <= turnInfoTime)
 		{
 			shoudlDrawMenuPlayer1TurnStarts = true;
 			break;
@@ -376,11 +377,25 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			shoudlDrawMenuPlayer1TurnStarts = false;
 
 		player1.playerMouseInput(dt, mousepos);
-		if (input.isMouseLeftButtonPressed() && player1.isMouseInEnemyBounds(mousepos))
-			player1.getPlayerMoved() = true;
 
-		if (player1.playerMoves(player1.getRectPositionInGame()))
+		if (!playerFinishes)
 		{
+			if (input.isMouseLeftButtonPressed() && player1.isMouseInEnemyBounds(mousepos))
+				player1.getPlayerMoved() = true;
+
+			if (player1.playerMoves(player1.getRectPositionInGame(), soundManager))
+			{
+				playerFinishes = true;
+				utilityClock.restart();
+			}
+			updateBackgroundInformation();
+		}
+
+		if (playerFinishes)
+		{
+			if (utilityClock.getElapsedTime() < playerDelay)
+				return;
+
 			POINT point;
 			GetCursorPos(&point);
 			player1.setPlayersCursorPositon(sf::Vector2i(point.x, point.y));
@@ -390,9 +405,9 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			currentState = gamePlayersState::player2Moves;
 			utilityTime = sf::Time();
 			shoudlDrawMenuPlayer2TurnStarts = true;
+			playerFinishes = false;
 		}
-
-		updateBackgroundInformation();
+	
 		if (checkForFinish())
 		{
 			player1Won = true;
@@ -406,7 +421,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	{
 		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
-		if (utilityTime <= TurnInfoTime)
+		if (utilityTime <= turnInfoTime)
 		{
 			shoudlDrawMenuPlayer2TurnStarts = true;
 			break;
@@ -415,10 +430,24 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			shoudlDrawMenuPlayer2TurnStarts = false;
 
 		player2.playerMouseInput(dt, mousepos);
-		if (input.isMouseLeftButtonPressed() && player2.isMouseInEnemyBounds(mousepos))
-			player2.getPlayerMoved() = true;
-		if (player2.playerMoves(player2.getRectPositionInGame()))
+		
+		if (!playerFinishes)
 		{
+			if (input.isMouseLeftButtonPressed() && player2.isMouseInEnemyBounds(mousepos))
+				player2.getPlayerMoved() = true;
+			if (player2.playerMoves(player2.getRectPositionInGame(), soundManager))
+			{
+				playerFinishes = true;
+				utilityClock.restart();
+			}
+			updateBackgroundInformation();
+		}
+
+		if (playerFinishes)
+		{
+			if (utilityClock.getElapsedTime() < playerDelay)
+				return;
+
 			POINT point;
 			GetCursorPos(&point);
 			player2.setPlayersCursorPositon(sf::Vector2i(point.x, point.y));
@@ -428,9 +457,9 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			currentState = gamePlayersState::player1Moves;
 			utilityTime = sf::Time();
 			shoudlDrawMenuPlayer1TurnStarts = true;
-		}
+			playerFinishes = false;
+		}	
 
-		updateBackgroundInformation();
 		if (checkForFinish())
 		{
 			player2Won = true;
@@ -518,7 +547,8 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	helpInformationPlayer1(2),
 	helpInformationPlayer2(2),
 	wasGameLogged(false),
-	mapSize(static_cast<int>(dim.x / SquareSize.x))
+	mapSize(static_cast<int>(dim.x / SquareSize.x)),
+	playerFinishes(false)
 {
 	player1.setPlayerName(stringToWstringConversion(genOpt.getPlayer1Name()));
 	player2.setPlayerName(stringToWstringConversion(genOpt.getPlayer2Name()));

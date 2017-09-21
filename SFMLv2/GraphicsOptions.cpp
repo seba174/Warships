@@ -12,7 +12,7 @@ const std::array<res, 6> AvaliableResolutions::avaliableRes =
 	res("2560x1440",sf::Vector2i(2560, 1440))
 };
 
-const sf::Vector2i GraphicsOptions::defaultResolution(AvaliableResolutions::avaliableRes[0].resolution_number);
+const sf::Vector2i GraphicsOptions::defaultResolution(AvaliableResolutions::avaliableRes[1].resolution_number);
 const bool GraphicsOptions::defaultFullScreen = false;
 const bool GraphicsOptions::defaultVerticalSyncEnabled = false;
 const int GraphicsOptions::defaultResolutionScale = 100;
@@ -48,8 +48,8 @@ GraphicsOptions::GraphicsOptions(INI_Reader & reader)
 
 	if (!isResolutionSupported(Resolution))
 	{
-		Resolution = AvaliableResolutions::avaliableRes[0].resolution_number;
-		reader.insertValue(s_graphics, s_resolution, AvaliableResolutions::avaliableRes[0].resolution_text);
+		Resolution = defaultResolution;
+		reader.insertValue(s_graphics, s_resolution, AvaliableResolutions::avaliableRes[1].resolution_text);
 	}
 
 	// VerticalSyncEnabled

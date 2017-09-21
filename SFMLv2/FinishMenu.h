@@ -43,6 +43,7 @@ public:
 	// function updates and animates all pushButtons
 	void updateButtons(const sf::Time& dt, const sf::Vector2f& mousepos);
 
+	// returns number of stars which is based on given accuracy of shots
 	unsigned giveStars(float accuracy) const;
 
 };

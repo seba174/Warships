@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "LanguageManager.h"
 #include "TextureHandler.h"
+#include "SoundManager.h"
 #include "GeneralOptions.h"
 #include "UtilityFunctions.h"
 
@@ -280,7 +281,7 @@ void GamePlayerVsAI::updatePlayersFinishInformations(LanguageManager& langMan)
 		finishMenu.setTitle(player2.getPlayerName() + L' ' + langMan.getText("has won the game") + L'!');
 }
 
-void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate)
+void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate, SoundManager& soundManager)
 {
 	lastFrameTime = dt;
 	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
@@ -291,7 +292,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 	case gamePlayersState::player1SetShips:
 	{
 		utilityTime += dt;
-		if (utilityTime <= PausedSetShipsTime)
+		if (utilityTime <= pausedSetShipsTime)
 			break;
 		else
 			shoudlDrawMenuPlayer1SetShipsInfo = false;
@@ -322,7 +323,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 	case gamePlayersState::AISetShips:
 	{
 		utilityTime += dt;
-		if (utilityTime <= PausedSetShipsTime)
+		if (utilityTime <= pausedSetShipsTime)
 			break;
 		else
 			shoudlDrawMenuPlayer2SetShipsInfo = false;
@@ -352,7 +353,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 	{
 		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
-		if (utilityTime <= TurnInfoTime)
+		if (utilityTime <= turnInfoTime)
 		{
 			shoudlDrawMenuPlayer1TurnStarts = true;
 			break;
@@ -361,17 +362,31 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 			shoudlDrawMenuPlayer1TurnStarts = false;
 
 		player1.playerMouseInput(dt, mousepos);
-		if (input.isMouseLeftButtonPressed() && player1.isMouseInEnemyBounds(mousepos))
-			player1.getPlayerMoved() = true;
-
-		if (player1.playerMoves(player1.getRectPositionInGame()))
+		
+		if (!playerFinishes)
 		{
+			if (input.isMouseLeftButtonPressed() && player1.isMouseInEnemyBounds(mousepos))
+				player1.getPlayerMoved() = true;
+
+			if (player1.playerMoves(player1.getRectPositionInGame(), soundManager))
+			{
+				playerFinishes = true;
+				utilityClock.restart();
+			}
+			updateBackgroundInformation();
+		}
+
+		if (playerFinishes)
+		{
+			if (utilityClock.getElapsedTime() < playerDelay)
+				return;
+
 			currentState = gamePlayersState::AIMoves;
 			utilityTime = sf::Time();
 			shoudlDrawMenuPlayer2TurnStarts = true;
+			playerFinishes = false;
 		}
 
-		updateBackgroundInformation();
 		if (checkForFinish())
 		{
 			player1Won = true;
@@ -385,7 +400,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 	{
 		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
-		if (utilityTime <= TurnInfoTime)
+		if (utilityTime <= turnInfoTime)
 		{
 			shoudlDrawMenuPlayer2TurnStarts = true;
 			break;
@@ -401,12 +416,14 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 			{
 				if (player2.AIMovesLevelEasy())
 				{
+					soundManager.playSound(SoundsNames::Splash);
 					aiFinishesMove = true;
 					utilityClock.restart();
 					shouldAIWait = false;
 				}
 				else
 				{
+					soundManager.playSound(SoundsNames::Explosion);
 					shouldAIWait = true;
 					utilityClock2.restart();
 				}
@@ -417,12 +434,14 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 			{
 				if (player2.AIMovesLevelMedium())
 				{
+					soundManager.playSound(SoundsNames::Splash);
 					aiFinishesMove = true;
 					utilityClock.restart();
 					shouldAIWait = false;
 				}
 				else
 				{
+					soundManager.playSound(SoundsNames::Explosion);
 					shouldAIWait = true;
 					utilityClock2.restart();
 				}
@@ -433,12 +452,14 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 			{
 				if (player2.AIMovesLevelHard(wasAIUsingSuperPowers))
 				{
+					soundManager.playSound(SoundsNames::Splash);
 					aiFinishesMove = true;
 					utilityClock.restart();
 					shouldAIWait = false;
 				}
 				else
 				{
+					soundManager.playSound(SoundsNames::Explosion);
 					shouldAIWait = true;
 					utilityClock2.restart();
 				}

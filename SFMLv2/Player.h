@@ -4,6 +4,7 @@
 #include "Ships_HP.h"
 #include "Ships.h"
 
+class SoundManager;
 
 class Player
 {
@@ -49,7 +50,9 @@ public:
 	Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships,
 		const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect);
 
-	bool playerMoves(const sf::Vector2i& position);
+	// returns true when Player misses shot
+	// returns false when Player has not shot OR hits target
+	bool playerMoves(const sf::Vector2i& position, SoundManager& soundManager);
 
 	void playerMouseInput(const sf::Time& dt, const sf::Vector2f& mousepos);
 

@@ -2,6 +2,7 @@
 #include "IrregularShip2.h"
 #include "IrregularShip3.h"
 #include "TextureHandler.h"
+#include "SoundManager.h"
 
 
 void Player::updateMaximumHits()
@@ -23,7 +24,8 @@ void Player::updateMaximumMisses()
 }
 
 Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
- const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships, const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect)
+ const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships, const sf::Vector2f& player_setpoints, 
+	const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect)
 	: boardDimensions(dim), squareSize(SquareSize), enemySetPoints(enemy_setpoints), playerSetPoints(player_setpoints), 
 	missedShot(missedShot), hit(hit), rect(rect), totalHits(0),totalShots(0), enemyShips(enemy_ships)
 {
@@ -32,7 +34,7 @@ Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
 
 	squareTab2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
 	playerShips = std::vector<std::vector<int>>(mapSize, std::vector<int>(mapSize, 0));
-	oryginalEnemyShips = std::vector<std::vector<int>>(mapSize, std::vector<int>(mapSize, 0));
+	oryginalEnemyShips = playerShips;
 
 	TextureHandler& textures = TextureHandler::getInstance();
 
@@ -46,28 +48,33 @@ Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
 	this->shipsSetUp = false;
 }
 
-bool Player::playerMoves(const sf::Vector2i & position)
+bool Player::playerMoves(const sf::Vector2i & position, SoundManager& soundManager)
 {
 	// chcecks if player has clicked button
-	if (!getPlayerMoved())
+	if (!playerMoved)
 		return false;
 
+	playerMoved = false;
 	if ((*enemyShips)[position.x][position.y] == -2)
 	{
 	}
 	else if ((*enemyShips)[position.x][position.y] == 0)
 	{
+		soundManager.playSound(SoundsNames::Splash);
+
 		squareTab2[position.x][position.y] = missedShot;
 		squareTab2[position.x][position.y].setPosition(sf::Vector2f(enemySetPoints.x + squareSize.x*position.x, enemySetPoints.y + squareSize.y*position.y));
 		(*enemyShips)[position.x][position.y] = -2;
-		playerMoved = false;
 		++totalShots;
 		++maximumMissesTemp;
 		updateMaximumHits();
 		return true;
 	}
 	else if ((*enemyShips)[position.x][position.y])
+	
 	{
+		soundManager.playSound(SoundsNames::Explosion);
+
 		oryginalEnemyShips[position.x][position.y] = (*enemyShips)[position.x][position.y];
 		switch ((*enemyShips)[position.x][position.y])
 		{
@@ -86,7 +93,6 @@ bool Player::playerMoves(const sf::Vector2i & position)
 		++maximumHitsTemp;
 		updateMaximumMisses();
 	}
-	playerMoved = false;
 	return false;
 }
 
@@ -153,7 +159,8 @@ void Player::drawSquareTab(sf::RenderTarget & target, sf::RenderStates states) c
 
 bool Player::isMouseInEnemyBounds(const sf::Vector2f& mousepos) const
 {
-	if (mousepos.x >= enemySetPoints.x && mousepos.x < enemySetPoints.x + mapSize*squareSize.x && mousepos.y >= enemySetPoints.y && mousepos.y < enemySetPoints.y + mapSize*squareSize.y)
+	if (mousepos.x >= enemySetPoints.x && mousepos.x < enemySetPoints.x + mapSize*squareSize.x 
+		&& mousepos.y >= enemySetPoints.y && mousepos.y < enemySetPoints.y + mapSize*squareSize.y)
 		return true;
 	return false;
 }

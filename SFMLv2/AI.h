@@ -90,12 +90,15 @@ public:
 	void placeShips(std::vector<Board*>& VectRect);
 
 	// returns true when AI misses
+	// returns false when AI hits target
 	bool AIMovesLevelEasy();
 
 	// returns true when AI misses
+	// returns false when AI hits target
 	bool AIMovesLevelMedium();
 
 	// returns true when AI misses
+	// returns false when AI hits target
 	bool AIMovesLevelHard(bool& wasAIUsingSuperPowers);
 
 	void resetSquareTab(int num);
