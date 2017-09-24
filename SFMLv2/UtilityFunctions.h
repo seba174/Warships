@@ -11,3 +11,5 @@ std::string floatWith2DecimalPlaces(float value, const std::string& onlyToReturn
 
 // converts string to wstring
 std::wstring stringToWstringConversion(const std::string& s);
+
+std::string createStringOfValuesInInterval(int beg, int end, int interval);

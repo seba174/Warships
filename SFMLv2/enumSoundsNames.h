@@ -1,4 +1,4 @@
 #pragma once
 
-enum SoundsNames { Explosion, Splash };
+enum SoundsNames { Explosion, Splash, SetShips };
 

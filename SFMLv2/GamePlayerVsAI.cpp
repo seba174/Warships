@@ -4,6 +4,7 @@
 #include "LanguageManager.h"
 #include "TextureHandler.h"
 #include "SoundManager.h"
+#include "MusicHandler.h"
 #include "GeneralOptions.h"
 #include "UtilityFunctions.h"
 
@@ -281,7 +282,7 @@ void GamePlayerVsAI::updatePlayersFinishInformations(LanguageManager& langMan)
 		finishMenu.setTitle(player2.getPlayerName() + L' ' + langMan.getText("has won the game") + L'!');
 }
 
-void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate, SoundManager& soundManager)
+void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate, SoundManager& soundManager, MusicHandler& musicHandler)
 {
 	lastFrameTime = dt;
 	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
@@ -289,6 +290,11 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 
 	switch (currentState)
 	{
+	case gamePlayersState::constructorState:
+	{
+		musicHandler.play(MusicName::GameTheme);
+		currentState = player1SetShips;
+	} break;
 	case gamePlayersState::player1SetShips:
 	{
 		utilityTime += dt;
@@ -304,7 +310,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 			else if (input.isMouseRightButtonPressed() && !player1.getShipsSetUp())
 				player1.rotateShip();
 
-			player1.playerSetShips(mousePlayer1.returnPositionInBounds(), vectShipsToDrawPlayer1);
+			player1.playerSetShips(mousePlayer1.returnPositionInBounds(), vectShipsToDrawPlayer1, soundManager);
 		}
 
 		if (player1.getShipsSetUp())
@@ -586,7 +592,7 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	player2Background.setDisplayedString(player2.getPlayerName() + str);
 
 
-	currentState = gamePlayersState::player1SetShips;
+	currentState = gamePlayersState::constructorState;
 	int playersBackgroundOffset = static_cast<int>(70 * interfaceScale);
 
 	player1.setEnemyShips(player2.getAIShips());

@@ -142,6 +142,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mouse_S.cpp" />
     <ClCompile Include="MultipleTextFrame.cpp" />
+    <ClCompile Include="MusicHandler.cpp" />
     <ClCompile Include="OptionButton.cpp" />
     <ClCompile Include="OptionNameWithButton.cpp" />
     <ClCompile Include="GraphicsOptions.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="Ships_HP.cpp" />
     <ClCompile Include="SimpleLogger.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SoundOptions.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="StatisticsMenu.cpp" />
     <ClCompile Include="SubMenu.cpp" />
@@ -183,7 +185,9 @@
     <ClInclude Include="GamePlayerVsAI.h" />
     <ClInclude Include="GameTime.h" />
     <ClInclude Include="GeneralOptions.h" />
+    <ClInclude Include="MusicHandler.h" />
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="SoundOptions.h" />
     <ClInclude Include="UtilityFunctions.h" />
     <ClInclude Include="iniFileStructure.h" />
     <ClInclude Include="INI_Reader.h" />

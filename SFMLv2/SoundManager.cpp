@@ -7,6 +7,8 @@ SoundManager::SoundManager()
 		throw std::runtime_error("Sound Explosion.wav could not be loaded");
 	if(!soundBuffers[SoundsNames::Splash].loadFromFile("Sounds/Splash.wav"))
 		throw std::runtime_error("Sound Splash.wav could not be loaded");
+	if (!soundBuffers[SoundsNames::SetShips].loadFromFile("Sounds/SetShips2.wav"))
+		throw std::runtime_error("Sound SetShips.wav could not be loaded");
 	soundsVolume = 100;
 }
 

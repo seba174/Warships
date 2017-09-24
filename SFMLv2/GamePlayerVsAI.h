@@ -19,12 +19,13 @@ class Input;
 class LanguageManager;
 class SoundManager;
 class GeneralOptions;
+class MusicHandler;
 
 
 class GamePlayerVsAI
 	: public sf::Drawable
 {
-	enum gamePlayersState { player1Moves, AIMoves, player1SetShips, AISetShips, loadVariablesAndStart, finish, statistics };
+	enum gamePlayersState {constructorState, player1Moves, AIMoves, player1SetShips, AISetShips, loadVariablesAndStart, finish, statistics };
 
 	Player player1;
 	AI player2;
@@ -74,7 +75,7 @@ class GamePlayerVsAI
 
 public:
 
-	void play(const sf::Time& dt, const sf::Vector2f& mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate, SoundManager& soundManager);
+	void play(const sf::Time& dt, const sf::Vector2f& mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate, SoundManager& soundManager, MusicHandler& musicHandler);
 
 	GamePlayerVsAI(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& player1_setpoints,
 		const sf::Vector2f& player2_setpoints, const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape& player1Rect,

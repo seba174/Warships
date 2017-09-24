@@ -18,5 +18,7 @@ public:
 	void playSound(SoundsNames soundName);
 
 	void clearManager();
+
+	void setSoundsVolume(float newSoundsVolume) { soundsVolume = newSoundsVolume; }
 };
 

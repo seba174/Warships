@@ -56,7 +56,7 @@ public:
 
 	void playerMouseInput(const sf::Time& dt, const sf::Vector2f& mousepos);
 
-	void playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw);
+	void playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw, SoundManager& soundManager);
 
 	void draw(sf::RenderTarget& Window) const;
 

@@ -2,14 +2,15 @@
 #include <iostream>
 #include <memory>
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 
 #include "SoundManager.h"
+#include "MusicHandler.h"
 #include "FontHandler.h"
 #include "TextureHandler.h"
 #include "INI_Reader.h"
 #include "GraphicsOptions.h"
 #include "GeneralOptions.h"
+#include "SoundOptions.h"
 #include "Input.h"
 #include "LanguageManager.h"
 #include "GamePlayerVsAI.h"
@@ -28,14 +29,19 @@
 
 int main()
 {
-	SoundManager soundManager;
 	FontHandler& fonthandler = FontHandler::getInstance();
 	TextureHandler& textures = TextureHandler::getInstance();
 	INI_Reader reader(CONFIG_FILE_PATH);
 	GraphicsOptions graphicsOpt(reader);
 	graphicsOpt.setDesktopResolution(sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height));
 	GeneralOptions generalOpt(reader);
+	SoundOptions soundOpt(reader);
 	Input input;
+	SoundManager soundManager;
+	MusicHandler musicManager;
+	musicManager.setInGameVolume(static_cast<float>(soundOpt.getInGameThemeVolume()));
+	musicManager.setMenuVolume(static_cast<float>(soundOpt.getMenuThemeVolume()));
+	soundManager.setSoundsVolume(static_cast<float>(soundOpt.getEffectsVolume()));
 
 	int mapSize = 0;
 	int barSize = 0;
@@ -66,15 +72,7 @@ int main()
 	GameStates gameState = GameStates::reloadOptions, drawnGameState = GameStates::menu;
 	AdditionalVisualInformations additionalVisualInfo = NONE;
 
-	sf::Music music;
-	if (!music.openFromFile("Music/Tower-Defense_Looping.ogg"))
-		std::cerr << "Can't open Tower-Defense_Looping" << std::endl;
-	
-	music.setLoop(true);
-	//music.play();
-
-	
-
+	musicManager.play(MusicName::MenuTheme);
 	sf::Clock clock;
 	sf::Event event;
 	while (window.isOpen())
@@ -109,24 +107,27 @@ int main()
 			additionalMenu->updateGamestate(gameState);
 		}
 
+		musicManager.setPausedAction(additionalVisualInfo == AdditionalVisualInformations::EXIT_INFO);
+
 		switch (gameState)
 		{
 		case GameStates::playerVsAI:
 		{
-			gamePlayerVsAI->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState, soundManager);
+			gamePlayerVsAI->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState, soundManager, musicManager);
 			drawnGameState = GameStates::playerVsAI;
 		}
 		break;
 
 		case GameStates::playerVsPlayer:
 		{
-			gamePlayers->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState, soundManager);
+			gamePlayers->play(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, *languageManager, gameState, soundManager, musicManager);
 			drawnGameState = GameStates::playerVsPlayer;
 		}
 		break;
 
 		case GameStates::loadGameVariables:
 		{
+			musicManager.stop();
 			missedShot.setTexture(&textures.texture_handler["X"]);
 			hit.setTexture(&textures.texture_handler["fire5"]);
 			switch (mapSize)
@@ -217,7 +218,7 @@ int main()
 
 		case GameStates::menu:
 		{
-			mainMenu->runMenu(window.mapPixelToCoords(sf::Mouse::getPosition(window)), mapSize, level, input, graphicsOpt, generalOpt);
+			mainMenu->runMenu(window.mapPixelToCoords(sf::Mouse::getPosition(window)), mapSize, level, input, graphicsOpt, generalOpt, soundOpt);
 			mainMenu->updateGamestate(gameState, additionalVisualInfo);
 			mainMenu->updateMenuWithAnimates(dt, window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 			drawnGameState = GameStates::menu;
@@ -226,12 +227,22 @@ int main()
 
 		case GameStates::breakAndGoToMenu:
 		{
+			musicManager.play(MusicName::MenuTheme);
 			soundManager.clearManager();
 			mainMenu->Reset();
 			gameState = GameStates::menu;
 			drawnGameState = GameStates::nothing;
 		}
 		break;
+
+		case GameStates::setAudioVolumes:
+		{
+			musicManager.setInGameVolume(static_cast<float>(soundOpt.getInGameThemeVolume()));
+			musicManager.setMenuVolume(static_cast<float>(soundOpt.getMenuThemeVolume()));
+			musicManager.updateMusicVolume();
+			soundManager.setSoundsVolume(static_cast<float>(soundOpt.getEffectsVolume()));
+			gameState = GameStates::menu;
+		} break;
 
 		case GameStates::reloadOptions:
 		{
@@ -286,7 +297,8 @@ int main()
 			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || fullyLoad)
 			{
 				mainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 20 * interfaceScale),
-					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 300 * interfaceScale), 130 * interfaceScale, interfaceScale, graphicsOpt, *languageManager, generalOpt);
+					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 300 * interfaceScale), 130 * interfaceScale, interfaceScale,
+					graphicsOpt, *languageManager, generalOpt, soundOpt);
 				additionalMenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
 					sf::Vector2f(static_cast<float>(standardWindowDimensions.x), static_cast<float>(standardWindowDimensions.y)),
 					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), static_cast<float>(standardWindowDimensions.y / 2)),
@@ -385,5 +397,6 @@ int main()
 
 	graphicsOpt.saveToFile();
 	generalOpt.saveToFile();
+	soundOpt.saveToFile();
 	logger->saveToFile();
 }

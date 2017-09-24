@@ -106,7 +106,7 @@ void Player::playerMouseInput(const sf::Time & dt, const sf::Vector2f & mousepos
 	}
 }
 
-void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw)
+void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw, SoundManager& soundManager)
 {
 	if (!shipsSetUp)
 	{
@@ -117,7 +117,10 @@ void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& 
 			if (setShips[counter]->getPlaceShip())
 			{
 				if (setShips[counter]->placePlayerShip(playerShips, mapSize, vect_ship_to_draw))
+				{
+					soundManager.playSound(SoundsNames::SetShips);
 					counterToSet = true;
+				}
 			}
 			break;
 		case 4:; case 5:
@@ -125,7 +128,10 @@ void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& 
 			if (setShips[counter]->getPlaceShip())
 			{
 				if (setShips[counter]->placePlayerShip(playerShips, mapSize, vect_ship_to_draw))
+				{
+					soundManager.playSound(SoundsNames::SetShips);
 					counterToSet = true;
+				}
 			}
 			break;
 		}

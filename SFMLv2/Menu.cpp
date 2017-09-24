@@ -1,10 +1,11 @@
 ﻿#include "Menu.h"
 #include "LanguageManager.h"
 #include "GraphicsOptions.h"
+#include "SoundOptions.h"
 #include "GeneralOptions.h"
+#include "UtilityFunctions.h"
 #include "Input.h"
 #include "Player.h"
-
 
 void Menu::draw(sf::RenderTarget & target, sf::RenderStates states) const 
 {
@@ -49,9 +50,17 @@ bool Menu::hasVisibleGeneralOptionChanged(const GeneralOptions & options)
 		|| options.getMenuTextureNumber_string() != SubGeneral.getDisplayedOption(1));
 }
 
+bool Menu::hasVisibleSoundOptionChanged(const SoundOptions & options)
+{
+	// Numbers of buttons represents current menu and have to be changed when the order of button changes
+	return  (options.getMenuThemeVolume_string() != SubAudio.getDisplayedOption(0)
+		|| options.getInGameThemeVolume_string() != SubAudio.getDisplayedOption(1)
+		|| options.getEffectsVolume_string() != SubAudio.getDisplayedOption(2));
+}
+
 Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_position, const sf::Vector2f & title_or1st_button_position,
-	int space_between_buttons, float interfaceScale, const GraphicsOptions& opt, LanguageManager& langMan, const GeneralOptions& genOpt)
-	:SubGeneral(langMan), SubGraphics(langMan), SubAudio(langMan)
+	int space_between_buttons, float interfaceScale, const GraphicsOptions& opt, LanguageManager& langMan, const GeneralOptions& genOpt, const SoundOptions& soundOpt)
+	:SubGeneral(langMan), SubGraphics(langMan), SubAudio(langMan), shouldUpdateSubAudioButtons(false)
 {
 	// MainTitle character size
 	const int titleCharacterSize = static_cast<int>(100 * interfaceScale);
@@ -100,7 +109,7 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubHome.construct(L"", langMan.getText("Play") + L',' + langMan.getText("Options") + L',' + langMan.getText("Credits") + L',' + langMan.getText("Exit"), submenuCharacterSize,
 		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubHome.setInteriorColorAllButtons(buttonColor);
-	
+
 	SubChooseGametype.construct(L"", langMan.getText("Solo Game") + L',' + langMan.getText("Player vs Player") + L',' + langMan.getText("Back"), submenuCharacterSize,
 		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubChooseGametype.setInteriorColorAllButtons(buttonColor);
@@ -109,7 +118,7 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubOptions.setInteriorColorAllButtons(buttonColor);
 
-	SubChooseMapSize.construct(langMan.getText("Choose map size"), L"8 x 8,10 x 10,12 x 12,"+ langMan.getText("Back"), submenuCharacterSize, submenuCharacterSize,
+	SubChooseMapSize.construct(langMan.getText("Choose map size"), L"8 x 8,10 x 10,12 x 12," + langMan.getText("Back"), submenuCharacterSize, submenuCharacterSize,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y - 1.8f*submenuCharacterSize),
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons / 1.5f - submenuCharacterSize),
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
@@ -187,9 +196,33 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubGeneral.setDisplayedOption(1, genOpt.getMenuTextureNumber_string());
 	SubGeneral.setSpaceBetweenPushButtons(space_between_push_buttons);
 	SubGeneral.setInteriorColorAllPushButtons(buttonColor);
+
+
+	SubAudio.Construct(title_or1st_button_position, space_between_buttons, langMan);
+	SubAudio.addOptionNameWithButton(langMan.getText("Main Menu volume"), handler.font_handler["Mecha"], options_name_with_button_char,
+		opt_name_with_button, createStringOfValuesInInterval(0, 100, 5), handler.font_handler["Mecha"],
+		options_name_with_button_char, options_butt_size, bounds_color);
+	SubAudio.addOptionNameWithButton(langMan.getText("In game volume"), handler.font_handler["Mecha"], options_name_with_button_char,
+		opt_name_with_button, createStringOfValuesInInterval(0, 100, 5), handler.font_handler["Mecha"],
+		options_name_with_button_char, options_butt_size, bounds_color);
+	SubAudio.addOptionNameWithButton(langMan.getText("Effects volume"), handler.font_handler["Mecha"], options_name_with_button_char,
+		opt_name_with_button, createStringOfValuesInInterval(0, 100, 5), handler.font_handler["Mecha"],
+		options_name_with_button_char, options_butt_size, bounds_color);
+	SubAudio.setDictionaryDisabledBool(0, true);
+	SubAudio.setDictionaryDisabledBool(1, true);
+	SubAudio.setDictionaryDisabledBool(2, true);
+	SubAudio.addPushButton(langMan.getText("Back"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
+	SubAudio.addPushButton(langMan.getText("Apply changes"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
+	SubAudio.addPushButton(langMan.getText("Load defaults"), options_push_button_char, handler.font_handler["Mecha"], push_in_opt_size);
+
+	SubAudio.setDisplayedOption(0, soundOpt.getMenuThemeVolume_string());
+	SubAudio.setDisplayedOption(1, soundOpt.getInGameThemeVolume_string());
+	SubAudio.setDisplayedOption(2, soundOpt.getEffectsVolume_string());
+	SubAudio.setSpaceBetweenPushButtons(space_between_push_buttons);
+	SubAudio.setInteriorColorAllPushButtons(buttonColor);
 }
 
-void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty& level, const Input& input, GraphicsOptions& opt, GeneralOptions& generalOpt)
+void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty& level, const Input& input, GraphicsOptions& opt, GeneralOptions& generalOpt, SoundOptions& soundOpt)
 {
 	sf::Color unclickableButtonColor(180, 180, 180, 140);
 	int lineThickness = 2;
@@ -206,6 +239,12 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 	{
 		SubGeneral.setDisplayedOption(0, generalOpt.getLanguage_string());
 		SubGeneral.setDisplayedOption(1, generalOpt.getMenuTextureNumber_string());
+	}
+	if (menustate != Menustates::OPT_AUDIO)
+	{
+		SubAudio.setDisplayedOption(0, soundOpt.getMenuThemeVolume_string());
+		SubAudio.setDisplayedOption(1, soundOpt.getInGameThemeVolume_string());
+		SubAudio.setDisplayedOption(2, soundOpt.getEffectsVolume_string());
 	}
 
 	switch (menustate)
@@ -353,6 +392,47 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 
 	} break;
 
+	case Menustates::OPT_AUDIO: {
+		previousMenustate = Menustates::OPTIONS;
+		if (shouldUpdateSubAudioButtons)
+		{
+			SubAudio.setDisplayedOption(0, soundOpt.getMenuThemeVolume_string());
+			SubAudio.setDisplayedOption(1, soundOpt.getInGameThemeVolume_string());
+			SubAudio.setDisplayedOption(2, soundOpt.getEffectsVolume_string());
+			shouldUpdateSubAudioButtons = false;
+		}
+
+		if (input.isMouseLeftButtonPressed())
+		{
+			SubAudio.clickArrowContaining(mousepos);
+			if (SubAudio.PushButtonContains(0, mousepos))
+				menustate = previousMenustate; // Back button
+
+
+			if (SubAudio.PushButtonContains(1, mousepos))
+			{
+				// 0- Resolution, 1- VerticalSync, 2-Fullscreen, 3-ResolutionScale
+				soundOpt.setMenuThemeVolume(SubAudio.getDisplayedOption(0));
+				soundOpt.setInGameThemeVolume(SubAudio.getDisplayedOption(1));
+				soundOpt.setEffectsVolume(SubAudio.getDisplayedOption(2));
+
+				if (soundOpt.hasAnyOptionChanged())
+				{
+					newGamestate = GameStates::setAudioVolumes;
+				}
+			} // Apply Changes
+
+			if (SubAudio.PushButtonContains(2, mousepos))
+			{
+				soundOpt.loadDefaults();
+				newGamestate = GameStates::setAudioVolumes;
+				shouldUpdateSubAudioButtons = true;
+			} // Reset Defaults
+		}
+
+		SubAudio.coverPushButtonWithColor(1, !hasVisibleSoundOptionChanged(soundOpt), unclickableButtonColor);
+	} break;
+
 	case Menustates::CHOOSE_GAMETYPE: {
 		//	ChooseGametype.highlightButtonContaining(mousepos);
 		previousMenustate = Menustates::DEFAULT;
@@ -495,6 +575,9 @@ void Menu::updateMenuWithAnimates(const sf::Time & time, const sf::Vector2f& mou
 
 	SubGeneral.highlightButtonContaining(mousepos);
 	SubGeneral.updateWithAnimations(time);
+
+	SubAudio.highlightButtonContaining(mousepos);
+	SubAudio.updateWithAnimations(time);
 }
 
 void Menu::Reset()

@@ -38,7 +38,7 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 
 	hashMap.insert(make_pair("What do you want to do", lT(inT({ Tr(eLC::PL,L"Co masz zamiar zrobić"), Tr(eLC::EN,L"What do you want to do") }))));
 	hashMap.insert(make_pair("Resume", lT(inT({ Tr(eLC::PL,L"Kontynuuj"), Tr(eLC::EN,L"Resume") }))));
-	hashMap.insert(make_pair("Return to Main Menu", lT(inT({ Tr(eLC::PL,L"Wróć do menu"), Tr(eLC::EN,L"Return to Main Menu") }))));
+	hashMap.insert(make_pair("Return to Main Menu", lT(inT({ Tr(eLC::PL,L"Wróć do Menu"), Tr(eLC::EN,L"Return to Main Menu") }))));
 	hashMap.insert(make_pair("Quit the game", lT(inT({ Tr(eLC::PL,L"Wyjdź z gry"), Tr(eLC::EN,L"Quit the game") }))));
 	hashMap.insert(make_pair("Loading", lT(inT({ Tr(eLC::PL,L"Ładowanie"), Tr(eLC::EN,L"Loading") }))));
 	hashMap.insert(make_pair("Do you wish to save changes", lT(inT({ Tr(eLC::PL,L"Czy chcesz zapisać zmiany"), Tr(eLC::EN,L"Do you wish to save changes") }))));
@@ -65,6 +65,10 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 	hashMap.insert(make_pair("First player name", lT(inT({ Tr(eLC::PL,L"Nazwa pierwszego gracza"), Tr(eLC::EN,L"First player name") }))));
 	hashMap.insert(make_pair("Second player name", lT(inT({ Tr(eLC::PL,L"Nazwa drugiego gracza"), Tr(eLC::EN,L"Second player name") }))));
 	hashMap.insert(make_pair("AI", lT(inT({ Tr(eLC::PL,L"AI"), Tr(eLC::EN,L"AI") }))));
+
+	hashMap.insert(make_pair("Main Menu volume", lT(inT({ Tr(eLC::PL,L"Głośność w Menu Głównym"), Tr(eLC::EN,L"Main Menu volume") }))));
+	hashMap.insert(make_pair("In game volume", lT(inT({ Tr(eLC::PL,L"Głośność w grze"), Tr(eLC::EN,L"In game volume") }))));
+	hashMap.insert(make_pair("Effects volume", lT(inT({ Tr(eLC::PL,L"Głośność efektów specjalnych"), Tr(eLC::EN,L"Effects volume") }))));
 }
 
 std::wstring LanguageManager::getText(const std::string & code) const
