@@ -1,8 +1,8 @@
+#include "stdafx.h"
 #include "FontHandler.h"
 
-FontHandler::FontHandler()
-{
-}
+using std::make_pair;
+
 
 FontHandler & FontHandler::getInstance()
 {
@@ -17,7 +17,10 @@ FontHandler & FontHandler::getInstance()
 		if (!tmp.loadFromFile("Fonts/arial.ttf"));
 		else instance.font_handler.insert(make_pair("arial", tmp));
 
-		if (!tmp.loadFromFile("Fonts/Mecha.ttf"));
+
+		// !! inna nazwa
+
+		if (!tmp.loadFromFile("Fonts/arial.ttf"));
 		else instance.font_handler.insert(make_pair("Mecha", tmp));
 
 		initialize = false;

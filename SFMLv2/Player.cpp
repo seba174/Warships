@@ -1,64 +1,83 @@
+#include "stdafx.h"
 #include "Player.h"
+#include "IrregularShip2.h"
+#include "IrregularShip3.h"
+#include "TextureHandler.h"
+#include "SoundManager.h"
 
 
-
-Player::Player(const sf::Vector2i dim, const sf::Vector2f SquareSize, const sf::Vector2f enemy_setpoints, int ** enemy_ships,
-	const sf::Vector2f player_setpoints, const sf::RectangleShape pudlo, const sf::RectangleShape trafienie, sf::RectangleShape ** square_tab_2, 
-	const int bar,  sf::RectangleShape& rect)
-	: BoardDimensions(dim), SquareSize(SquareSize), Enemy_SetPoints(enemy_setpoints),Player_setPoints(player_setpoints), enemy_ships(enemy_ships),
-	pudlo(pudlo), trafienie(trafienie), square_tab_2(square_tab_2), bar(bar), rect(rect)
+void Player::updateMaximumHits()
 {
-	number = BoardDimensions.x / SquareSize.x;
-	switch (number)
+	if (maximumHitsTemp > maximumHits)
 	{
-	case 10:
-		speed_ratio = 4;
-		break;
-	case 20:
-		speed_ratio = 2;
-		break;
-	case 40:
-		speed_ratio = 1.5;
+		maximumHits = maximumHitsTemp;
 	}
-
-	TextureHandler& textures = TextureHandler::getInstance();
-	set_ships = new Board*[count_of_ships];
-	set_ships[0] = new Ships(5, SquareSize, BoardDimensions, Player_setPoints, &textures.texture_handler["big_body_final"]);
-	set_ships[1] = new Ships(4, SquareSize, BoardDimensions, Player_setPoints, &textures.texture_handler["big_body_final"]);
-	set_ships[2] = new Ships(3, SquareSize, BoardDimensions, Player_setPoints, &textures.texture_handler["big_body_final"]);
-	set_ships[3] = new Ships(2, SquareSize, BoardDimensions, Player_setPoints, &textures.texture_handler["big_body_final"]);
-	set_ships[4] = new IrregularShip2(SquareSize, BoardDimensions, Player_setPoints, &textures.texture_handler["irregular2"]);
-	set_ships[5] = new IrregularShip3(SquareSize, BoardDimensions, Player_setPoints, &textures.texture_handler["irregular3"]);
-
-
-	player_ships = new int*[number];
-	for (int i = 0; i < number; i++)
-	{
-		player_ships[i] = new int[number];
-		for (int j = 0; j < number; j++)
-			player_ships[i][j] = 0;
-	}
-
-	this->ships_set_up = false;
+	maximumHitsTemp = 0;
 }
 
-bool Player::Player_moves(sf::Vector2i & position)
+void Player::updateMaximumMisses()
 {
-	if (enemy_ships[position.x][position.y] == -2)
+	if (maximumMissesTemp > maximumMisses)
 	{
+		maximumMisses = maximumMissesTemp;
 	}
-	else if (enemy_ships[position.x][position.y] == 0)
-	{
-		square_tab_2[position.x][position.y] = pudlo;
-		square_tab_2[position.x][position.y].setPosition(sf::Vector2f(Enemy_SetPoints.x + SquareSize.x*position.x, Enemy_SetPoints.y + SquareSize.y*position.y));
-		enemy_ships[position.x][position.y] = -2;
-		plmoved = false;
-		return true;
+	maximumMissesTemp = 0;
+}
 
-	}
-	else if (enemy_ships[position.x][position.y])
+Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
+ const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships, const sf::Vector2f& player_setpoints, 
+	const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect)
+	: boardDimensions(dim), squareSize(SquareSize), enemySetPoints(enemy_setpoints), playerSetPoints(player_setpoints), 
+	missedShot(missedShot), hit(hit), rect(rect), totalHits(0),totalShots(0), enemyShips(enemy_ships)
+{
+	rect.setPosition(enemySetPoints);
+	mapSize = static_cast<int>(boardDimensions.x / SquareSize.x);
+
+	squareTab2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
+	playerShips = std::vector<std::vector<int>>(mapSize, std::vector<int>(mapSize, 0));
+	oryginalEnemyShips = playerShips;
+
+	TextureHandler& textures = TextureHandler::getInstance();
+
+	setShips.push_back(std::make_unique<Ships>(5, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
+	setShips.push_back(std::make_unique<Ships>(4, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
+	setShips.push_back(std::make_unique<Ships>(3, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
+	setShips.push_back(std::make_unique<Ships>(2, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
+	setShips.push_back(std::make_unique<IrregularShip2>(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular2"]));
+	setShips.push_back(std::make_unique<IrregularShip3>(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular3"]));
+
+	this->shipsSetUp = false;
+}
+
+bool Player::playerMoves(const sf::Vector2i & position, SoundManager& soundManager)
+{
+	// chcecks if player has clicked button
+	if (!playerMoved)
+		return false;
+
+	playerMoved = false;
+	if ((*enemyShips)[position.x][position.y] == -2)
 	{
-		switch (enemy_ships[position.x][position.y])
+	}
+	else if ((*enemyShips)[position.x][position.y] == 0)
+	{
+		soundManager.playSound(SoundsNames::Splash);
+
+		squareTab2[position.x][position.y] = missedShot;
+		squareTab2[position.x][position.y].setPosition(sf::Vector2f(enemySetPoints.x + squareSize.x*position.x, enemySetPoints.y + squareSize.y*position.y));
+		(*enemyShips)[position.x][position.y] = -2;
+		++totalShots;
+		++maximumMissesTemp;
+		updateMaximumHits();
+		return true;
+	}
+	else if ((*enemyShips)[position.x][position.y])
+	
+	{
+		soundManager.playSound(SoundsNames::Explosion);
+
+		oryginalEnemyShips[position.x][position.y] = (*enemyShips)[position.x][position.y];
+		switch ((*enemyShips)[position.x][position.y])
 		{
 		case 2: HP.size_2--; break;
 		case 3: HP.size_3--; break;
@@ -67,351 +86,108 @@ bool Player::Player_moves(sf::Vector2i & position)
 		case 10: HP.size_ir2--; break;
 		case 11: HP.size_ir3--; break;
 		}
-		enemy_ships[position.x][position.y] = -2;
-		square_tab_2[position.x][position.y] = trafienie;
-		square_tab_2[position.x][position.y].setPosition(sf::Vector2f(Enemy_SetPoints.x + SquareSize.x*position.x, Enemy_SetPoints.y + SquareSize.y*position.y));
+		(*enemyShips)[position.x][position.y] = -2;
+		squareTab2[position.x][position.y] = hit;
+		squareTab2[position.x][position.y].setPosition(sf::Vector2f(enemySetPoints.x + squareSize.x*position.x, enemySetPoints.y + squareSize.y*position.y));
+		++totalHits;
+		++totalShots;
+		++maximumHitsTemp;
+		updateMaximumMisses();
 	}
-	plmoved = false;
 	return false;
 }
 
-void Player::Player_input(const sf::Time& dt)
+void Player::playerMouseInput(const sf::Time & dt, const sf::Vector2f & mousepos)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	sf::Vector2f cords(floor((mousepos.x - enemySetPoints.x) / squareSize.x), floor((mousepos.y - enemySetPoints.y) / squareSize.y));
+
+	if (isMouseInEnemyBounds(mousepos))
 	{
-		if (rect.getPosition().x + 1.99*SquareSize.x < BoardDimensions.x)		//sprawdzanie czy nie opuszczamy ekranu
-		{
-			position[pos::Right].key_pressed = true; where_move = pos::Right;
-		}
-		else if (position[pos::Right].towards == true)		// ustawienie predkosci przy dosuwaniu kwadratu do odpowiedniego miejsca
-			if (position[pos::Right].move_speed < allign_speed * speed_ratio)
-				position[pos::Right].move_speed = allign_speed * speed_ratio;	// minimalna szybkosc 
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		if (rect.getPosition().x - 0.99*SquareSize.x > 0)
-		{
-			position[pos::Left].key_pressed = true; where_move = pos::Left;
-		}
-		else if (position[pos::Left].towards == true)
-			if (position[pos::Left].move_speed < allign_speed * speed_ratio)
-				position[pos::Left].move_speed = allign_speed * speed_ratio;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		if (rect.getPosition().y - 0.99*SquareSize.y > bar)
-		{
-			position[pos::Up].key_pressed = true; where_move = pos::Up;
-		}
-		else if (position[pos::Up].towards == true)
-			if (position[pos::Up].move_speed < allign_speed * speed_ratio)
-				position[pos::Up].move_speed = allign_speed * speed_ratio;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		if (rect.getPosition().y + 1.99*SquareSize.y < BoardDimensions.y + bar)
-		{
-			position[pos::Down].key_pressed = true; where_move = pos::Down;
-
-		}
-		else if (position[pos::Down].towards == true)
-			if (position[pos::Down].move_speed < allign_speed * speed_ratio)
-				position[pos::Down].move_speed = allign_speed * speed_ratio;
-	}
-
-
-	if (position[pos::Right].key_pressed)
-	{
-		position[pos::Right].time += dt;
-		position[pos::Right].move_speed = position[pos::Right].time.asMilliseconds() * speed_ratio;		// aktualizacja aktualnej predkosci (wzrost liniowy)
-
-		if (position[pos::Right].move_speed > max_speed*speed_ratio)	// maksymalna predkosc
-			position[pos::Right].move_speed = max_speed*speed_ratio;
-		else if (position[pos::Right].move_speed < min_speed*speed_ratio)	// minimalna predkosc
-			position[pos::Right].move_speed = min_speed*speed_ratio;
-	}
-	else
-	{
-		position[pos::Right].time = sf::Time();		// zerowanie predkosci gdy odpuscimy klawisz
-
-		if (position[pos::Left].key_pressed)
-		{
-			position[pos::Left].time += dt;
-			position[pos::Left].move_speed = position[pos::Left].time.asMilliseconds() * speed_ratio;
-
-			if (position[pos::Left].move_speed > max_speed*speed_ratio)
-				position[pos::Left].move_speed = max_speed*speed_ratio;
-			else if (position[pos::Left].move_speed < min_speed*speed_ratio)
-				position[pos::Left].move_speed = min_speed*speed_ratio;
-		}
-		else
-		{
-			position[pos::Left].time = sf::Time();
-
-			if (position[pos::Up].key_pressed)
-			{
-				position[pos::Up].time += dt;
-				position[pos::Up].move_speed = position[pos::Up].time.asMilliseconds() * speed_ratio;
-
-				if (position[pos::Up].move_speed > max_speed*speed_ratio)
-					position[pos::Up].move_speed = max_speed*speed_ratio;
-				else if (position[pos::Up].move_speed < min_speed*speed_ratio)
-					position[pos::Up].move_speed = min_speed*speed_ratio;
-			}
-			else
-			{
-				position[pos::Up].time = sf::Time();
-
-				if (position[pos::Down].key_pressed)
-				{
-					position[pos::Down].time += dt;
-					position[pos::Down].move_speed = position[pos::Down].time.asMilliseconds() * speed_ratio;
-
-					if (position[pos::Down].move_speed > max_speed*speed_ratio)
-						position[pos::Down].move_speed = max_speed*speed_ratio;
-					else if (position[pos::Down].move_speed < min_speed*speed_ratio)
-						position[pos::Down].move_speed = min_speed*speed_ratio;
-				}
-				else
-					position[pos::Down].time = sf::Time();
-			}
-		}
-	}
-
-	if (position[pos::Right].towards)	// jesli dosuwamy sie do krawedzi, to blokujemy mozliwosc uzycia innych klawiszy
-	{
-		where_move = pos::Right;
-		position[pos::Left].key_pressed = false;
-		position[pos::Up].key_pressed = false;
-		position[pos::Down].key_pressed = false;
-	}
-	if (position[pos::Left].towards)
-	{
-		where_move = pos::Left;
-		position[pos::Right].key_pressed = false;
-		position[pos::Up].key_pressed = false;
-		position[pos::Down].key_pressed = false;
-	}
-	if (position[pos::Up].towards)
-	{
-		where_move = pos::Up;
-		position[pos::Left].key_pressed = false;
-		position[pos::Right].key_pressed = false;
-		position[pos::Down].key_pressed = false;
-	}
-	if (position[pos::Down].towards)
-	{
-		where_move = pos::Down;
-		position[pos::Left].key_pressed = false;
-		position[pos::Up].key_pressed = false;
-		position[pos::Right].key_pressed = false;
-	}
-
-	// ruch w zaleznosci od wybranego kierunku
-	switch (where_move)
-	{
-	case pos::Right:
-		//if (!position[pos::Left].towards && !position[pos::Up].towards && !position[pos::Down].towards)
-
-		if (position[pos::Right].key_pressed)    // jesli klawisz jest wcisniety to ruszamy sie i zapisujemy pozycje do ktorej sie dosuniemy
-		{
-			rect.move(sf::Vector2f(position[pos::Right].move_speed * dt.asSeconds(), 0));
-			position[pos::Right].allign = floor(rect.getPosition().x / SquareSize.x) + 1;
-			position[pos::Right].key_pressed = false;
-			position[pos::Right].towards = true;
-		}
-		else  // dosuniecie do odpowiedniego miejsca
-		{
-			position[pos::Up].time = sf::Time();
-			position[pos::Left].time = sf::Time();
-			position[pos::Down].time = sf::Time();
-
-			if (rect.getPosition().x / SquareSize.x < position[pos::Right].allign)		// jesli ciagle mozna sie poruszyc to sie ruszamy
-				for (int j = 0; j < check_rate; j++)
-				{
-					if (rect.getPosition().x / SquareSize.x < position[pos::Right].allign)
-						rect.move(sf::Vector2f(position[pos::Right].move_speed / check_rate * dt.asSeconds(), 0));
-					position[pos::Right].towards = true;
-				}
-
-			else if (rect.getPosition().x / SquareSize.x >= position[pos::Right].allign)	// ustawiamy kwadrat w odpowiedniej pozycji
-			{
-				rect.setPosition(SquareSize.x*position[pos::Right].allign, rect.getPosition().y);
-				where_move = pos::Hold;
-				position[pos::Right].towards = false;
-			}
-		}
-		break;
-	case pos::Left:
-		if (position[pos::Left].key_pressed)
-		{
-			rect.move(sf::Vector2f(-position[pos::Left].move_speed * dt.asSeconds(), 0));
-			position[pos::Left].allign = floor(rect.getPosition().x / SquareSize.x);
-			position[pos::Left].key_pressed = false;
-			position[pos::Left].towards = true;
-		}
-		else
-		{
-			position[pos::Up].time = sf::Time();
-			position[pos::Right].time = sf::Time();
-			position[pos::Down].time = sf::Time();
-			if (rect.getPosition().x / SquareSize.x <= position[pos::Left].allign)
-			{
-				rect.setPosition(SquareSize.x*position[pos::Left].allign, rect.getPosition().y);
-				where_move = pos::Hold;
-				position[pos::Left].towards = false;
-			}
-			else if (rect.getPosition().x / SquareSize.x > position[pos::Left].allign)
-			{
-				for (int j = 0; j < check_rate; j++)
-				{
-					if (rect.getPosition().x / SquareSize.x > position[pos::Left].allign)
-						rect.move(sf::Vector2f(-position[pos::Left].move_speed / check_rate * dt.asSeconds(), 0));
-					position[pos::Left].towards = true;
-				}
-			}
-		}
-		break;
-	case pos::Up:
-		if (position[pos::Up].key_pressed)
-		{
-			rect.move(sf::Vector2f(0, -position[pos::Up].move_speed * dt.asSeconds()));
-			position[pos::Up].allign = floor((rect.getPosition().y - bar) / SquareSize.y);
-			position[pos::Up].key_pressed = false;
-			position[pos::Up].towards = true;
-		}
-		else
-		{
-			position[pos::Left].time = sf::Time();
-			position[pos::Right].time = sf::Time();
-			position[pos::Down].time = sf::Time();
-
-			if ((rect.getPosition().y - bar) / SquareSize.y <= position[pos::Up].allign)
-			{
-				rect.setPosition(rect.getPosition().x, SquareSize.y*position[pos::Up].allign + bar);
-				where_move = pos::Hold;
-				position[pos::Up].towards = false;
-			}
-			else if ((rect.getPosition().y - bar) / SquareSize.y > position[pos::Up].allign)
-			{
-				for (int j = 0; j < check_rate; j++)
-				{
-					if ((rect.getPosition().y - bar) / SquareSize.y > position[pos::Up].allign)
-						rect.move(sf::Vector2f(0, -position[pos::Up].move_speed / check_rate * dt.asSeconds()));
-					position[pos::Up].towards = true;
-				}
-			}
-		}
-		break;
-	case pos::Down:
-		if (position[pos::Down].key_pressed)
-		{
-			rect.move(sf::Vector2f(0, position[pos::Down].move_speed * dt.asSeconds()));
-			position[pos::Down].allign = floor((rect.getPosition().y - bar) / SquareSize.y) + 1;
-			position[pos::Down].key_pressed = false;
-			position[pos::Down].towards = true;
-		}
-		else
-		{
-			position[pos::Left].time = sf::Time();
-			position[pos::Right].time = sf::Time();
-			position[pos::Up].time = sf::Time();
-
-			if ((rect.getPosition().y - bar) / SquareSize.y < position[pos::Down].allign)
-			{
-				for (int j = 0; j < check_rate; j++)
-				{
-					if ((rect.getPosition().y - bar) / SquareSize.y < position[pos::Down].allign)
-						rect.move(sf::Vector2f(0, position[pos::Down].move_speed / check_rate* dt.asSeconds()));
-					position[pos::Down].towards = true;
-				}
-			}
-			else if ((rect.getPosition().y - bar) / SquareSize.y >= position[pos::Down].allign)
-			{
-				rect.setPosition(rect.getPosition().x, SquareSize.y*position[pos::Down].allign + bar);
-				where_move = pos::Hold;
-				position[pos::Down].towards = false;
-			}
-		}
+		rect.setPosition(sf::Vector2f(cords.x*squareSize.x + enemySetPoints.x, cords.y*squareSize.y + enemySetPoints.y));
 	}
 }
 
-void Player::Player_Set_ships(sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw)
+void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw, SoundManager& soundManager)
 {
-	if (!ships_set_up)
+	if (!shipsSetUp)
 	{
-		static bool counter_to_set = false;
 		switch (counter)
 		{
 		case 0:; case 1:; case 2:; case 3:
-			set_ships[counter]->setPosition(position);
-			if (set_ships[counter]->getplaceShip())
+			setShips[counter]->setPosition(position);
+			if (setShips[counter]->getPlaceShip())
 			{
-				if (set_ships[counter]->placePlayerShip(player_ships, number, vect_ship_to_draw, nullptr))
-					counter_to_set = true;
+				if (setShips[counter]->placePlayerShip(playerShips, mapSize, vect_ship_to_draw))
+				{
+					soundManager.playSound(SoundsNames::SetShips);
+					counterToSet = true;
+				}
 			}
-
 			break;
 		case 4:; case 5:
-			set_ships[counter]->setPosition(position);
-			if (set_ships[counter]->getplaceShip())
+			setShips[counter]->setPosition(position);
+			if (setShips[counter]->getPlaceShip())
 			{
-				if (set_ships[counter]->placePlayerShip(player_ships, number, vect_ship_to_draw, nullptr))
-					counter_to_set = true;
+				if (setShips[counter]->placePlayerShip(playerShips, mapSize, vect_ship_to_draw))
+				{
+					soundManager.playSound(SoundsNames::SetShips);
+					counterToSet = true;
+				}
 			}
-
 			break;
 		}
 
-		if (counter_to_set)
+		if (counterToSet)
 		{
 			++counter;
-			counter_to_set = false;
-			if (counter == count_of_ships)
-				ships_set_up = true;
+			counterToSet = false;
+			if (counter == countOfShips)
+				shipsSetUp = true;
 			else
-				set_ships[counter]->setPosition(position);
+				setShips[counter]->setPosition(position);
 		}
 	}
 }
 
-void Player::setplaceship()
-{
-	set_ships[counter]->setplaceShip(true);
+void Player::draw(sf::RenderTarget & Window) const
+{	
+	if (shipsSetUp)
+		Window.draw(rect);
+	else
+		Window.draw(setShips[counter]->returnShip());
 }
 
-void Player::Draw(sf::RenderWindow & Window)
+void Player::drawSquareTab(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	Window.draw(rect);
-	if (!ships_set_up)
-		Window.draw(set_ships[counter]->return_ship());
+	for (const std::vector<sf::RectangleShape>& i : squareTab2)
+		for (const sf::RectangleShape& rect : i)
+			target.draw(rect, states);
 }
 
-bool & Player::getplmoved()
+bool Player::isMouseInEnemyBounds(const sf::Vector2f& mousepos) const
 {
-	return plmoved;
+	if (mousepos.x >= enemySetPoints.x && mousepos.x < enemySetPoints.x + mapSize*squareSize.x 
+		&& mousepos.y >= enemySetPoints.y && mousepos.y < enemySetPoints.y + mapSize*squareSize.y)
+		return true;
+	return false;
 }
 
-void Player::rotate()
+void Player::resetSquareTab(int num)
 {
-	set_ships[counter]->rotate_ship();
+	for (int i = 0; i < mapSize; ++i)
+		for (int j = 0; j < mapSize; ++j)
+		{
+			if (oryginalEnemyShips[j][i] == num)
+				//if (setShips[num]->returnShip().getGlobalBounds().contains(playerSetPoints.x + squareSize.x / 2 + squareSize.x*j, playerSetPoints.y + squareSize.y / 2 + squareSize.y*i))
+				if (squareTab2[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
+					squareTab2[j][i] = sf::RectangleShape();
+		}
 }
 
-Player::~Player()
+float Player::returnAccuracy() const
 {
-	for (int i = 0; i < count_of_ships; i++)
-		delete set_ships[i];
-	delete[] set_ships;
-
-	for (int i = 0; i < number; i++)
-		delete[] player_ships[i];
-	delete[] player_ships;
+	if (totalShots != 0)
+		return (static_cast<float>(totalHits) / static_cast<float>(totalShots)) * 100;
+	else return 0;
 }
-
-
-
-
-
-
-
 

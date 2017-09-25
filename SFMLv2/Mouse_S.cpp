@@ -1,10 +1,8 @@
-#pragma once
+#include "stdafx.h"
 #include "Mouse_S.h"
-#include <iostream>
-using namespace std;
 
-
-Mouse_S::Mouse_S(sf::Vector2f bounds_x, sf::Vector2f bounds_y, sf::RenderWindow *window): bounds_x(bounds_x), bounds_y(bounds_y),window(window)
+Mouse_S::Mouse_S(const sf::Vector2f& bounds_x, const sf::Vector2f & bounds_y, sf::RenderWindow *window)
+	: bounds_x(bounds_x), bounds_y(bounds_y),window(window)
 {
 }
 
@@ -13,7 +11,6 @@ bool Mouse_S::isMouseWithinArea() const
 	sf::Vector2i exp= sf::Mouse::getPosition(*window);
 	sf::Vector2f mouseposition = (*window).mapPixelToCoords(exp);
 	
-
 	if (mouseposition.x >= bounds_x.x && mouseposition.x <= bounds_x.y)
 		if (mouseposition.y >= bounds_y.x&&mouseposition.y <= bounds_y.y)
 			return true;

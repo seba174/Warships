@@ -1,27 +1,23 @@
 #pragma once
-#include <string>
-#include <memory>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include "FontHandler.h"
-#include "TextureHandler.h"
+#include "LanguageManager.h"
+
 
 class OptionButton :
 	public sf::Drawable, public sf::Transformable
 {
+	float scale = 1.1f;
 
-	// number of options in options array
-	int number_of_options;
+	// mapSize of options in options array
+	int numberOfOptions;
 
-	// index of displayed_text in options array
-	int current_option_number;
+	// index of displayedText in options array
+	int currentOptionNumber;
 
 	// an array of options to choose from
 	std::unique_ptr<std::string[]> options;
 
-	sf::RectangleShape bound_rectangle;
+	sf::RectangleShape boundRectangle, boundRectangleOutline;
+	sf::RectangleShape additionalEffects;
 	sf::RectangleShape leftbutton;
 	sf::RectangleShape rightbutton;
 
@@ -32,31 +28,45 @@ class OptionButton :
 	bool isRightButtonHighlighted;
 
 	// option displayed in button at pertacuilar moment
-	sf::Text current_displayed_option;
+	sf::Text currentDisplayedOption;
+	sf::Text drawnOption;
 
 	// position set in last call of setPosition function
 	sf::Vector2f pos;
+
+	LanguageManager& languageManager;
 
 	// variables used to control animation
 	bool shouldUpdateAnimations;
 	sf::Time usableTime;
 	float animationScale;
 	sf::Time animationTime;
+	bool displayOnlyText;
+	bool isAnimationBlocked;
+	bool isDictionaryDisabled;
+
+	bool areArrowsBlocked;
 
 	// information if mouse is within bound_rectagle (it is used in animation)
 	bool isPressed;
 
-		// FUNCTIONS
+	// FUNCTIONS
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	// sets displayed_text in the center of button (bound_rectangle)
+	// sets displayedText in the center of button (boundRectangle)
 	void setTextPosition();
+
+	float addScale(const std::string& str);
+
+	void updateDrawnOption();
 
 public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!
-	OptionButton(const std::string& options_list, const sf::Font& font, int characterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40), 
-		const sf::Color& bounds_color = sf::Color::Transparent);
+	OptionButton(const std::string& options_list, const sf::Font& font, int characterSize, LanguageManager& langMan, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
+		const sf::Color& bounds_color = sf::Color::White);
+
+	std::string getDisplayedOption() const { return currentDisplayedOption.getString(); }
 
 	// sets position of a CENTER of a button 
 	void setPosition(float x, float y);
@@ -74,7 +84,7 @@ public:
 	bool rightButtonContains(const sf::Vector2f& mousepos) const { return rightbutton.getGlobalBounds().contains(mousepos); }
 
 	// checks if whole button contains mousepos
-	bool buttonContains(const sf::Vector2f& mousepos) const { return bound_rectangle.getGlobalBounds().contains(mousepos); }
+	bool buttonContains(const sf::Vector2f& mousepos) const { return boundRectangle.getGlobalBounds().contains(mousepos); }
 
 	// sets isLeftButtonHighlighted true (used in animation)
 	void highlightLeftButton() { isLeftButtonHighlighted = true; }
@@ -89,14 +99,14 @@ public:
 	void updateArrows();
 
 	// returns size of bound rectangle
-	sf::Vector2f getSize() { return sf::Vector2f(bound_rectangle.getGlobalBounds().width, bound_rectangle.getGlobalBounds().height); }
+	sf::Vector2f getSize() { return sf::Vector2f(boundRectangle.getGlobalBounds().width, boundRectangle.getGlobalBounds().height); }
 
 	// function changes string displayed in a button for previous one in array
-	// if number exceeds array the last text in array is displayed
+	// if mapSize exceeds array the last text in array is displayed
 	void clickLeftButton();
 
 	// function changes string displayed in a button for next one in array
-	// if number exceeds array the first text in array is displayed
+	// if mapSize exceeds array the first text in array is displayed
 	void clickRightButton();
 
 	// function animates and updates button size
@@ -110,5 +120,23 @@ public:
 
 	// sets duration of animation
 	void setAnimationDuration(const sf::Time& time) { animationTime = time; }
+
+	void setOutlineThickness(float outLine) { boundRectangleOutline.setOutlineThickness(outLine); }
+
+	void disableAnimation(bool shouldDisable) { isAnimationBlocked = shouldDisable; }
+
+	// Sets new displayed option
+	// Fucntion sets it only when new displayed option is included in option list
+	void setDisplayedOption(const std::string& newDisplayedOption);
+
+	void handleAdditionalRectangleColor(bool shouldApplyColor, const sf::Color& color);
+
+	void setArrowsBlockAndDisplayedString(bool arrowsBlocked,const std::string& displayed);
+
+	void shouldDisplayOnlyText(bool whatDo) { displayOnlyText = whatDo; }
+
+	float getOutlineThickness() const { return boundRectangleOutline.getOutlineThickness(); }
+
+	void setDictionaryDisabledBool(bool val) { isDictionaryDisabled = val; }
 };
 

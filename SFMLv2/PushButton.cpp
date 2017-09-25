@@ -1,22 +1,31 @@
+﻿#include "stdafx.h"
 #include "PushButton.h"
-
 
 
 void PushButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
-	target.draw(bound_rectangle, states);
-	target.draw(displayed_text, states);
+	target.draw(interior, states);
+	target.draw(boundRectangle, states);
+	target.draw(displayedText, states);
 }
 
 void PushButton::setTextPosition()
 {
-	displayed_text.setPosition(bound_rectangle.getPosition().x + bound_rectangle.getSize().x / 2 - displayed_text.getGlobalBounds().width / 2,
-		bound_rectangle.getPosition().y + bound_rectangle.getSize().y / 2 - displayed_text.getGlobalBounds().height / 1.1);
+	displayedText.setPosition(boundRectangle.getPosition().x + boundRectangle.getSize().x / 2 -
+		(displayedText.getLocalBounds().left + displayedText.getGlobalBounds().width / 2.0f),
+		boundRectangle.getPosition().y + boundRectangle.getSize().y / 2 -
+		(displayedText.getLocalBounds().top + displayedText.getGlobalBounds().height / 2.0f));
 }
 
-PushButton::PushButton(const std::string& text, int char_size, const sf::Font& font, sf::Vector2f size, const sf::Color& bounds_color,
-	 int line_thickness)
+void PushButton::setInteriorPosition()
+{
+	interior.setPosition(boundRectangle.getPosition().x + (boundRectangle.getSize().x - interior.getSize().x) / 2,
+		boundRectangle.getPosition().y + (boundRectangle.getSize().y - interior.getSize().y) / 2);
+}
+
+PushButton::PushButton(const std::wstring& text, int char_size, const sf::Font& font, sf::Vector2f size, const sf::Color& bounds_color,
+	int line_thickness)
 	: isPressed(false), shouldUpdateAnimations(false)
 {
 	TextureHandler& texutreHandler = TextureHandler::getInstance();
@@ -24,29 +33,36 @@ PushButton::PushButton(const std::string& text, int char_size, const sf::Font& f
 	outlineColor = bounds_color;
 	animationTime = sf::milliseconds(100);
 
-	bound_rectangle.setSize(size);
-	bound_rectangle.setTexture(&texutreHandler.texture_handler["buttonFrame"]);
+	boundRectangle.setSize(size);
+	interior.setFillColor(sf::Color::Transparent);
+	interior.setSize(sf::Vector2f(interiorScale*boundRectangle.getSize().x, interiorScale*boundRectangle.getSize().y));
+	setInteriorPosition();
 
-	displayed_text.setFont(font);
-	displayed_text.setCharacterSize(char_size);
-	displayed_text.setString(text);
+	boundRectangle.setTexture(&texutreHandler.texture_handler["buttonFrame"]);
+
+	displayedText.setFont(font);
+	displayedText.setCharacterSize(char_size);
+	displayedText.setString(text);
+
 	setTextPosition();
 
-	bound_rectangle.setOutlineThickness(line_thickness);
-	bound_rectangle.setOutlineColor(sf::Color::Transparent);
+	boundRectangle.setOutlineThickness(static_cast<float>(line_thickness));
+	boundRectangle.setOutlineColor(sf::Color::Transparent);
 }
 
 void PushButton::setPosition(float x, float y)
 {
 	pos = sf::Vector2f(x, y);
-	bound_rectangle.setPosition(x - bound_rectangle.getSize().x / 2, y - bound_rectangle.getSize().y / 2);
+	boundRectangle.setPosition(x - boundRectangle.getSize().x / 2, y - boundRectangle.getSize().y / 2);
+	setInteriorPosition();
 	setTextPosition();
 }
 
 void PushButton::setPosition(const sf::Vector2f & position)
 {
 	pos = position;
-	bound_rectangle.setPosition(position.x - bound_rectangle.getSize().x / 2, position.y - bound_rectangle.getSize().y / 2);
+	boundRectangle.setPosition(position.x - boundRectangle.getSize().x / 2, position.y - boundRectangle.getSize().y / 2);
+	setInteriorPosition();
 	setTextPosition();
 }
 
@@ -54,11 +70,11 @@ void PushButton::update()
 {
 	if (isPressed)
 	{
-		bound_rectangle.setOutlineColor(outlineColor);
+		boundRectangle.setOutlineColor(outlineColor);
 		isPressed = false;
 	}
 	else
-		bound_rectangle.setOutlineColor(sf::Color::Transparent);
+		boundRectangle.setOutlineColor(sf::Color::Transparent);
 }
 
 void PushButton::updateWithAnimations(const sf::Time & time)
@@ -66,7 +82,7 @@ void PushButton::updateWithAnimations(const sf::Time & time)
 	if (isPressed)
 	{
 		isPressed = false;
-		setScale(1.1, 1.1);
+		setScale(1.1f, 1.1f);
 		shouldUpdateAnimations = true;
 	}
 	else
@@ -89,12 +105,36 @@ void PushButton::updateWithAnimations(const sf::Time & time)
 
 void PushButton::updatePosition()
 {
-	bound_rectangle.setPosition(pos.x - bound_rectangle.getGlobalBounds().width / 2, pos.y - bound_rectangle.getGlobalBounds().height / 2);
-	displayed_text.setPosition(pos.x - displayed_text.getGlobalBounds().width / 2, pos.y - displayed_text.getGlobalBounds().height / 1.1f);
+	boundRectangle.setPosition(pos.x - boundRectangle.getGlobalBounds().width / 2, pos.y - boundRectangle.getGlobalBounds().height / 2);
+	setInteriorPosition();
+	displayedText.setPosition(pos.x - (displayedText.getLocalBounds().left + displayedText.getGlobalBounds().width / 2.0f), pos.y -
+		(displayedText.getScale().y*displayedText.getLocalBounds().top + displayedText.getGlobalBounds().height / 2.0f));
 }
 
 void PushButton::setScale(float x, float y)
 {
-	bound_rectangle.setScale(x, y);
-	displayed_text.setScale(x, y);
+	boundRectangle.setScale(x, y);
+	displayedText.setScale(x, y);
+	interior.setScale(x, y);
 }
+
+void PushButton::coverButtonWithColor(bool shouldApplyColor, const sf::Color & color)
+{
+	if (shouldApplyColor)
+	{
+		boundRectangle.setFillColor(sf::Color(color.r, color.g, color.b, 255));
+		displayedText.setFillColor(sf::Color(255, 255, 255, color.a));
+	}
+	else
+	{
+		displayedText.setFillColor(sf::Color::White);
+		boundRectangle.setFillColor(sf::Color::White);
+	}
+}
+
+void PushButton::setInteriorColor(const sf::Color & color)
+{
+	interior.setFillColor(color);
+}
+
+

@@ -1,5 +1,4 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include "OptionButton.h"
 
 class OptionNameWithButton :
@@ -10,8 +9,9 @@ class OptionNameWithButton :
 	// position set in last call of setPosition function
 	sf::Vector2f size;
 
-	OptionButton button;
+	sf::RectangleShape boundRectangle;
 
+	OptionButton button;
 
 		// FUNCTIONS
 
@@ -21,11 +21,19 @@ class OptionNameWithButton :
 
 	void setButtonPosition(float x, float y);
 
+	void setBoundRectanglePosition();
+
 public:
 	// strings in options_list (which contains information about options avaliable) must be separated with ',' (comma)!
-	OptionNameWithButton(const std::string& optionName, const sf::Font& nameFont, int nameCharacterSize, const sf::Vector2f& size,
-		const std::string& options_list, const sf::Font& buttonFont, int buttonCharacterSize, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
-		const sf::Color& bounds_color = sf::Color::Transparent);
+	OptionNameWithButton(const std::wstring& optionName, const sf::Font& nameFont, int nameCharacterSize, const sf::Vector2f& size,
+		const std::string& options_list, const sf::Font& buttonFont, int buttonCharacterSize, LanguageManager& langMan, const sf::Vector2f& button_size = sf::Vector2f(240, 40),
+		const sf::Color& bounds_color = sf::Color::White);
+
+	std::string getDisplayedOption() const { return button.getDisplayedOption(); }
+
+	sf::Vector2f getBoundRectanglePosition() const { return boundRectangle.getPosition(); }
+
+	sf::Vector2f getBoundRectangleSize() const { return boundRectangle.getSize(); }
 
 	// sets position of a CENTER of the object
 	void setPosition(float x, float y);
@@ -55,11 +63,11 @@ public:
 	void updateArrows() { button.updateArrows(); }
 
 	// function changes string displayed in a button for previous one in array
-	// if number exceeds array the last text in array is displayed
+	// if mapSize exceeds array the last text in array is displayed
 	void clickLeftButton() { button.clickLeftButton(); }
 
 	// function changes string displayed in a button for next one in array
-	// if number exceeds array the first text in array is displayed
+	// if mapSize exceeds array the first text in array is displayed
 	void clickRightButton() { button.clickRightButton(); }
 
 	// function animates and updates button size
@@ -73,5 +81,21 @@ public:
 
 	// sets duration of animation
 	void setAnimationDuration(const sf::Time& time) { button.setAnimationDuration(time); }
+
+	// Sets new displayed option for OptionButton
+	// Fucntion sets it only when new displayed option is included in option list
+	void setDisplayedOption(const std::string& newDisplayedOption) { button.setDisplayedOption(newDisplayedOption); }
+
+	void setArrowsBlockAndDisplayedString(bool arrowsBlocked, const std::string& displayed) { button.setArrowsBlockAndDisplayedString(arrowsBlocked, displayed); }
+
+	void shouldDisplayOnlyText(bool whatToDo) { button.shouldDisplayOnlyText(whatToDo); }
+
+	void setOutlineThickness(float outLine) { button.setOutlineThickness(outLine); }
+
+	void disableAnimation(bool shouldDisable) { button.disableAnimation(shouldDisable); }
+
+	float getOutlineThickness() const { return button.getOutlineThickness(); }
+
+	void setDictionaryDisabledBool(bool val) { button.setDictionaryDisabledBool(val); }
 };
 

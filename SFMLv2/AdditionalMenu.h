@@ -1,16 +1,21 @@
 #pragma once
 #include "AdditionalSubMenu.h"
 #include "enumAdditionalVisualInformation.h"
-#include "enumGamestate.h"
-#include "Input.h"
+#include "enumGameState.h"
 
-class AdditionalMenu :
-	public sf::Drawable
+class GraphicsOptions;
+class LanguageManager;
+class GeneralOptions;
+class Input;
+
+
+class AdditionalMenu
+	: public sf::Drawable
 {
 	AdditionalVisualInformations& state;
-	AdditionalSubMenu Exit, Loading;
+	AdditionalSubMenu Exit, Loading, ApplyChanges;
 
-	Gamestates newGamestate;
+	GameStates newGamestate;
 
 		// FUNCTIONS
 
@@ -19,7 +24,7 @@ class AdditionalMenu :
 public:
 	// title_or1st_button_position non used
 	AdditionalMenu(const sf::Vector2f& title_or1st_button_position, int space_between_buttons, const sf::Vector2f& backgroundSize, 
-		const sf::Vector2f& backgroundForSubMenuPosition, AdditionalVisualInformations& additionalvsinfo);
+		const sf::Vector2f& backgroundForSubMenuPosition, AdditionalVisualInformations& additionalvsinfo, float interfaceScale, LanguageManager& langMan);
 
 	// updates information about OutlineColor for every SubMenu
 	void updateAdditionalMenu();
@@ -30,9 +35,9 @@ public:
 	// function deals with running AdditionalMenu 
 	// check if user clicks on buttons and does appropriate actions
 	// in order to updateGamestates, use updateGamestate() function
-	void runMenu(const sf::Vector2f& mousepos, bool leftButtonPressed, Input& input);
+	void runMenu(const sf::Vector2f& mousepos, Input& input, GraphicsOptions& options, GeneralOptions& genOptions);
 
 	// updates Gamestate
-	void updateGamestate(Gamestates& gamestate);
+	void updateGamestate(GameStates& gamestate);
 };
 

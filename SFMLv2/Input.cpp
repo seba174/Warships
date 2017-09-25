@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "Input.h"
-
 
 
 Input::Input()
@@ -12,35 +12,10 @@ void Input::ResetKeys()
 	MouseLeftButtonPressed = false;
 	MouseRightButtonPressed = false;
 	KeyboardReturnKeyPressed = false;
+	KeyboardEscapeKeyPressed = false;
+	KeyboardBackspaceKeyPressed = false;
+	inputText = NULL;
 }
 
-bool Input::isMouseLeftButtonPressed()
-{
-	return MouseLeftButtonPressed;
-}
 
-void Input::setMouseLeftButtonPressed()
-{
-	MouseLeftButtonPressed = true;
-}
-
-bool Input::isMouseRightButtonPressed()
-{
-	return  MouseRightButtonPressed;
-}
-
-void Input::setMouseRightButtonPressed()
-{
-	MouseRightButtonPressed = true;
-}
-
-bool Input::isKeyboardReturnKeyPressed()
-{
-	return  KeyboardReturnKeyPressed;
-}
-
-void Input::setKeyboardReturnKeyPressed()
-{
-	KeyboardReturnKeyPressed = true;
-}
 
