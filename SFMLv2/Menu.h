@@ -8,6 +8,7 @@
 
 class LanguageManager;
 class GraphicsOptions;
+class SoundOptions;
 class Input;
 class GeneralOptions;
 
@@ -23,6 +24,7 @@ class Menu :
 	// SubMenus which Standard Menu contains
 	SubMenu SubHome, SubChooseGametype, SubChooseMapSize, SubChooseAILevel, SubOptions;
 	OptionsSubMenu SubGeneral, SubGraphics, SubAudio;
+	bool shouldUpdateSubAudioButtons;
 
 		// FUNCTIONS
 
@@ -33,15 +35,17 @@ class Menu :
 
 	bool hasVisibleGeneralOptionChanged(const GeneralOptions& options);
 
+	bool hasVisibleSoundOptionChanged(const SoundOptions& options);
+
 
 public:
 	Menu(const std::wstring& main_title, const sf::Vector2f& main_title_position, const sf::Vector2f& title_or1st_button_position, int space_between_buttons,
-		float interfaceScale, const GraphicsOptions& opt, LanguageManager& languageManager, const GeneralOptions& genOpt);
+		float interfaceScale, const GraphicsOptions& opt, LanguageManager& languageManager, const GeneralOptions& genOpt, const SoundOptions& soundOpt);
 
 	// function deals with running menu 
 	// check if user clicks on buttons and does appropriate acctions
 	// in order to updateGamestates, use updateGamestate() function
-	void runMenu(const sf::Vector2f& mousepos, int& mapsize, LevelsDifficulty& level, const Input& input, GraphicsOptions& opt, GeneralOptions& generalOpt);
+	void runMenu(const sf::Vector2f& mousepos, int& mapsize, LevelsDifficulty& level, const Input& input, GraphicsOptions& opt, GeneralOptions& generalOpt, SoundOptions& soundOpt);
 
 	// updates information about OutlineColor for every SubMenu
 	void updateMenu();

@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include <memory>
 #include "SimpleLogger.h"
 #include "Player.h"
 #include "DestroyedShipsWithBackground.h"
@@ -17,13 +15,15 @@
 
 class Input;
 class LanguageManager;
+class SoundManager;
 class GeneralOptions;
+class MusicHandler;
 
 
 class GamePlayerVsAI
 	: public sf::Drawable
 {
-	enum gamePlayersState { player1Moves, AIMoves, player1SetShips, AISetShips, loadVariablesAndStart, finish, statistics };
+	enum gamePlayersState {constructorState, player1Moves, AIMoves, player1SetShips, AISetShips, loadVariablesAndStart, finish, statistics };
 
 	Player player1;
 	AI player2;
@@ -34,7 +34,7 @@ class GamePlayerVsAI
 	bool shoudlDrawMenuPlayer1SetShipsInfo, shoudlDrawMenuPlayer2SetShipsInfo, shoudlDrawMenuPlayer1TurnStarts, shoudlDrawMenuPlayer2TurnStarts;
 	SetShipsAd advertPlayer1, advertPlayer2;
 	bool player1Won, player2Won;
-	bool aiFinishesMove = false, shouldAIWait = false;
+	bool aiFinishesMove = false, shouldAIWait = false, playerFinishes = false;
 	bool wasGameLogged, wasAIUsingSuperPowers;
 	int mapSize;
 	FinishMenu finishMenu;
@@ -52,10 +52,12 @@ class GamePlayerVsAI
 	sf::Time lastFrameTime, utilityTime;
 	GameTime gameTimer;
 
-	sf::Time PausedSetShipsTime = sf::seconds(2.0f);
-	sf::Time TurnInfoTime = sf::seconds(0.6f);
-	sf::Time AIDelay = sf::seconds(0.7f);
+	sf::Time pausedSetShipsTime = sf::seconds(2.0f);
+	sf::Time turnInfoTime = sf::seconds(0.65f);
+	sf::Time playerDelay = sf::seconds(0.5f);
+	sf::Time AIDelay = sf::seconds(0.9f);
 	sf::Clock utilityClock, utilityClock2;
+
 
 	// FUNCTIONS
 	int whoStarts() const;
@@ -71,7 +73,7 @@ class GamePlayerVsAI
 
 public:
 
-	void play(const sf::Time& dt, const sf::Vector2f& mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate);
+	void play(const sf::Time& dt, const sf::Vector2f& mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate, SoundManager& soundManager, MusicHandler& musicHandler);
 
 	GamePlayerVsAI(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& player1_setpoints,
 		const sf::Vector2f& player2_setpoints, const sf::RectangleShape& pudlo, const sf::RectangleShape& trafienie, sf::RectangleShape& player1Rect,

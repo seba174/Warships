@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "AI.h"
-#include <math.h>
 #include "IrregularShip2.h"
 #include "IrregularShip3.h"
 #include "TextureHandler.h"
@@ -56,7 +56,6 @@ void AI::actionsAfterHittingStandardShip(int size)
 	++count;
 	if (count == size)
 	{
-		//++ai_ships_destroyed;
 		count = 0;
 		copyPlayerShips();
 		shootWithBounds = false;
@@ -493,14 +492,15 @@ bool AI::AIMovesLevelHard(bool& wasAIUsingSuperPowers)
 	return true;
 }
 
-void AI::resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab)
+void AI::resetSquareTab(int num)
 {
 	for (int i = 0; i < mapSize; ++i)
 		for (int j = 0; j < mapSize; ++j)
 		{
-			if (setShips[num]->returnShip().getGlobalBounds().contains(AISetPoints.x + squareSize.x / 2 + squareSize.x*j, AISetPoints.y + squareSize.y / 2 + squareSize.y*i))
-				if (newSquareTab[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
-					newSquareTab[j][i] = sf::RectangleShape();
+			if ((*enemyShips)[j][i] == num)
+				//if (setShips[num]->returnShip().getGlobalBounds().contains(AISetPoints.x + squareSize.x / 2 + squareSize.x*j, AISetPoints.y + squareSize.y / 2 + squareSize.y*i))
+				if (squareTab2[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
+					squareTab2[j][i] = sf::RectangleShape();
 		}
 }
 

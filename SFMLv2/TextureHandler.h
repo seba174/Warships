@@ -1,8 +1,5 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <map>
 
- 
 class TextureHandler
 {
 private:
@@ -13,6 +10,8 @@ private:
 	// Stop the compiler generating methods of copy the object
 	TextureHandler(TextureHandler const& copy) = delete;            // Not Implemented
 	TextureHandler& operator=(TextureHandler const& copy) = delete; // Not Implemented
+
+	static void addElement(const std::string& textureName, const std::string& texturePath, TextureHandler& instance);
 
 public:
 	

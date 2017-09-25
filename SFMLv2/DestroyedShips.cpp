@@ -1,7 +1,7 @@
+#include "stdafx.h"
 #include "DestroyedShips.h"
 #include "TextureHandler.h"
 #include "FontHandler.h"
-
 
 
 void DestroyedShips::draw(sf::RenderTarget & target, sf::RenderStates states) const

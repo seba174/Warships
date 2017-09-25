@@ -1,9 +1,4 @@
 #pragma once
-#include <string>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/Text.hpp>
 #include "TextureHandler.h"
 
 class PushButton :
@@ -13,7 +8,6 @@ class PushButton :
 	float interiorScale = 0.93f;
 
 	sf::RectangleShape boundRectangle;
-	sf::RectangleShape additionalEffects;
 	sf::RectangleShape interior;
 	sf::Text displayedText;
 	
@@ -35,8 +29,6 @@ class PushButton :
 
 	// sets displayedText in the center of button (boundRectangle)
 	void setTextPosition();
-
-	float addScale(const std::wstring& str);
 
 	void setInteriorPosition();
 

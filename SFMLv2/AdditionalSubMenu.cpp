@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "AdditionalSubMenu.h"
 
 void AdditionalSubMenu::draw(sf::RenderTarget & target, sf::RenderStates states) const

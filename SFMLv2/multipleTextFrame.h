@@ -1,6 +1,4 @@
 #pragma once
-#include <list>
-#include "SFML/Graphics.hpp"
 #include "RectangleWithText.h"
 
 class MultipleTextFrame

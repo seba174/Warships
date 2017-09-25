@@ -1,7 +1,9 @@
+#include "stdafx.h"
 #include "Player.h"
 #include "IrregularShip2.h"
 #include "IrregularShip3.h"
 #include "TextureHandler.h"
+#include "SoundManager.h"
 
 
 void Player::updateMaximumHits()
@@ -23,7 +25,8 @@ void Player::updateMaximumMisses()
 }
 
 Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
- const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships, const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect)
+ const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships, const sf::Vector2f& player_setpoints, 
+	const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect)
 	: boardDimensions(dim), squareSize(SquareSize), enemySetPoints(enemy_setpoints), playerSetPoints(player_setpoints), 
 	missedShot(missedShot), hit(hit), rect(rect), totalHits(0),totalShots(0), enemyShips(enemy_ships)
 {
@@ -32,6 +35,7 @@ Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
 
 	squareTab2 = std::vector<std::vector<sf::RectangleShape>>(mapSize, std::vector<sf::RectangleShape>(mapSize, sf::RectangleShape()));
 	playerShips = std::vector<std::vector<int>>(mapSize, std::vector<int>(mapSize, 0));
+	oryginalEnemyShips = playerShips;
 
 	TextureHandler& textures = TextureHandler::getInstance();
 
@@ -41,32 +45,38 @@ Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
 	setShips.push_back(std::make_unique<Ships>(2, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
 	setShips.push_back(std::make_unique<IrregularShip2>(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular2"]));
 	setShips.push_back(std::make_unique<IrregularShip3>(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular3"]));
-	
+
 	this->shipsSetUp = false;
 }
 
-bool Player::playerMoves(const sf::Vector2i & position)
+bool Player::playerMoves(const sf::Vector2i & position, SoundManager& soundManager)
 {
 	// chcecks if player has clicked button
-	if (!getPlayerMoved())
+	if (!playerMoved)
 		return false;
 
+	playerMoved = false;
 	if ((*enemyShips)[position.x][position.y] == -2)
 	{
 	}
 	else if ((*enemyShips)[position.x][position.y] == 0)
 	{
+		soundManager.playSound(SoundsNames::Splash);
+
 		squareTab2[position.x][position.y] = missedShot;
 		squareTab2[position.x][position.y].setPosition(sf::Vector2f(enemySetPoints.x + squareSize.x*position.x, enemySetPoints.y + squareSize.y*position.y));
 		(*enemyShips)[position.x][position.y] = -2;
-		playerMoved = false;
 		++totalShots;
 		++maximumMissesTemp;
 		updateMaximumHits();
 		return true;
 	}
 	else if ((*enemyShips)[position.x][position.y])
+	
 	{
+		soundManager.playSound(SoundsNames::Explosion);
+
+		oryginalEnemyShips[position.x][position.y] = (*enemyShips)[position.x][position.y];
 		switch ((*enemyShips)[position.x][position.y])
 		{
 		case 2: HP.size_2--; break;
@@ -84,7 +94,6 @@ bool Player::playerMoves(const sf::Vector2i & position)
 		++maximumHitsTemp;
 		updateMaximumMisses();
 	}
-	playerMoved = false;
 	return false;
 }
 
@@ -98,7 +107,7 @@ void Player::playerMouseInput(const sf::Time & dt, const sf::Vector2f & mousepos
 	}
 }
 
-void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw)
+void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw, SoundManager& soundManager)
 {
 	if (!shipsSetUp)
 	{
@@ -109,7 +118,10 @@ void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& 
 			if (setShips[counter]->getPlaceShip())
 			{
 				if (setShips[counter]->placePlayerShip(playerShips, mapSize, vect_ship_to_draw))
+				{
+					soundManager.playSound(SoundsNames::SetShips);
 					counterToSet = true;
+				}
 			}
 			break;
 		case 4:; case 5:
@@ -117,7 +129,10 @@ void Player::playerSetShips(const sf::Vector2f & position, std::vector<Board*>& 
 			if (setShips[counter]->getPlaceShip())
 			{
 				if (setShips[counter]->placePlayerShip(playerShips, mapSize, vect_ship_to_draw))
+				{
+					soundManager.playSound(SoundsNames::SetShips);
 					counterToSet = true;
+				}
 			}
 			break;
 		}
@@ -151,19 +166,21 @@ void Player::drawSquareTab(sf::RenderTarget & target, sf::RenderStates states) c
 
 bool Player::isMouseInEnemyBounds(const sf::Vector2f& mousepos) const
 {
-	if (mousepos.x >= enemySetPoints.x && mousepos.x < enemySetPoints.x + mapSize*squareSize.x && mousepos.y >= enemySetPoints.y && mousepos.y < enemySetPoints.y + mapSize*squareSize.y)
+	if (mousepos.x >= enemySetPoints.x && mousepos.x < enemySetPoints.x + mapSize*squareSize.x 
+		&& mousepos.y >= enemySetPoints.y && mousepos.y < enemySetPoints.y + mapSize*squareSize.y)
 		return true;
 	return false;
 }
 
-void Player::resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab)
+void Player::resetSquareTab(int num)
 {
 	for (int i = 0; i < mapSize; ++i)
 		for (int j = 0; j < mapSize; ++j)
 		{
-			if (setShips[num]->returnShip().getGlobalBounds().contains(playerSetPoints.x + squareSize.x / 2 + squareSize.x*j, playerSetPoints.y + squareSize.y / 2 + squareSize.y*i))
-				if (newSquareTab[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
-					newSquareTab[j][i] = sf::RectangleShape();
+			if (oryginalEnemyShips[j][i] == num)
+				//if (setShips[num]->returnShip().getGlobalBounds().contains(playerSetPoints.x + squareSize.x / 2 + squareSize.x*j, playerSetPoints.y + squareSize.y / 2 + squareSize.y*i))
+				if (squareTab2[j][i].getTexture() != &TextureHandler::getInstance().texture_handler["X"])
+					squareTab2[j][i] = sf::RectangleShape();
 		}
 }
 

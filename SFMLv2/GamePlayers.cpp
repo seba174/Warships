@@ -1,9 +1,10 @@
+#include "stdafx.h"
 #include "GamePlayers.h"
-#include <random>
-#include <Windows.h>
 #include "Input.h"
 #include "LanguageManager.h"
 #include "TextureHandler.h"
+#include "SoundManager.h"
+#include "MusicHandler.h"
 #include "GeneralOptions.h"
 #include "UtilityFunctions.h"
 
@@ -21,7 +22,7 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	gamePlayersState drawnState = currentState;
 	if (currentState == gamePlayersState::finish)
-		if (utilityClock.getElapsedTime() <= sf::seconds(0.4f))
+		if (utilityClock.getElapsedTime() <= delayAtFinish)
 		{
 			if (player1Won)
 				drawnState = gamePlayersState::player1Moves;
@@ -150,7 +151,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[0]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[0]->setShouldDraw(true);
-			player2.resetSquareTab(0, player1.returnSquareTab());
+			player1.resetSquareTab(5);
 		}
 	}
 	if (player1.HP.size_4 == 0)
@@ -160,7 +161,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[1]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[1]->setShouldDraw(true);
-			player2.resetSquareTab(1, player1.returnSquareTab());
+			player1.resetSquareTab(4);
 		}
 	}
 	if (player1.HP.size_3 == 0)
@@ -170,7 +171,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[2]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[2]->setShouldDraw(true);
-			player2.resetSquareTab(2, player1.returnSquareTab());
+			player1.resetSquareTab(3);
 		}
 	}
 	if (player1.HP.size_2 == 0)
@@ -180,7 +181,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[3]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[3]->setShouldDraw(true);
-			player2.resetSquareTab(3, player1.returnSquareTab());
+			player1.resetSquareTab(2);
 		}
 	}
 	if (player1.HP.size_ir2 == 0)
@@ -190,7 +191,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[4]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[4]->setShouldDraw(true);
-			player2.resetSquareTab(4, player1.returnSquareTab());
+			player1.resetSquareTab(10);
 		}
 	}
 	if (player1.HP.size_ir3 == 0)
@@ -200,7 +201,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[5]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[5]->setShouldDraw(true);
-			player2.resetSquareTab(5, player1.returnSquareTab());
+			player1.resetSquareTab(11);
 		}
 	}
 
@@ -211,7 +212,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[0]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[0]->setShouldDraw(true);
-			player1.resetSquareTab(0, player2.returnSquareTab());
+			player2.resetSquareTab(5);
 		}
 	}
 	if (player2.HP.size_4 == 0)
@@ -221,7 +222,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[1]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[1]->setShouldDraw(true);
-			player1.resetSquareTab(1, player2.returnSquareTab());
+			player2.resetSquareTab(4);
 		}
 	}
 	if (player2.HP.size_3 == 0)
@@ -231,7 +232,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[2]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[2]->setShouldDraw(true);
-			player1.resetSquareTab(2, player2.returnSquareTab());
+			player2.resetSquareTab(3);
 		}
 	}
 	if (player2.HP.size_2 == 0)
@@ -241,7 +242,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[3]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[3]->setShouldDraw(true);
-			player1.resetSquareTab(3, player2.returnSquareTab());
+			player2.resetSquareTab(2);
 		}
 	}
 	if (player2.HP.size_ir2 == 0)
@@ -251,7 +252,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[4]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[4]->setShouldDraw(true);
-			player1.resetSquareTab(4, player2.returnSquareTab());
+			player2.resetSquareTab(10);
 		}
 	}
 	if (player2.HP.size_ir3 == 0)
@@ -261,7 +262,7 @@ void GamePlayers::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[5]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[5]->setShouldDraw(true);
-			player1.resetSquareTab(5, player2.returnSquareTab());
+			player2.resetSquareTab(11);
 		}
 	}
 }
@@ -284,7 +285,8 @@ void GamePlayers::updatePlayersFinishInformations(LanguageManager& langMan)
 		finishMenu.setTitle(player2.getPlayerName() + L' ' + langMan.getText("has won the game") + L'!');
 }
 
-void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate)
+void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate,
+	SoundManager& soundManager, MusicHandler& musicHandler)
 {
 	lastFrameTime = dt;
 	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
@@ -292,10 +294,15 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 
 	switch (currentState)
 	{
+	case gamePlayersState::constructorState:
+	{
+		musicHandler.play(MusicName::GameTheme);
+		currentState = gamePlayersState::player1SetShips;
+	} break;
 	case gamePlayersState::player1SetShips:
 	{
 		utilityTime += dt;
-		if (utilityTime <= PausedSetShipsTime)
+		if (utilityTime <= pausedSetShipsTime)
 			break;
 		else
 			shoudlDrawMenuPlayer1SetShipsInfo = false;
@@ -307,7 +314,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			else if (input.isMouseRightButtonPressed() && !player1.getShipsSetUp())
 				player1.rotateShip();
 
-			player1.playerSetShips(mousePlayer1.returnPositionInBounds(), vectShipsToDrawPlayer1);
+			player1.playerSetShips(mousePlayer1.returnPositionInBounds(), vectShipsToDrawPlayer1, soundManager);
 		}
 
 		if (player1.getShipsSetUp())
@@ -326,7 +333,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	case gamePlayersState::player2SetShips:
 	{
 		utilityTime += dt;
-		if (utilityTime <= PausedSetShipsTime)
+		if (utilityTime <= pausedSetShipsTime)
 			break;
 		else
 			shoudlDrawMenuPlayer2SetShipsInfo = false;
@@ -338,7 +345,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			else if (input.isMouseRightButtonPressed() && !player2.getShipsSetUp())
 				player2.rotateShip();
 
-			player2.playerSetShips(mousePlayer2.returnPositionInBounds(), vectShipsToDrawPlayer2);
+			player2.playerSetShips(mousePlayer2.returnPositionInBounds(), vectShipsToDrawPlayer2, soundManager);
 		}
 
 		if (player2.getShipsSetUp())
@@ -367,7 +374,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	{
 		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
-		if (utilityTime <= TurnInfoTime)
+		if (utilityTime <= turnInfoTime)
 		{
 			shoudlDrawMenuPlayer1TurnStarts = true;
 			break;
@@ -376,11 +383,25 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			shoudlDrawMenuPlayer1TurnStarts = false;
 
 		player1.playerMouseInput(dt, mousepos);
-		if (input.isMouseLeftButtonPressed() && player1.isMouseInEnemyBounds(mousepos))
-			player1.getPlayerMoved() = true;
 
-		if (player1.playerMoves(player1.getRectPositionInGame()))
+		if (!playerFinishes)
 		{
+			if (input.isMouseLeftButtonPressed() && player1.isMouseInEnemyBounds(mousepos))
+				player1.getPlayerMoved() = true;
+
+			if (player1.playerMoves(player1.getRectPositionInGame(), soundManager))
+			{
+				playerFinishes = true;
+				utilityClock.restart();
+			}
+			updateBackgroundInformation();
+		}
+
+		if (playerFinishes)
+		{
+			if (utilityClock.getElapsedTime() < playerDelay)
+				return;
+
 			POINT point;
 			GetCursorPos(&point);
 			player1.setPlayersCursorPositon(sf::Vector2i(point.x, point.y));
@@ -390,9 +411,9 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			currentState = gamePlayersState::player2Moves;
 			utilityTime = sf::Time();
 			shoudlDrawMenuPlayer2TurnStarts = true;
+			playerFinishes = false;
 		}
-
-		updateBackgroundInformation();
+	
 		if (checkForFinish())
 		{
 			player1Won = true;
@@ -406,7 +427,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	{
 		gameTimer.runGameTimer(dt);
 		utilityTime += dt;
-		if (utilityTime <= TurnInfoTime)
+		if (utilityTime <= turnInfoTime)
 		{
 			shoudlDrawMenuPlayer2TurnStarts = true;
 			break;
@@ -415,10 +436,24 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			shoudlDrawMenuPlayer2TurnStarts = false;
 
 		player2.playerMouseInput(dt, mousepos);
-		if (input.isMouseLeftButtonPressed() && player2.isMouseInEnemyBounds(mousepos))
-			player2.getPlayerMoved() = true;
-		if (player2.playerMoves(player2.getRectPositionInGame()))
+		
+		if (!playerFinishes)
 		{
+			if (input.isMouseLeftButtonPressed() && player2.isMouseInEnemyBounds(mousepos))
+				player2.getPlayerMoved() = true;
+			if (player2.playerMoves(player2.getRectPositionInGame(), soundManager))
+			{
+				playerFinishes = true;
+				utilityClock.restart();
+			}
+			updateBackgroundInformation();
+		}
+
+		if (playerFinishes)
+		{
+			if (utilityClock.getElapsedTime() < playerDelay)
+				return;
+
 			POINT point;
 			GetCursorPos(&point);
 			player2.setPlayersCursorPositon(sf::Vector2i(point.x, point.y));
@@ -428,9 +463,9 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			currentState = gamePlayersState::player1Moves;
 			utilityTime = sf::Time();
 			shoudlDrawMenuPlayer1TurnStarts = true;
-		}
+			playerFinishes = false;
+		}	
 
-		updateBackgroundInformation();
 		if (checkForFinish())
 		{
 			player2Won = true;
@@ -518,7 +553,8 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	helpInformationPlayer1(2),
 	helpInformationPlayer2(2),
 	wasGameLogged(false),
-	mapSize(static_cast<int>(dim.x / SquareSize.x))
+	mapSize(static_cast<int>(dim.x / SquareSize.x)),
+	playerFinishes(false)
 {
 	player1.setPlayerName(stringToWstringConversion(genOpt.getPlayer1Name()));
 	player2.setPlayerName(stringToWstringConversion(genOpt.getPlayer2Name()));
@@ -528,7 +564,7 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	player2Background.setDisplayedString(player2.getPlayerName() + str);
 
 
-	currentState = gamePlayersState::player1SetShips;
+	currentState = gamePlayersState::constructorState;
 	int playersBackgroundOffset = static_cast<int>(70 * interfaceScale);
 
 	player1.setEnemyShips(player2.getPlayerShips());

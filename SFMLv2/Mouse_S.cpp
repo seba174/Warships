@@ -1,4 +1,4 @@
-#pragma once
+#include "stdafx.h"
 #include "Mouse_S.h"
 
 Mouse_S::Mouse_S(const sf::Vector2f& bounds_x, const sf::Vector2f & bounds_y, sf::RenderWindow *window)

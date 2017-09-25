@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "IrregularShip2.h"
 #include "TextureHandler.h"
 

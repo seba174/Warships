@@ -1,6 +1,4 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-
 
 class Mouse_S
 {

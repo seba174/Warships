@@ -1,9 +1,8 @@
 #pragma once
-#include <vector>
-#include <memory>
 #include "Ships_HP.h"
 #include "Ships.h"
 
+class SoundManager;
 
 class Player
 {
@@ -36,6 +35,7 @@ private:
 
 	std::vector<std::unique_ptr<Board>> setShips;
 	std::vector<std::vector<int>> playerShips;
+	std::vector<std::vector<int>> oryginalEnemyShips;
 	std::vector<std::vector<int>>* enemyShips;
 	std::vector<std::vector<sf::RectangleShape>> squareTab2;
 
@@ -48,11 +48,13 @@ public:
 	Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize, const sf::Vector2f& enemy_setpoints, std::vector<std::vector<int>>* enemy_ships,
 		const sf::Vector2f& player_setpoints, const sf::RectangleShape& missedShot, const sf::RectangleShape& hit, sf::RectangleShape& rect);
 
-	bool playerMoves(const sf::Vector2i& position);
+	// returns true when Player misses shot
+	// returns false when Player has not shot OR hits target
+	bool playerMoves(const sf::Vector2i& position, SoundManager& soundManager);
 
 	void playerMouseInput(const sf::Time& dt, const sf::Vector2f& mousepos);
 
-	void playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw);
+	void playerSetShips(const sf::Vector2f & position, std::vector<Board*>& vect_ship_to_draw, SoundManager& soundManager);
 
 	void draw(sf::RenderTarget& Window) const;
 
@@ -64,7 +66,7 @@ public:
 
 	bool isMouseInEnemyBounds(const sf::Vector2f& mousepos) const;
 
-	void resetSquareTab(int num, std::vector<std::vector<sf::RectangleShape>>& newSquareTab);
+	void resetSquareTab(int num);
 
 	// returns accuracy of Player in range [0-100]
 	float returnAccuracy() const;
@@ -80,7 +82,7 @@ public:
 	std::vector<std::vector<int>>* getPlayerShips() { return &playerShips;}
 
 	void setEnemyShips(std::vector<std::vector<int>>* ships) { enemyShips = ships; }
-
+	
 	// returns true if Player has set its ships
 	// returns false otherwise
 	bool getShipsSetUp() const { return shipsSetUp; }
@@ -88,8 +90,6 @@ public:
 	bool& getPlayerMoved() { return playerMoved; }
 
 	void rotateShip() { setShips[counter]->rotateShip(); }
-
-	std::vector<std::vector<sf::RectangleShape>>& returnSquareTab() { return squareTab2; }
 
 	void setPlayerName(const std::wstring& newName) { name = newName; }
 

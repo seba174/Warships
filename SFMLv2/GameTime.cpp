@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GameTime.h"
 
 void GameTime::runGameTimer(const sf::Time & dt)
