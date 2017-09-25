@@ -1,4 +1,5 @@
-﻿#include "Menu.h"
+﻿#include "stdafx.h"
+#include "Menu.h"
 #include "LanguageManager.h"
 #include "GraphicsOptions.h"
 #include "SoundOptions.h"

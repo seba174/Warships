@@ -1,4 +1,5 @@
-﻿#include "PushButton.h"
+﻿#include "stdafx.h"
+#include "PushButton.h"
 
 
 void PushButton::draw(sf::RenderTarget & target, sf::RenderStates states) const

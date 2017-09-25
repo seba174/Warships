@@ -1,6 +1,4 @@
 #pragma once
-#include <cstring>
-#include <list>
 
 class SettingLine
 {

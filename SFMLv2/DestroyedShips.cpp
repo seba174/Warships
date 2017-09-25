@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "DestroyedShips.h"
 #include "TextureHandler.h"
 #include "FontHandler.h"

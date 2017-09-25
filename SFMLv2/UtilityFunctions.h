@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 
 // returns a wstring representing given value with only 2 decimal places
 // e.g. function returns 70.51 for value 70.515040

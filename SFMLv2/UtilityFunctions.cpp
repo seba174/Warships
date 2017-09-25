@@ -1,5 +1,6 @@
+#include "stdafx.h"
 #include "UtilityFunctions.h"
-#include <codecvt>
+
 
 std::wstring floatWith2DecimalPlaces(float value, const std::wstring& onlyToReturnWstring)
 {

@@ -1,6 +1,4 @@
 #pragma once
-#include <SFML/Audio.hpp>
-#include <map>
 
 enum MusicName {MenuTheme, GameTheme};
 

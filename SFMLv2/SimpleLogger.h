@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-#include <SFML/Graphics.hpp>
 #include "iniFileStructure.h"
 #include "enumLevelsDifficulty.h"
 

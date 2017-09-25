@@ -1,5 +1,6 @@
+#include "stdafx.h"
 #include "TextureHandler.h"
-#include <iostream>
+
 
 using std::make_pair;
 

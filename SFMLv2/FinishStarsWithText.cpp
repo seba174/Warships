@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "FinishStarsWithText.h"
 #include "FontHandler.h"
 

@@ -1,6 +1,4 @@
 #pragma once
-#include "SFML/Graphics.hpp"
-#include <memory>
 
 class FinishStars
 	: public sf::Drawable

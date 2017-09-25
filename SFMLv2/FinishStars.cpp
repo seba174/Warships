@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "FinishStars.h"
 #include "TextureHandler.h"
 

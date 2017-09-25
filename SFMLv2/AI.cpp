@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "AI.h"
-#include <math.h>
 #include "IrregularShip2.h"
 #include "IrregularShip3.h"
 #include "TextureHandler.h"

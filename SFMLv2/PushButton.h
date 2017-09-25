@@ -1,9 +1,4 @@
 #pragma once
-#include <string>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/Text.hpp>
 #include "TextureHandler.h"
 
 class PushButton :

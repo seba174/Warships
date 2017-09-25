@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include <SFML\Graphics.hpp>
 
 enum shipOrder {Ship5, Ship4, Ship2x4, Ship3, Ship2, Ship2x2};
 

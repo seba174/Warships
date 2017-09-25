@@ -1,7 +1,5 @@
-﻿#include <vld.h>
-#include <iostream>
-#include <memory>
-#include <SFML/Graphics.hpp>
+﻿#include "stdafx.h"
+#include <vld.h>
 
 #include "SoundManager.h"
 #include "MusicHandler.h"

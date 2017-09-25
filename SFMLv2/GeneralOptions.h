@@ -1,6 +1,4 @@
 #pragma once
-#include <memory>
-#include <SFML/Graphics.hpp>
 #include "enumLanguagesCodes.h"
 #include "INI_Reader.h"
 

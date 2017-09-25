@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "GamePlayers.h"
-#include <random>
-#include <Windows.h>
 #include "Input.h"
 #include "LanguageManager.h"
 #include "TextureHandler.h"

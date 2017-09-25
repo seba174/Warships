@@ -1,5 +1,5 @@
-﻿#include "LanguageManager.h"
-#include <iostream>
+﻿#include "stdafx.h"
+#include "LanguageManager.h"
 
 typedef std::list<Translation> lT;
 typedef std::initializer_list<Translation> inT;

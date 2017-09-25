@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GraphicsOptions.h"
 
 using std::string;

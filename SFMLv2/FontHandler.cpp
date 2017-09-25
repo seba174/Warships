@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "FontHandler.h"
 
 using std::make_pair;

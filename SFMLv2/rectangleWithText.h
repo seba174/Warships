@@ -1,5 +1,4 @@
 #pragma once
-#include "SFML\Graphics.hpp"
 
 class RectangleWithText
 	: public sf::Drawable

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Ships_HP.h"
 
 

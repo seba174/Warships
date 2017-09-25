@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "AdditionalMenu.h"
 #include "Input.h"
 #include "GraphicsOptions.h"

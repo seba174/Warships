@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "SimpleLogger.h"
-#include <ctime>
-#include <fstream>
 #include "UtilityFunctions.h"
 
 const std::string SimpleLogger::versionString = "Version";

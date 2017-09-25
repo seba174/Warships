@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "SoundOptions.h"
 
 const int SoundOptions::defaultMenuThemeVolume = 100;

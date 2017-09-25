@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "GamePlayerVsAI.h"
-#include <random>
 #include "Input.h"
 #include "LanguageManager.h"
 #include "TextureHandler.h"

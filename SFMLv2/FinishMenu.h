@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include "SFML/Graphics.hpp"
 #include "FinishStarsWithText.h"
 #include "playersInformations.h"
 #include "OptionsSubMenu.h"

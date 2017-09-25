@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "StatisticsMenu.h"
 #include "FontHandler.h"
 #include "LanguageManager.h"

@@ -1,5 +1,4 @@
 #pragma once
-#include <SFML\Graphics.hpp>
 
 class DVector2i
 {

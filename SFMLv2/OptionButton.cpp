@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "OptionButton.h"
 #include "FontHandler.h"
 #include "TextureHandler.h"

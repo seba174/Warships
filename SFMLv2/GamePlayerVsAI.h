@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include <memory>
 #include "SimpleLogger.h"
 #include "Player.h"
 #include "DestroyedShipsWithBackground.h"

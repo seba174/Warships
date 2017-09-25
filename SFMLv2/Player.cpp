@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Player.h"
 #include "IrregularShip2.h"
 #include "IrregularShip3.h"
@@ -44,7 +45,7 @@ Player::Player(const sf::Vector2i& dim, const sf::Vector2f& SquareSize,
 	setShips.push_back(std::make_unique<Ships>(2, SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["big_body_final"]));
 	setShips.push_back(std::make_unique<IrregularShip2>(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular2"]));
 	setShips.push_back(std::make_unique<IrregularShip3>(SquareSize, boardDimensions, playerSetPoints, &textures.texture_handler["irregular3"]));
-	
+
 	this->shipsSetUp = false;
 }
 
