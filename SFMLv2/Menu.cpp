@@ -64,13 +64,13 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	:SubGeneral(langMan), SubGraphics(langMan), SubAudio(langMan), shouldUpdateSubAudioButtons(false)
 {
 	// MainTitle character size
-	const int titleCharacterSize = static_cast<int>(100 * interfaceScale);
+	int titleCharacterSize = static_cast<int>(110 * interfaceScale);
 
 	// SubMenu titles and character size
-	const int submenuCharacterSize = static_cast<int>(60 * interfaceScale);
+	int submenuCharacterSize = static_cast<int>(55 * interfaceScale);
 
 	// Standard Menu Button size
-	sf::Vector2f button_size(580 * interfaceScale, 115 * interfaceScale);
+	sf::Vector2f button_size(610 * interfaceScale, 125 * interfaceScale);
 
 	// Bounds color
 	sf::Color bounds_color = sf::Color::White;
@@ -85,15 +85,15 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	sf::Vector2f options_butt_size(312 * interfaceScale, 52 * interfaceScale);
 
 	// PushButton in Options size
-	sf::Vector2f push_in_opt_size(331 * interfaceScale, 65 * interfaceScale);
+	sf::Vector2f push_in_opt_size(355 * interfaceScale, 68 * interfaceScale);
 
 	// Size of character in Options in Option button
-	const int options_name_with_button_char = static_cast<int>(35 * interfaceScale);
+	int options_name_with_button_char = static_cast<int>(33 * interfaceScale);
 
 	// Size of character in Options in PushButton
-	const int options_push_button_char = static_cast<int>(29 * interfaceScale);
+	int options_push_button_char = static_cast<int>(24 * interfaceScale);
 
-	const int space_between_push_buttons = static_cast<int>(25 * interfaceScale);
+	int space_between_push_buttons = static_cast<int>(25 * interfaceScale);
 
 	FontHandler& handler = FontHandler::getInstance();
 
@@ -112,7 +112,7 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubHome.setInteriorColorAllButtons(buttonColor);
 
 	SubChooseGametype.construct(L"", langMan.getText("Solo Game") + L',' + langMan.getText("Player vs Player") + L',' + langMan.getText("Back"), submenuCharacterSize,
-		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
+		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, sf::Vector2f(button_size.x*1.1,button_size.y), space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubChooseGametype.setInteriorColorAllButtons(buttonColor);
 
 	SubOptions.construct(L"", langMan.getText("General") + L',' + langMan.getText("Graphics") + L',' + langMan.getText("Sound") + L',' + langMan.getText("Back"), submenuCharacterSize,
@@ -121,13 +121,13 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 
 	SubChooseMapSize.construct(langMan.getText("Choose map size"), L"8 x 8,10 x 10,12 x 12," + langMan.getText("Back"), submenuCharacterSize, submenuCharacterSize,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y - 1.8f*submenuCharacterSize),
-		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons / 1.5f - submenuCharacterSize),
+		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons / 1.2f - submenuCharacterSize),
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubChooseMapSize.setInteriorColorAllButtons(buttonColor);
 
 	SubChooseAILevel.construct(langMan.getText("Choose difficulty level"), langMan.getText("Easy") + L',' + langMan.getText("Medium") + L',' + langMan.getText("Hard") + L',' + langMan.getText("Back"),
 		submenuCharacterSize, submenuCharacterSize, sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y - 1.8f*submenuCharacterSize),
-		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons / 1.5f - submenuCharacterSize),
+		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons / 1.2f - submenuCharacterSize),
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubChooseAILevel.setInteriorColorAllButtons(buttonColor);
 

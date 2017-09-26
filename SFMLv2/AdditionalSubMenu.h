@@ -7,7 +7,7 @@ class AdditionalSubMenu :
 	sf::RectangleShape background;
 	sf::RectangleShape backgroundForSubMenu;
 
-		// FUNCTIONS
+	// FUNCTIONS
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -44,6 +44,9 @@ public:
 	// You have to use construct function in order to have it working properly!
 	AdditionalSubMenu();
 
+	void setBackgroundOutlineThickness(float thickness) { backgroundForSubMenu.setOutlineThickness(thickness); }
+
+	void setBackgorundOutlineColor(const sf::Color& color) { backgroundForSubMenu.setOutlineColor(color); }
 
 };
 

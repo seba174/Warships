@@ -42,7 +42,7 @@ StatisticsMenu::StatisticsMenu(const sf::Vector2f & dim, LanguageManager & langM
 
 	sf::Vector2f titlePos = sf::Vector2f(dim.x / 2, 100 * interfaceScale);
 
-	sf::Vector2f wholeSize(sf::Vector2f(350, 60)*interfaceScale);
+	sf::Vector2f wholeSize(sf::Vector2f(425, 60)*interfaceScale);
 
 	sf::Vector2f starsPos(sf::Vector2f(dim.x / 2, 250 * interfaceScale));
 
@@ -50,13 +50,13 @@ StatisticsMenu::StatisticsMenu(const sf::Vector2f & dim, LanguageManager & langM
 
 	sf::Vector2f menuPosition(dim.x / 2, starsPos.y + (numberOfRows + 0.5f)*spaceBetweenButtons);
 
-	int playerFontSize = static_cast<int>(30 * interfaceScale);
+	int playerFontSize = static_cast<int>(27 * interfaceScale);
 
-	int buttonFontSize = static_cast<int>(26 * interfaceScale);
+	int buttonFontSize = static_cast<int>(23 * interfaceScale);
 
 	int titleFontSize = static_cast<int>(80 * interfaceScale);
 
-	sf::Vector2f push_in_opt_size(292 * interfaceScale, 60 * interfaceScale);
+	sf::Vector2f push_in_opt_size(340 * interfaceScale, 60 * interfaceScale);
 
 	const int space_between_push_buttons = static_cast<int>(22 * interfaceScale);
 

@@ -33,5 +33,7 @@ public:
 	void updateTexture(const sf::Time& timen);
 
 	void setDestroyedTexture();
+
+	void setAlphaChannel(unsigned alpha);
 };
 
