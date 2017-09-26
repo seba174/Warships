@@ -292,4 +292,10 @@ void IrregularShip2::setDestroyedTexture()
 	shipv2.setTexture(&TextureHandler::getInstance().texture_handler["irregular2_destroyed"]);	
 }
 
+void IrregularShip2::setAlphaChannel(unsigned alpha)
+{
+	sf::Color temp{ shipv2.getFillColor() };
+	shipv2.setFillColor(sf::Color(temp.r, temp.g, temp.b, alpha));
+}
+
 

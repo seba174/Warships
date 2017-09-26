@@ -43,9 +43,9 @@ void RectangleWithText::setPosition(const sf::Vector2f & pos)
 	setTextPosition();
 }
 
-void RectangleWithText::setFontSize(float fontSize)
+void RectangleWithText::setFontSize(unsigned int fontSize)
 {
-	text.setCharacterSize(static_cast<unsigned>(fontSize));
+	text.setCharacterSize(fontSize);
 }
 
 void RectangleWithText::setFont(const sf::Font & font)

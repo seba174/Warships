@@ -26,7 +26,7 @@ void OptionsSubMenu::updatePushButtons()
 void OptionsSubMenu::updateBoundRectangle()
 {
 	boundRectangle.setSize(sf::Vector2f(options_buttons[options_buttons.size() - 1].getBoundRectangleSize().x,
-		spaceBetweenButtons*(options_buttons.size() - 1) + options_buttons[options_buttons.size() - 1].getBoundRectangleSize().y) + additionalBackgroundSize);
+		spaceBetweenButtons*(options_buttons.size() - 1) + 0.75f*options_buttons[options_buttons.size() - 1].getBoundRectangleSize().y) + additionalBackgroundSize);
 	boundRectangle.setPosition(options_buttons[0].getBoundRectanglePosition());
 }
 

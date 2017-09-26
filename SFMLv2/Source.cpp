@@ -294,7 +294,7 @@ int main()
 
 			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || fullyLoad)
 			{
-				mainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 20 * interfaceScale),
+				mainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 40 * interfaceScale),
 					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 300 * interfaceScale), 130 * interfaceScale, interfaceScale,
 					graphicsOpt, *languageManager, generalOpt, soundOpt);
 				additionalMenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,
