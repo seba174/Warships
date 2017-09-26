@@ -678,8 +678,8 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	helpButtonPlayer2.setTexture(&TextureHandler::getInstance().texture_handler["helpButton"]);
 
 	unsigned additionalSpaceForFrame = static_cast<unsigned>(10 * interfaceScale);
-	int helpFontSize = static_cast<int>(32 * interfaceScale);
-	sf::Vector2f helpInformationSize(sf::Vector2f(720, 55)*interfaceScale);
+	int helpFontSize = static_cast<unsigned>(27 * interfaceScale);
+	sf::Vector2f helpInformationSize(sf::Vector2f(810, 55)*interfaceScale);
 	int helpButtonOutlineThickness = static_cast<int>(3 * interfaceScale);
 	int YoffsetForHelpButton = static_cast<int>(150 * interfaceScale);
 	int spaceBetweenHelpButtons = static_cast<int>(80 * interfaceScale);
@@ -688,7 +688,7 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	for (RectangleWithTextAndFrames& rect : helpInformationPlayer1)
 	{
 		rect.setAdditionalSecondRectSize(additionalSpaceForFrame);
-		rect.setFontSize(static_cast<float>(helpFontSize));
+		rect.setFontSize(helpFontSize);
 		rect.setFont(handler.font_handler["Mecha"]);
 		rect.setSize(helpInformationSize);
 		rect.setPosition(sf::Vector2f(player2_setpoints.x + dim.x / 2, player2_setpoints.y + YoffsetForHelpButton + temp*spaceBetweenHelpButtons));
@@ -699,7 +699,7 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	for (RectangleWithTextAndFrames& rect : helpInformationPlayer2)
 	{
 		rect.setAdditionalSecondRectSize(additionalSpaceForFrame);
-		rect.setFontSize(static_cast<float>(helpFontSize));
+		rect.setFontSize(helpFontSize);
 		rect.setFont(handler.font_handler["Mecha"]);
 		rect.setSize(helpInformationSize);
 		rect.setPosition(sf::Vector2f(player1_setpoints.x + dim.x / 2, player1_setpoints.y + YoffsetForHelpButton + temp*spaceBetweenHelpButtons));

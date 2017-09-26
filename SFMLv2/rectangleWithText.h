@@ -30,7 +30,7 @@ public:
 	// sets position of the center of rectangle
 	void setPosition(const sf::Vector2f& pos);
 
-	void setFontSize(float fontSize);
+	void setFontSize(unsigned int fontSize);
 
 	void setFont(const sf::Font& font);
 

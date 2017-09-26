@@ -27,18 +27,18 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	: state(additionalvsinfo)
 {
 	// SubMenu title character size
-	int title_size_1 = static_cast<int>(50 * interfaceScale);
-	int title_size_2 = static_cast<int>(50 * interfaceScale);
+	int title_size_1 = static_cast<int>(45 * interfaceScale);
+	int title_size_2 = static_cast<int>(42 * interfaceScale);
 
 
 	// SubMenu character size
-	int submenu_size = static_cast<int>(32 * interfaceScale);
+	int submenu_size = static_cast<int>(28 * interfaceScale);
 
 	// Background for SubMenu Exit size
-	sf::Vector2f backgroundForSubmenuExitSize(600 * interfaceScale, 380 * interfaceScale);
+	sf::Vector2f backgroundForSubmenuExitSize(690 * interfaceScale, 380 * interfaceScale);
 
 	// Background for SubMenu Exit size
-	sf::Vector2f backgroundForSubmenuApplyChangesSize(700 * interfaceScale, 320 * interfaceScale);
+	sf::Vector2f backgroundForSubmenuApplyChangesSize(800 * interfaceScale, 320 * interfaceScale);
 
 	// Background for SubMenu Color
 	sf::Color backgroundForSubMenuColor = sf::Color::Red;
@@ -49,7 +49,13 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 	sf::Color buttonInteriorColor = sf::Color(0, 0, 0, 150);
 
 	// Button size
-	sf::Vector2f button_size(360 * interfaceScale, 70 * interfaceScale);
+	sf::Vector2f button_size(400 * interfaceScale, 70 * interfaceScale);
+
+	//Outline thickenss for background
+	float outlineThickness = 5 * interfaceScale;
+
+	//Outline color for background
+	sf::Color outlineColor = sf::Color::White;
 
 	// Bounds color
 	sf::Color bounds_color = sf::Color::White;
@@ -66,6 +72,8 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 		title_size_1, submenu_size, title_or1st_button_position, sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons),
 		button_size, space_between_buttons, bounds_color, handler.font_handler["Mecha"], interfaceScale);
 	Exit.setInteriorColorAllButtons(buttonInteriorColor);
+	Exit.setBackgroundOutlineThickness(outlineThickness);
+	Exit.setBackgorundOutlineColor(outlineColor);
 
 	Loading.construct(backgroundSize, backgroundForSubmenuExitSize, sf::Vector2f(backgroundForSubMenuPosition.x, backgroundForSubMenuPosition.y + title_size_1),
 		sf::Color::Transparent, sf::Color::Black, sf::Vector2f(0, 0), langMan.getText("Loading") + L"...", L"", title_size_1, submenu_size,
@@ -76,6 +84,8 @@ AdditionalMenu::AdditionalMenu(const sf::Vector2f & title_or1st_button_position,
 		sf::Vector2f(title_or1st_button_position.x, title_or1st_button_position.y + space_between_buttons), button_size, space_between_buttons,
 		bounds_color, handler.font_handler["Mecha"], interfaceScale);
 	ApplyChanges.setInteriorColorAllButtons(buttonInteriorColor);
+	ApplyChanges.setBackgroundOutlineThickness(outlineThickness);
+	ApplyChanges.setBackgorundOutlineColor(outlineColor);
 
 }
 
