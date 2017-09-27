@@ -69,6 +69,21 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 	hashMap.insert(make_pair("Main Menu volume", lT(inT({ Tr(eLC::PL,L"Głośność w Menu Głównym"), Tr(eLC::EN,L"Main Menu volume") }))));
 	hashMap.insert(make_pair("In game volume", lT(inT({ Tr(eLC::PL,L"Głośność w grze"), Tr(eLC::EN,L"In game volume") }))));
 	hashMap.insert(make_pair("Effects volume", lT(inT({ Tr(eLC::PL,L"Głośność efektów specjalnych"), Tr(eLC::EN,L"Effects volume") }))));
+	
+	hashMap.insert(make_pair("Programming, Graphics, Gameplay Design", lT(inT({ Tr(eLC::PL,L"Programowanie, Grafika, Gameplay"), Tr(eLC::EN,L"Programming, Graphics, Gameplay Design") }))));
+	hashMap.insert(make_pair("Music", lT(inT({ Tr(eLC::PL,L"Muzyka"), Tr(eLC::EN,L"Music") }))));
+	hashMap.insert(make_pair("Sound Effects", lT(inT({ Tr(eLC::PL,L"Efekty dźwiękowe"), Tr(eLC::EN,L"Sound Effects") }))));
+	hashMap.insert(make_pair("Textures", lT(inT({ Tr(eLC::PL,L"Tekstury"), Tr(eLC::EN,L"Textures") }))));
+	hashMap.insert(make_pair("Libaries", lT(inT({ Tr(eLC::PL,L"Biblioteki"), Tr(eLC::EN,L"Libaries") }))));
+
+	hashMap.insert(make_pair("Music below is licensed under Creative Commons: By Attribution 3.0 License"
+		, lT(inT({ Tr(eLC::PL,L"Poniższa muzyka jest na licencji Creative Commons: Uznanie autorstwa 3.0"), Tr(eLC::EN,L"Music below is licensed under Creative Commons: By Attribution 3.0 License") }))));
+
+	hashMap.insert(make_pair("Textures below are licensed under Creative Commons: By Attribution 3.0 License"
+		, lT(inT({ Tr(eLC::PL,L"Poniższe tekstury są na licencji Creative Commons: Uznanie autorstwa 3.0"), Tr(eLC::EN,L"Textures below are licensed under Creative Commons: By Attribution 3.0 License") }))));
+	
+	hashMap.insert(make_pair("For more information, please read LICENSE.txt file", lT(inT({ Tr(eLC::PL,L"Więcej informacji znajdziesz w pliku LICENSE.txt"), Tr(eLC::EN,L"For more information, please read LICENSE.txt file") }))));
+	
 }
 
 std::wstring LanguageManager::getText(const std::string & code) const

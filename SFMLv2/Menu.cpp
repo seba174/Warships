@@ -29,6 +29,8 @@ void Menu::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		target.draw(SubGraphics, states); break;
 	case Menustates::OPT_AUDIO:
 		target.draw(SubAudio, states); break;
+	case Menustates::CREDITS:
+		target.draw(Credits, states); break;
 	}
 }
 
@@ -61,7 +63,8 @@ bool Menu::hasVisibleSoundOptionChanged(const SoundOptions & options)
 
 Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_position, const sf::Vector2f & title_or1st_button_position,
 	int space_between_buttons, float interfaceScale, const GraphicsOptions& opt, LanguageManager& langMan, const GeneralOptions& genOpt, const SoundOptions& soundOpt)
-	:SubGeneral(langMan), SubGraphics(langMan), SubAudio(langMan), shouldUpdateSubAudioButtons(false)
+	:SubGeneral(langMan), SubGraphics(langMan), SubAudio(langMan), shouldUpdateSubAudioButtons(false),
+	Credits(main_title_position,langMan.getText("Back"), static_cast<unsigned>(24*interfaceScale),FontHandler::getInstance().font_handler["Mecha"], interfaceScale, langMan)
 {
 	// MainTitle character size
 	int titleCharacterSize = static_cast<int>(110 * interfaceScale);
@@ -258,10 +261,17 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 			else if (SubHome.contains(1, mousepos)) // Options button
 				menustate = Menustates::OPTIONS;
 			else if (SubHome.contains(2, mousepos)) // Credits
-				;
+				menustate = Menustates::CREDITS;
 			else if (SubHome.contains(3, mousepos)) // Exit button
 				newGamestate = GameStates::Exit;
 		}
+	} break;
+
+	case Menustates::CREDITS: {
+		previousMenustate = Menustates::DEFAULT;
+		if (input.isMouseLeftButtonPressed())
+			if (Credits.buttonContains(mousepos))
+				menustate = previousMenustate;
 	} break;
 
 	case Menustates::OPTIONS: {
@@ -579,6 +589,9 @@ void Menu::updateMenuWithAnimates(const sf::Time & time, const sf::Vector2f& mou
 
 	SubAudio.highlightButtonContaining(mousepos);
 	SubAudio.updateWithAnimations(time);
+
+	Credits.highlightButton(mousepos);
+	Credits.updateButton(time);
 }
 
 void Menu::Reset()

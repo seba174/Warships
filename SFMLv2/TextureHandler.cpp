@@ -44,9 +44,10 @@ TextureHandler & TextureHandler::getInstance()
 		addElement("irregular2_destroyed", "Textures/irregular2NewDestroyedFinal.png", instance);
 		addElement("X", "Textures/X.png", instance);
 		addElement("fire5", "Textures/fire5.png", instance);
-		addElement("menuTexture0", "Textures/warshipsMenuSG2.jpg", instance);
-		addElement("menuTexture1", "Textures/warshipsMenuSG3.jpg", instance);
-		addElement("menuTexture2", "Textures/warshipsMenuSG1.jpg", instance);
+		//2
+		addElement("menuTexture0", "Textures/warshipsMenuSG10.jpg", instance);
+		addElement("menuTexture1", "Textures/warshipsMenuSG5.png", instance);
+		addElement("menuTexture2", "Textures/warshipsMenuSG8.png", instance);
 		addElement("buttonInterior", "Textures/buttonInterior.png", instance);
 		addElement("logo", "Textures/logoSG.png", instance);
 		addElement("cup", "Textures/trophyGold.png", instance);

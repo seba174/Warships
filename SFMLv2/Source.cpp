@@ -97,7 +97,16 @@ int main()
 				// only specific ASCII characters
 				if (event.text.unicode > 32 && event.text.unicode < 127)
 					input.setInputText(static_cast<char>(event.text.unicode));
+			if (event.type == sf::Event::MouseWheelScrolled)
+				if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+				{
+					if (event.mouseWheelScroll.delta < 0)
+						input.setScrollMovedDown();
+					else if (event.mouseWheelScroll.delta > 0)
+						input.setScrollMovedUp();
+				}
 		}
+
 		if (additionalMenu)
 		{
 			additionalMenu->runMenu(window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, graphicsOpt, generalOpt);

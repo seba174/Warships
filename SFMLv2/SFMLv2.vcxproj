@@ -126,6 +126,8 @@
     <ClCompile Include="AdditionalMenu.cpp" />
     <ClCompile Include="AdditionalSubMenu.cpp" />
     <ClCompile Include="AI.cpp" />
+    <ClCompile Include="CenteredText.cpp" />
+    <ClCompile Include="CreditsMenu.cpp" />
     <ClCompile Include="DestroyedShips.cpp" />
     <ClCompile Include="DestroyedShipsWithBackground.cpp" />
     <ClCompile Include="FinishMenu.cpp" />
@@ -174,6 +176,8 @@
     <ClInclude Include="AdditionalSubMenu.h" />
     <ClInclude Include="AI.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="CenteredText.h" />
+    <ClInclude Include="CreditsMenu.h" />
     <ClInclude Include="DestroyedShips.h" />
     <ClInclude Include="DestroyedShipsWithBackground.h" />
     <ClInclude Include="DVector2i.h" />

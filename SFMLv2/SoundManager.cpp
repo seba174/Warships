@@ -4,11 +4,11 @@
 
 SoundManager::SoundManager()
 {
-	if (!soundBuffers[SoundsNames::Explosion].loadFromFile("Sounds/Explosion.wav"))
+	if (!soundBuffers[SoundsNames::Explosion].loadFromFile("Sounds/Explosion1.wav"))
 		throw std::runtime_error("Sound Explosion.wav could not be loaded");
 	if(!soundBuffers[SoundsNames::Splash].loadFromFile("Sounds/Splash.wav"))
 		throw std::runtime_error("Sound Splash.wav could not be loaded");
-	if (!soundBuffers[SoundsNames::SetShips].loadFromFile("Sounds/SetShips2.wav"))
+	if (!soundBuffers[SoundsNames::SetShips].loadFromFile("Sounds/HullBreach3.wav"))
 		throw std::runtime_error("Sound SetShips.wav could not be loaded");
 	soundsVolume = 100;
 }

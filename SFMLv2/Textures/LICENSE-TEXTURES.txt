@@ -1,0 +1,103 @@
+################################################################################
+# License for:
+# - big_body_final.png
+# - big_body_final_destroyed.png       
+# - big_body_no_waves.png 
+# - irregular2NewDestroyedFinal.png 
+# - irregular2NewFinal.png 
+# - irregular2NewNoWaves.png 
+# - irregular3_no_waves.png 
+# - irregular3_final_v2.png 
+# - irregular3FinalDestroyed.png 
+# Original file names:
+#  water_units.png
+# Modifications:
+#  - mixed, resized and split source texture into separate files
+#===============================================================================
+# Credit chabull (https://opengameart.org/content/ships-with-ripple-effect)
+# Licensed under Creative Commons: By Attribution 3.0 License
+# http://creativecommons.org/licenses/by/3.0/
+################################################################################
+
+
+################################################################################
+# License for:
+# - leftArrowOutlined.png
+# - rightArrowOutlined.png
+# Modifications:
+# - mixed, resized and split source textures
+#===============================================================================
+# Credit Scribe (https://opengameart.org/content/gui-items)
+# Licensed under Creative Commons: By Attribution 3.0 License
+# http://creativecommons.org/licenses/by/3.0/
+################################################################################
+
+
+################################################################################
+# License for:
+# - helpButton.png
+# Original file names:
+# - questions-circular-button.png
+# Modifications:
+# - changed size
+#===============================================================================
+# Credit Linh Pham (https://www.flaticon.com/free-icon/questions-circular-button_54591)
+# Licensed under Creative Commons: By Attribution 3.0 License
+# http://creativecommons.org/licenses/by/3.0/
+################################################################################
+
+
+################################################################################
+# License for:
+# - star2.png
+#===============================================================================
+# Credit galangpiliang (https://opengameart.org/content/star-vector)
+# License CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+################################################################################
+
+
+################################################################################
+# License for:
+# - trophyGold.png
+#===============================================================================
+# Credit truezipp (https://opengameart.org/content/trophies-goblets)
+# License CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+################################################################################
+
+
+################################################################################
+# License for:
+# - fire5.png
+#===============================================================================
+# Credit Kenney (https://opengameart.org/content/smoke-particle-assets)
+# License CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+################################################################################
+
+
+################################################################################
+# License for:
+# - buttonFrame.png
+# Modifications:
+# - resized and cut off interior 
+#===============================================================================
+# Credit Granny Enchanted 
+# (http://freedigiscrapbookelements.blogspot.com/2011/12/free-sage-buttons-journal-png-digi.html)
+# License CU (http://scrapbookalphabet.blogspot.com/2011/10/terms-of-use.html)
+################################################################################
+
+
+################################################################################
+# License for:
+# - warshipsMenuSG5.png
+# - warshipsMenuSG8.png
+# - warshipsMenuSG10.png
+# - mapTexture8x8.png
+# - mapTexture10x10.png
+# - mapTexture12x12.png
+# - buttonInterior.png
+# - X.png
+# - logoSG.png
+# - crosshair2.png
+#===============================================================================
+# License CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+################################################################################

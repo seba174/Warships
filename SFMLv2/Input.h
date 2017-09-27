@@ -4,6 +4,7 @@ class Input
 {
 	bool MouseLeftButtonPressed, MouseRightButtonPressed;
 	bool KeyboardReturnKeyPressed, KeyboardEscapeKeyPressed, KeyboardBackspaceKeyPressed;
+	bool ScrollMovedUp, ScrollMovedDown;
 	char inputText;
 
 public:
@@ -26,6 +27,12 @@ public:
 
 	bool isKeyboardBackspaceKeyPressed() const { return KeyboardBackspaceKeyPressed; }
 	void setKeyboardBackspaceKeyPressed() { KeyboardBackspaceKeyPressed = true; }
+
+	bool hasScrollMovedUp() const { return ScrollMovedUp; }
+	void setScrollMovedUp() { ScrollMovedUp = true; }
+
+	bool hasScrollMovedDown() const { return ScrollMovedDown; }
+	void setScrollMovedDown() { ScrollMovedDown = true; }
 
 	char returnInputText() const { return inputText; }
 	void setInputText(char newText) { inputText = newText; }
