@@ -34,15 +34,10 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 	{
 	case gamePlayersState::player1Moves:
 	{
-		player1.drawSquareTab(target, states);
-		player2.drawSquareTab(target, states);
 		for (Board* ship : vectShipsToDrawPlayer1)
 		{
-			if (ship->shouldBeDrawed())
-			{
 				ship->updateTexture(lastFrameTime);
 				target.draw(ship->returnShip(), states);
-			}
 		}
 		for (Board* ship : vectShipsToDrawPlayer2)
 		{
@@ -52,6 +47,8 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 				target.draw(ship->returnShip(), states);
 			}
 		}
+		player1.drawSquareTab(target, states);
+		player2.drawSquareTab(target, states);
 
 		target.draw(player1Background, states);
 		player1.draw(target);
@@ -62,15 +59,10 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 
 	case gamePlayersState::AIMoves:
 	{
-		player1.drawSquareTab(target, states);
-		player2.drawSquareTab(target, states);
 		for (Board* ship : vectShipsToDrawPlayer1)
 		{
-			if (ship->shouldBeDrawed())
-			{
 				ship->updateTexture(lastFrameTime);
 				target.draw(ship->returnShip(), states);
-			}
 		}
 		for (Board* ship : vectShipsToDrawPlayer2)
 		{
@@ -80,6 +72,8 @@ void GamePlayerVsAI::draw(sf::RenderTarget & target, sf::RenderStates states) co
 				target.draw(ship->returnShip(), states);
 			}
 		}
+		player1.drawSquareTab(target, states);
+		player2.drawSquareTab(target, states);
 
 		target.draw(player2Background, states);
 		target.draw(player2, states);
@@ -148,6 +142,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[0]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[0]->setShouldDraw(true);
+			vectShipsToDrawPlayer2[0]->setAlphaChannel(255);
 			player1.resetSquareTab(5);
 		}
 	}
@@ -158,6 +153,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[1]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[1]->setShouldDraw(true);
+			vectShipsToDrawPlayer2[1]->setAlphaChannel(255);
 			player1.resetSquareTab(4);
 		}
 	}
@@ -168,6 +164,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[2]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[2]->setShouldDraw(true);
+			vectShipsToDrawPlayer2[2]->setAlphaChannel(255);
 			player1.resetSquareTab(3);
 		}
 	}
@@ -178,6 +175,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[3]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[3]->setShouldDraw(true);
+			vectShipsToDrawPlayer2[3]->setAlphaChannel(255);
 			player1.resetSquareTab(2);
 		}
 	}
@@ -188,6 +186,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[4]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[4]->setShouldDraw(true);
+			vectShipsToDrawPlayer2[4]->setAlphaChannel(255);
 			player1.resetSquareTab(10);
 		}
 	}
@@ -198,6 +197,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer2[5]->setDestroyedTexture();
 			vectShipsToDrawPlayer2[5]->setShouldDraw(true);
+			vectShipsToDrawPlayer2[5]->setAlphaChannel(255);
 			player1.resetSquareTab(11);
 		}
 	}
@@ -209,6 +209,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[0]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[0]->setShouldDraw(true);
+			vectShipsToDrawPlayer1[0]->setAlphaChannel(255);
 			player2.resetSquareTab(5);
 		}
 	}
@@ -219,6 +220,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[1]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[1]->setShouldDraw(true);
+			vectShipsToDrawPlayer1[1]->setAlphaChannel(255);
 			player2.resetSquareTab(4);
 		}
 	}
@@ -229,6 +231,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[2]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[2]->setShouldDraw(true);
+			vectShipsToDrawPlayer1[2]->setAlphaChannel(255);
 			player2.resetSquareTab(3);
 		}
 	}
@@ -239,6 +242,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[3]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[3]->setShouldDraw(true);
+			vectShipsToDrawPlayer1[3]->setAlphaChannel(255);
 			player2.resetSquareTab(2);
 		}
 	}
@@ -249,6 +253,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[4]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[4]->setShouldDraw(true);
+			vectShipsToDrawPlayer1[4]->setAlphaChannel(255);
 			player2.resetSquareTab(10);
 		}
 	}
@@ -259,6 +264,7 @@ void GamePlayerVsAI::updateBackgroundInformation()
 		{
 			vectShipsToDrawPlayer1[5]->setDestroyedTexture();
 			vectShipsToDrawPlayer1[5]->setShouldDraw(true);
+			vectShipsToDrawPlayer1[5]->setAlphaChannel(255);
 			player2.resetSquareTab(11);
 		}
 	}
@@ -284,6 +290,7 @@ void GamePlayerVsAI::updatePlayersFinishInformations(LanguageManager& langMan)
 
 void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate, SoundManager& soundManager, MusicHandler& musicHandler)
 {
+	const unsigned alpha = 100;
 	lastFrameTime = dt;
 	player1Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
 	player2Background.setTimeString(gameTimer.returnTimeAsString(), langMan);
@@ -318,6 +325,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 			currentState = gamePlayersState::AISetShips;
 			utilityTime = sf::Time();
 			std::for_each(vectShipsToDrawPlayer1.begin(), vectShipsToDrawPlayer1.end(), [](Board* ship) {ship->setShouldDraw(false); });
+			std::for_each(vectShipsToDrawPlayer1.begin(), vectShipsToDrawPlayer1.end(), [alpha](Board* ship) {ship->setAlphaChannel(alpha); });
 		}
 
 		if (helpButtonPlayer1.getGlobalBounds().contains(mousepos))
@@ -670,8 +678,8 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	helpButtonPlayer2.setTexture(&TextureHandler::getInstance().texture_handler["helpButton"]);
 
 	unsigned additionalSpaceForFrame = static_cast<unsigned>(10 * interfaceScale);
-	int helpFontSize = static_cast<int>(32 * interfaceScale);
-	sf::Vector2f helpInformationSize(sf::Vector2f(720, 55)*interfaceScale);
+	int helpFontSize = static_cast<unsigned>(27 * interfaceScale);
+	sf::Vector2f helpInformationSize(sf::Vector2f(810, 55)*interfaceScale);
 	int helpButtonOutlineThickness = static_cast<int>(3 * interfaceScale);
 	int YoffsetForHelpButton = static_cast<int>(150 * interfaceScale);
 	int spaceBetweenHelpButtons = static_cast<int>(80 * interfaceScale);
@@ -680,7 +688,7 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	for (RectangleWithTextAndFrames& rect : helpInformationPlayer1)
 	{
 		rect.setAdditionalSecondRectSize(additionalSpaceForFrame);
-		rect.setFontSize(static_cast<float>(helpFontSize));
+		rect.setFontSize(helpFontSize);
 		rect.setFont(handler.font_handler["Mecha"]);
 		rect.setSize(helpInformationSize);
 		rect.setPosition(sf::Vector2f(player2_setpoints.x + dim.x / 2, player2_setpoints.y + YoffsetForHelpButton + temp*spaceBetweenHelpButtons));
@@ -691,7 +699,7 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	for (RectangleWithTextAndFrames& rect : helpInformationPlayer2)
 	{
 		rect.setAdditionalSecondRectSize(additionalSpaceForFrame);
-		rect.setFontSize(static_cast<float>(helpFontSize));
+		rect.setFontSize(helpFontSize);
 		rect.setFont(handler.font_handler["Mecha"]);
 		rect.setSize(helpInformationSize);
 		rect.setPosition(sf::Vector2f(player1_setpoints.x + dim.x / 2, player1_setpoints.y + YoffsetForHelpButton + temp*spaceBetweenHelpButtons));

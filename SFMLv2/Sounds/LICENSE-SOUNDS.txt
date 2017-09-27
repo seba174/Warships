@@ -1,0 +1,35 @@
+################################################################################
+# License for:
+#  - Explosion1.wav
+# Original file names:
+#  - Explosion1.mp3
+# Modifications:
+#  - changed format
+#===============================================================================
+# "Explosion1" by Eric Matyas (www.soundimage.org)
+################################################################################
+
+################################################################################
+# License for:
+#  - HullBreach3.wav
+# Original file names:
+#  - Hull-Breach-3.mp3
+# Modifications:
+#  - changed format
+#===============================================================================
+# "Hull Breach 3" by Eric Matyas (www.soundimage.org)
+################################################################################
+
+
+################################################################################
+# License for:
+#  - Splash.wav
+# Original file names:
+#  - 212143__qubodup__splash-by-blaukreuz.flac
+# Modifications:
+#  - changed format
+#  - changed volume
+#===============================================================================
+# Credit qubodup (https://freesound.org/people/qubodup/sounds/212143/)
+# License CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+################################################################################

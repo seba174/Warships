@@ -18,7 +18,7 @@ DestroyedShips::DestroyedShips(const sf::Vector2i & boardDimensions, const sf::V
 {
 	destroyed = sf::Color(255, 0, 0, 190);
 
-	int char_size = static_cast<int>(45 * interfaceScale);
+	int char_size = static_cast<int>(37 * interfaceScale);
 	info.setFont(FontHandler::getInstance().font_handler["Mecha"]);
 	info.setCharacterSize(char_size);
 

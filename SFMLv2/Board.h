@@ -33,6 +33,8 @@ public:
 
 	virtual void setDestroyedTexture() = 0;
 
+	virtual void setAlphaChannel(unsigned alpha) = 0;
+
 	virtual bool shouldBeDrawed() const { return shouldDraw; }
 
 	virtual void setShouldDraw(bool newValue) { shouldDraw = newValue; }

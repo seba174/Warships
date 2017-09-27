@@ -133,3 +133,9 @@ void Ships::setDestroyedTexture()
 	TextureHandler &text = TextureHandler::getInstance();
 	shipv2.setTexture(&text.texture_handler["big_body_final_destroyed"]);
 }
+
+void Ships::setAlphaChannel(unsigned alpha)
+{
+	sf::Color temp{ shipv2.getFillColor() };
+	shipv2.setFillColor(sf::Color(temp.r, temp.g, temp.b, alpha));
+}

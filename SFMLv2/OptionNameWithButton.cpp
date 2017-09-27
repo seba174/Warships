@@ -11,7 +11,7 @@ void OptionNameWithButton::draw(sf::RenderTarget & target, sf::RenderStates stat
 
 void OptionNameWithButton::setTextPosition(float x, float y)
 {
-	optionName.setPosition(x - size.x / 2, y - optionName.getGlobalBounds().height / 1.1f);
+	optionName.setPosition(x - size.x / 2, y - ( optionName.getGlobalBounds().height / 2));
 }
 
 void OptionNameWithButton::setButtonPosition(float x, float y)

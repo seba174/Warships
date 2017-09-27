@@ -154,7 +154,7 @@ void GraphicsOptions::setResolution(const string & res)
 	}
 	catch (...) {}
 
-	if (isResolutionSupported(newResolution))
+	if (isResolutionSupported(newResolution) && newResolution.x <= desktopResolution.x)
 	{
 		if (Resolution != newResolution)
 		{

@@ -14,6 +14,8 @@ void Input::ResetKeys()
 	KeyboardReturnKeyPressed = false;
 	KeyboardEscapeKeyPressed = false;
 	KeyboardBackspaceKeyPressed = false;
+	ScrollMovedUp = false;
+	ScrollMovedDown = false;
 	inputText = NULL;
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "SubMenu.h"
 #include "OptionsSubMenu.h"
+#include "CreditsMenu.h"
 #include "enumMenustate.h"
 #include "enumGameState.h"
 #include "enumAdditionalVisualInformation.h"
@@ -24,6 +25,7 @@ class Menu :
 	// SubMenus which Standard Menu contains
 	SubMenu SubHome, SubChooseGametype, SubChooseMapSize, SubChooseAILevel, SubOptions;
 	OptionsSubMenu SubGeneral, SubGraphics, SubAudio;
+	CreditsMenu Credits;
 	bool shouldUpdateSubAudioButtons;
 
 		// FUNCTIONS

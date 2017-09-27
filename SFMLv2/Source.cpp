@@ -97,7 +97,16 @@ int main()
 				// only specific ASCII characters
 				if (event.text.unicode > 32 && event.text.unicode < 127)
 					input.setInputText(static_cast<char>(event.text.unicode));
+			if (event.type == sf::Event::MouseWheelScrolled)
+				if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+				{
+					if (event.mouseWheelScroll.delta < 0)
+						input.setScrollMovedDown();
+					else if (event.mouseWheelScroll.delta > 0)
+						input.setScrollMovedUp();
+				}
 		}
+
 		if (additionalMenu)
 		{
 			additionalMenu->runMenu(window.mapPixelToCoords(sf::Mouse::getPosition(window)), input, graphicsOpt, generalOpt);
@@ -294,7 +303,7 @@ int main()
 
 			if (wasFullScreenChanged || (wasResolutionChanged && !graphicsOpt.isFullScreenEnabled()) || fullyLoad)
 			{
-				mainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 20 * interfaceScale),
+				mainMenu = std::make_unique<Menu>(L"Warships", sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 40 * interfaceScale),
 					sf::Vector2f(static_cast<float>(standardWindowDimensions.x / 2), 300 * interfaceScale), 130 * interfaceScale, interfaceScale,
 					graphicsOpt, *languageManager, generalOpt, soundOpt);
 				additionalMenu = std::make_unique<AdditionalMenu>(sf::Vector2f(200 * interfaceScale, 0), 80 * interfaceScale,

@@ -1,0 +1,23 @@
+################################################################################
+# License for:
+#  - MenuTheme.ogg
+# Original file names:
+#  Tower-Defense_Looping.mp3
+# Modifications:
+#  - changed format
+#===============================================================================
+# "Tower Defense" by Eric Matyas (www.soundimage.org)
+################################################################################
+
+################################################################################
+# License for:
+#  - GameTheme.ogg
+# Original file names:
+#  - Crypto.mp3
+# Modifications:
+#  - changed format
+#===============================================================================
+# "Crypto" Kevin MacLeod (incompetech.com)
+# Licensed under Creative Commons: By Attribution 3.0 License
+# http://creativecommons.org/licenses/by/3.0/
+################################################################################

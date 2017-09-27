@@ -14,13 +14,11 @@ FontHandler & FontHandler::getInstance()
 	if (initialize)
 	{
 		sf::Font tmp;
-		if (!tmp.loadFromFile("Fonts/arial.ttf"));
-		else instance.font_handler.insert(make_pair("arial", tmp));
+		//if (!tmp.loadFromFile("Fonts/arial.ttf"));
+		//else instance.font_handler.insert(make_pair("arial", tmp));
 
 
-		// !! inna nazwa
-
-		if (!tmp.loadFromFile("Fonts/arial.ttf"));
+		if (!tmp.loadFromFile("Fonts/AutourOne-Regular.otf"));
 		else instance.font_handler.insert(make_pair("Mecha", tmp));
 
 		initialize = false;

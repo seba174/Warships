@@ -62,7 +62,7 @@ void MultipleTextFrame::setSize(const sf::Vector2f & size)
 void MultipleTextFrame::setFontSize(float fontSize)
 {
 	for (RectangleWithText& rect : frames)
-		rect.setFontSize(fontSize);
+		rect.setFontSize(static_cast<unsigned>(fontSize));
 }
 
 void MultipleTextFrame::setFont(const sf::Font & font)
