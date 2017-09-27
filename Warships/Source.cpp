@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include <vld.h>
+//#include <vld.h>
 
 #include "SoundManager.h"
 #include "MusicHandler.h"
