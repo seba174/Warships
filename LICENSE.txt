@@ -18,7 +18,7 @@ All files in this project are under the following license.
 =====
 
 Warships
-Copyright (C) Sebastian Safin, 2017 (sebastian.safin1@gmail.com)
+Copyright (C) Sebastian Safin (sebastian.safin1@gmail.com)
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising
