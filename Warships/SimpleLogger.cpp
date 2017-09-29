@@ -23,7 +23,7 @@ void SimpleLogger::logPlayerVsAIGame(int mapSize, LevelsDifficulty level, unsign
 {
 	bool isDataValid = true;
 	SettingGroup group;
-	struct tm ptm;
+	struct tm *ptm;
 
 	std::string stringLevel;
 	switch (level)
@@ -43,9 +43,9 @@ void SimpleLogger::logPlayerVsAIGame(int mapSize, LevelsDifficulty level, unsign
 	group.groupName = playerVsAIString;
 	if (isDataValid)
 	{
-		gmtime_s(&ptm, &timer);
-		std::string day(std::to_string(ptm.tm_mday)), month(std::to_string(ptm.tm_mon + 1)), year(std::to_string(ptm.tm_year + 1900)),
-			hours(std::to_string(ptm.tm_hour)), minutes(std::to_string(ptm.tm_min)), seconds(std::to_string(ptm.tm_sec));
+		ptm = gmtime(&timer);
+		std::string day(std::to_string(ptm->tm_mday)), month(std::to_string(ptm->tm_mon + 1)), year(std::to_string(ptm->tm_year + 1900)),
+			hours(std::to_string(ptm->tm_hour)), minutes(std::to_string(ptm->tm_min)), seconds(std::to_string(ptm->tm_sec));
 		group.lines.push_back(SettingLine('[' + hours + ':' + minutes + ':' + seconds + " UTC, " + day + "." + month + '.' + year + ']', ""));
 	}
 	else
@@ -68,7 +68,7 @@ void SimpleLogger::logPlayerVsPlayerGame(int mapSize, float AccuracyPlayer1, uns
 {
 	bool isDataValid = true;
 	SettingGroup group;
-	struct tm ptm;
+	struct tm *ptm;
 
 	time(&timer);
 	if (timer == -1)
@@ -77,9 +77,9 @@ void SimpleLogger::logPlayerVsPlayerGame(int mapSize, float AccuracyPlayer1, uns
 	group.groupName = playerVsPlayerString;
 	if (isDataValid)
 	{
-		gmtime_s(&ptm, &timer);
-		std::string day(std::to_string(ptm.tm_mday)), month(std::to_string(ptm.tm_mon + 1)), year(std::to_string(ptm.tm_year + 1900)),
-			hours(std::to_string(ptm.tm_hour)), minutes(std::to_string(ptm.tm_min)), seconds(std::to_string(ptm.tm_sec));
+		ptm = gmtime(&timer);
+		std::string day(std::to_string(ptm->tm_mday)), month(std::to_string(ptm->tm_mon + 1)), year(std::to_string(ptm->tm_year + 1900)),
+			hours(std::to_string(ptm->tm_hour)), minutes(std::to_string(ptm->tm_min)), seconds(std::to_string(ptm->tm_sec));
 		group.lines.push_back(SettingLine('[' + hours + ':' + minutes + ':' + seconds + " UTC, " + day + "." + month + '.' + year + ']', ""));
 	}
 	else

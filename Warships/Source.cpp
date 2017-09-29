@@ -21,7 +21,7 @@
 #include "enumGameState.h"
 #include "enumAdditionalVisualInformation.h"
 
-#define WARSHIPS_VERSION std::string("0.9")
+#define WARSHIPS_VERSION std::string("v1.1")
 #define LOGS_FILE_PATH std::string("Logs/logs.ini")
 #define CONFIG_FILE_PATH std::string("Config/config.ini")
 

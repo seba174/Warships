@@ -402,11 +402,9 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			if (utilityClock.getElapsedTime() < playerDelay)
 				return;
 
-			POINT point;
-			GetCursorPos(&point);
-			player1.setPlayersCursorPositon(sf::Vector2i(point.x, point.y));
+			player1.setPlayersCursorPositon(sf::Mouse::getPosition());
 			if (player2.getPlayersCursorPosition() != sf::Vector2i())
-				SetCursorPos(player2.getPlayersCursorPosition().x, player2.getPlayersCursorPosition().y);
+				sf::Mouse::setPosition(player2.getPlayersCursorPosition());
 
 			currentState = gamePlayersState::player2Moves;
 			utilityTime = sf::Time();
@@ -454,11 +452,9 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			if (utilityClock.getElapsedTime() < playerDelay)
 				return;
 
-			POINT point;
-			GetCursorPos(&point);
-			player2.setPlayersCursorPositon(sf::Vector2i(point.x, point.y));
-			if (player1.getPlayersCursorPosition() != sf::Vector2i())
-				SetCursorPos(player1.getPlayersCursorPosition().x, player1.getPlayersCursorPosition().y);
+			player2.setPlayersCursorPositon(sf::Mouse::getPosition());
+			if (player2.getPlayersCursorPosition() != sf::Vector2i())
+				sf::Mouse::setPosition(player1.getPlayersCursorPosition());
 
 			currentState = gamePlayersState::player1Moves;
 			utilityTime = sf::Time();

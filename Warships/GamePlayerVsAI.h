@@ -9,7 +9,7 @@
 #include "FinishMenu.h"
 #include "StatisticsMenu.h"
 #include "enumGameState.h"
-#include "rectangleWithTextAndFrames.h"
+#include "RectangleWithTextAndFrames.h"
 #include "enumLevelsDifficulty.h"
 #include "AI.h"
 

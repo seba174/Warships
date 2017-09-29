@@ -8,8 +8,8 @@
 #include "GameTime.h"
 #include "FinishMenu.h"
 #include "StatisticsMenu.h"
-#include "enumGamestate.h"
-#include "rectangleWithTextAndFrames.h"
+#include "enumGameState.h"
+#include "RectangleWithTextAndFrames.h"
 
 
 class Input;

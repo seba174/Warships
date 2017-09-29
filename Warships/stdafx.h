@@ -1,7 +1,7 @@
+#define _CRT_SECURE_NO_WARNINGS
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <Windows.h>
 #include <iostream>
 #include <fstream>
 #include <math.h>
