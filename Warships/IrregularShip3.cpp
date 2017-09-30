@@ -78,7 +78,7 @@ void IrregularShip3::setPosition(const sf::Vector2f& mousepos)
 	case 90:
 		if (CanChangePositionX(sf::Vector2f(newposition.x + squareSize.x, newposition.y)))
 			shipv2.setPosition(sf::Vector2f(setPoints.x + newposition.x + squareSize.x, shipv2.getPosition().y));
-		else if (shipv2.getPosition().x - setPoints.x > boardDimensions.x/2)
+		else if (mousepos.x > boardDimensions.x / 2)
 			shipv2.setPosition(sf::Vector2f(setPoints.x + boardDimensions.x, shipv2.getPosition().y));
 		else
 			shipv2.setPosition(sf::Vector2f(setPoints.x + shipv2.getSize().y, shipv2.getPosition().y));
