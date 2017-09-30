@@ -34,6 +34,7 @@ void MusicHandler::play(MusicName theme)
 		mMusic.setVolume(inGameVolume);
 	else
 		mMusic.setVolume(mVolume);
+
 	mMusic.setLoop(true);
 	mMusic.play();
 }

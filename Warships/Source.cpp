@@ -246,8 +246,11 @@ int main()
 		{
 			musicManager.setInGameVolume(static_cast<float>(soundOpt.getInGameThemeVolume()));
 			musicManager.setMenuVolume(static_cast<float>(soundOpt.getMenuThemeVolume()));
-			musicManager.updateMusicVolume();
 			soundManager.setSoundsVolume(static_cast<float>(soundOpt.getEffectsVolume()));
+			musicManager.updateMusicVolume();
+
+			soundOpt.saveToPreviousOptions();
+
 			gameState = GameStates::menu;
 		} break;
 

@@ -427,7 +427,7 @@ void Menu::runMenu(const sf::Vector2f & mousepos, int& mapsize, LevelsDifficulty
 				soundOpt.setInGameThemeVolume(SubAudio.getDisplayedOption(1));
 				soundOpt.setEffectsVolume(SubAudio.getDisplayedOption(2));
 
-				if (soundOpt.hasAnyOptionChanged())
+				if (soundOpt.hasAnyOptionChanged() )
 				{
 					newGamestate = GameStates::setAudioVolumes;
 				}
