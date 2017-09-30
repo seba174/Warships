@@ -36,7 +36,7 @@ std::string floatWith2DecimalPlaces(float value, const std::string & string)
 
 std::wstring stringToWstringConversion(const std::string & s)
 {
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 	return std::wstring(converter.from_bytes(s));
 }
 
