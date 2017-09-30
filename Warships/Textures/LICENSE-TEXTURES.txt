@@ -1,14 +1,14 @@
 ################################################################################
 # License for:
-# - big_body_final.png
-# - big_body_final_destroyed.png       
-# - big_body_no_waves.png 
-# - irregular2NewDestroyedFinal.png 
-# - irregular2NewFinal.png 
-# - irregular2NewNoWaves.png 
-# - irregular3_no_waves.png 
-# - irregular3_final_v2.png 
-# - irregular3FinalDestroyed.png 
+# - big_body_finalC.png
+# - big_body_final_destroyedC.png       
+# - big_body_no_wavesC.png 
+# - irregular2NewDestroyedFinalC.png 
+# - irregular2NewFinalC.png 
+# - irregular2NewNoWavesC.png 
+# - irregular3_no_wavesC.png 
+# - irregular3_final_v2C.png 
+# - irregular3FinalDestroyedC.png 
 # Original file names:
 #  water_units.png
 # Modifications:
@@ -22,8 +22,8 @@
 
 ################################################################################
 # License for:
-# - leftArrowOutlined.png
-# - rightArrowOutlined.png
+# - leftArrowOutlinedC.png
+# - rightArrowOutlinedC.png
 # Modifications:
 # - mixed, resized and split source textures
 #===============================================================================
@@ -67,7 +67,7 @@
 
 ################################################################################
 # License for:
-# - fire5.png
+# - fire5C.png
 #===============================================================================
 # Credit Kenney (https://opengameart.org/content/smoke-particle-assets)
 # License CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
@@ -76,7 +76,7 @@
 
 ################################################################################
 # License for:
-# - buttonFrame.png
+# - buttonFrameC.png
 # Modifications:
 # - resized and cut off interior 
 #===============================================================================
@@ -91,12 +91,12 @@
 # - warshipsMenuSG5.png
 # - warshipsMenuSG8.png
 # - warshipsMenuSG10.png
-# - mapTexture8x8.png
-# - mapTexture10x10.png
-# - mapTexture12x12.png
-# - buttonInterior.png
+# - mapTexture8x8C.png
+# - mapTexture10x10C.png
+# - mapTexture12x12C.png
+# - buttonInteriorC.png
 # - X.png
-# - logoSG.png
+# - logoSGC.png
 # - crosshair2.png
 #===============================================================================
 # License CC0 (https://creativecommons.org/publicdomain/zero/1.0/)

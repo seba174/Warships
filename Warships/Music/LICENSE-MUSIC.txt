@@ -11,11 +11,11 @@
 
 ################################################################################
 # License for:
-#  - GameTheme.ogg
+#  - GameThemeC.ogg
 # Original file names:
 #  - Crypto.mp3
 # Modifications:
-#  - changed format
+#  - changed format and compressed
 #===============================================================================
 # "Crypto" Kevin MacLeod (incompetech.com)
 # Licensed under Creative Commons: By Attribution 3.0 License

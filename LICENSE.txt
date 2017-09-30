@@ -4,7 +4,7 @@ All files in this project are under the following license.
  Exceptions:
   # Resources #
   - Fonts/AutourOne-Regular.otf          - license included in: Fonts/SIL Open Font License.txt
-  - Music/GameTheme.ogg                  - license included in: Music/LICENSE-MUSIC.txt
+  - Music/GameThemeC.ogg                  - license included in: Music/LICENSE-MUSIC.txt
   - Music/MenuTheme.ogg        	         - license included in: Music/LICENSE-MUSIC.txt
   - Sounds/Explosion1.wav         	 - license included in: Sounds/LICENSE-SOUNDS.txt
   - Sounds/HullBreach3.wav               - license included in: Sounds/LICENSE-SOUNDS.txt

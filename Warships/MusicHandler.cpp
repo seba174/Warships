@@ -18,7 +18,7 @@ MusicHandler::MusicHandler()
 	, mVolume(100.0f)
 {
 	mFilenames[MusicName::MenuTheme] = "Music/MenuTheme.ogg";
-	mFilenames[MusicName::GameTheme] = "Music/GameTheme.ogg";
+	mFilenames[MusicName::GameTheme] = "Music/GameThemeC.ogg";
 }
 
 void MusicHandler::play(MusicName theme)
