@@ -18,9 +18,20 @@ Setup1/
 /Warships/RCb01188
 /Warships/RCb08848
 /Warships/RCc01188
-bin/
-obj/
+
+## Code::Blocks
+/Warships/bin/
+/Warships/obj/
+/Warships/Warships.cbp
+/Warships/Warships.depend
+/Warships/Warships.layout
+##
+
+## Linux SFML libs
 lib/
+/Warships/lib
+##
+
 /Warships/Warships1.aps
 /Warships/Warships1.rc
 /Warships/Warships.aps

@@ -60,7 +60,7 @@ int main()
 
 	sf::View view;
 	sf::RenderWindow window;
-	window.create(sf::VideoMode(0, 0), "", sf::Style::None);
+	window.create(sf::VideoMode(1, 1), "", sf::Style::None);
 
 	sf::Vector2f squareSize;
 	sf::RectangleShape rect, rect2, hit, missedShot;
