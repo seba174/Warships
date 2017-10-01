@@ -319,7 +319,7 @@ void GamePlayerVsAI::animateDisappearingHelpBubble(const sf::Time & dt)
 			bubbleBubbleColor.a - (255 / helpBubbleAnimationTime.asSeconds())*dt.asSeconds() > 0
 			? static_cast<int>(bubbleBubbleColor.a - (255 / helpBubbleAnimationTime.asSeconds())*dt.asSeconds())
 			: 0;
-		
+
 		bubbleTextColor.a =
 			bubbleTextColor.a - (255 / helpBubbleAnimationTime.asSeconds())*dt.asSeconds() > 0
 			? static_cast<int>(bubbleTextColor.a - (255 / helpBubbleAnimationTime.asSeconds())*dt.asSeconds())
@@ -399,7 +399,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 			break;
 		else
 			shoudlDrawMenuPlayer2SetShipsInfo = false;
-		
+
 		player2.placeShips(vectShipsToDrawPlayer2);
 
 		if (player2.getShipsSetUp())
@@ -434,7 +434,7 @@ void GamePlayerVsAI::play(const sf::Time & dt, const sf::Vector2f & mousepos, co
 			shoudlDrawMenuPlayer1TurnStarts = false;
 
 		player1.playerMouseInput(dt, mousepos);
-		
+
 		if (!playerFinishes)
 		{
 			if (input.isMouseLeftButtonPressed() && player1.isMouseInEnemyBounds(mousepos))
@@ -648,7 +648,9 @@ GamePlayerVsAI::GamePlayerVsAI(const sf::Vector2i & dim, const sf::Vector2f & Sq
 	helpInformationPlayer2(2),
 	level(level),
 	wasGameLogged(false), wasAIUsingSuperPowers(false),
-	mapSize(static_cast<int>(dim.x / SquareSize.x))
+	mapSize(static_cast<int>(dim.x / SquareSize.x)),
+	shouldDisplayHelpPlayer1(false),
+	shouldDisplayHelpPlayer2(false)
 {
 	player1.setPlayerName(stringToWstringConversion(genOpt.getPlayer1Name()));
 	player2.setPlayerName(langMan.getText("AI"));
