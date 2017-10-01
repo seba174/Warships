@@ -61,6 +61,7 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 
 	hashMap.insert(make_pair("Press left mouse button to place the ship", lT(inT({ Tr(eLC::PL,L"Naciśnij lewy przycisk myszy aby ustawić statek"), Tr(eLC::EN,L"Press left mouse button to place the ship") }))));
 	hashMap.insert(make_pair("Press right mouse button to rotate the ship", lT(inT({ Tr(eLC::PL,L"Naciśnij prawy przycisk myszy aby obrócić statek"), Tr(eLC::EN,L"Press right mouse button to rotate the ship") }))));
+	hashMap.insert(make_pair("Need help?", lT(inT({ Tr(eLC::PL,L"Potrzebujesz pomocy?"), Tr(eLC::EN,L"Need help?") }))));
 
 	hashMap.insert(make_pair("First player name", lT(inT({ Tr(eLC::PL,L"Nazwa pierwszego gracza"), Tr(eLC::EN,L"First player name") }))));
 	hashMap.insert(make_pair("Second player name", lT(inT({ Tr(eLC::PL,L"Nazwa drugiego gracza"), Tr(eLC::EN,L"Second player name") }))));

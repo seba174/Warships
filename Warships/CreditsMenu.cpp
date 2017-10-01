@@ -22,11 +22,10 @@ CreditsMenu::CreditsMenu(const sf::Vector2f &position, const std::wstring & text
 	rect.setSize(sf::Vector2f(5000,5000));
 	rect.setFillColor(sf::Color::Black);
 
-	unsigned characterSize = 20 * interfaceScale;
-	unsigned characterSize2 = 30 * interfaceScale;
-	unsigned offset = 60 * interfaceScale;
-	unsigned distanceBetweenLines = 32 * interfaceScale;
-
+	unsigned characterSize = static_cast<unsigned>(20 * interfaceScale);
+	unsigned characterSize2 = static_cast<unsigned>(30 * interfaceScale);
+	unsigned offset = static_cast<unsigned>(60 * interfaceScale);
+	unsigned distanceBetweenLines = static_cast<unsigned>(32 * interfaceScale);
 
 	for (CenteredText& text : textArray)
 	{
@@ -89,10 +88,10 @@ CreditsMenu::CreditsMenu(const sf::Vector2f &position, const std::wstring & text
 	unsigned i = 0;
 	for (CenteredText& text : textArray)
 	{
-		text.setPosition(position.x, offset + i * distanceBetweenLines);
+		text.setPosition(position.x, static_cast<float>(offset + i * distanceBetweenLines));
 		++i;
 	}
 
-	button.setPosition(position.x, offset + (textArray.size() + 2)*distanceBetweenLines);
+	button.setPosition(position.x, static_cast<float>(offset + (textArray.size() + 2)*distanceBetweenLines));
 }
 

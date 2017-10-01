@@ -99,7 +99,8 @@ void GamePlayers::draw(sf::RenderTarget & target, sf::RenderStates states) const
 		if (shouldDisplayHelpPlayer1)
 			for (const RectangleWithTextAndFrames& rect : helpInformationPlayer1)
 				target.draw(rect, states);
-		target.draw(helpButtonPlayer1);
+		target.draw(helpButtonPlayer1, states);
+		target.draw(helpBubble, states);
 
 		if (shoudlDrawMenuPlayer1SetShipsInfo)
 			target.draw(menuPlayer1SetShipsInfo, states);
@@ -285,6 +286,52 @@ void GamePlayers::updatePlayersFinishInformations(LanguageManager& langMan)
 		finishMenu.setTitle(player2.getPlayerName() + L' ' + langMan.getText("has won the game") + L'!');
 }
 
+void GamePlayers::animateScalingHelpBubble(float endScale, float howMuchScaleInOneStep)
+{
+	float currentScale{ helpBubble.getScale() };
+
+	if (currentScale > endScale)
+	{
+		helpBubble.setScale(
+			currentScale - howMuchScaleInOneStep > endScale ? currentScale - howMuchScaleInOneStep : endScale);
+	}
+	else if (currentScale < endScale)
+	{
+		helpBubble.setScale(
+			currentScale + howMuchScaleInOneStep < endScale ? currentScale + howMuchScaleInOneStep : endScale);
+	}
+}
+
+void GamePlayers::animateDisappearingHelpBubble(const sf::Time & dt)
+{
+	if (utilityClock2.getElapsedTime() < helpBubbleDisplayTime)
+	{
+		helpBubble.setTextColor(sf::Color::Black);
+	}
+	else if (utilityClock2.getElapsedTime() < helpBubbleDisplayTime + helpBubbleAnimationTime)
+	{
+		sf::Color bubbleBubbleColor{ helpBubble.getBubbleColor() };
+		sf::Color bubbleTextColor{ helpBubble.getTextColor() };
+		bubbleBubbleColor.a =
+			bubbleBubbleColor.a - (255 / helpBubbleAnimationTime.asSeconds())*dt.asSeconds() > 0
+			? static_cast<int>(bubbleBubbleColor.a - (255 / helpBubbleAnimationTime.asSeconds())*dt.asSeconds())
+			: 0;
+
+		bubbleTextColor.a =
+			bubbleTextColor.a - (255 / helpBubbleAnimationTime.asSeconds())*dt.asSeconds() > 0
+			? static_cast<int>(bubbleTextColor.a - (255 / helpBubbleAnimationTime.asSeconds())*dt.asSeconds())
+			: 0;
+
+		helpBubble.setBubbleColor(bubbleBubbleColor);
+		helpBubble.setTextColor(bubbleTextColor);
+	}
+	else
+	{
+		helpBubble.setBubbleColor(sf::Color::Transparent);
+		helpBubble.setTextColor(sf::Color::Transparent);
+	}
+}
+
 void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const Input& input, LanguageManager& langMan, GameStates& gamestate,
 	SoundManager& soundManager, MusicHandler& musicHandler)
 {
@@ -298,6 +345,7 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 	{
 		musicHandler.play(MusicName::GameTheme);
 		currentState = gamePlayersState::player1SetShips;
+		utilityClock.restart();
 	} break;
 	case gamePlayersState::player1SetShips:
 	{
@@ -306,6 +354,15 @@ void GamePlayers::play(const sf::Time & dt, const sf::Vector2f & mousepos, const
 			break;
 		else
 			shoudlDrawMenuPlayer1SetShipsInfo = false;
+
+		if (utilityClock.getElapsedTime() < pausedSetShipsTime + helpBubbleAnimationTime)
+		{
+			helpBubble.setTextColor(sf::Color::Transparent);
+			animateScalingHelpBubble(1, dt / helpBubbleAnimationTime);
+			utilityClock2.restart();
+		}
+		else
+			animateDisappearingHelpBubble(dt);
 
 		if (mousePlayer1.isMouseWithinArea())
 		{
@@ -643,6 +700,11 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	int helpButtonOutlineThickness = static_cast<int>(3 * interfaceScale);
 	int YoffsetForHelpButton = static_cast<int>(150 * interfaceScale);
 	int spaceBetweenHelpButtons = static_cast<int>(80 * interfaceScale);
+
+	unsigned helpBubbleCharacterSize{ static_cast<unsigned>(23 * interfaceScale) };
+	sf::Vector2f helpBubbleSize{ 360 * interfaceScale,220 * interfaceScale };
+	sf::Vector2f helpBubblePositionOffset{ 0,25 * interfaceScale };
+
 	int temp = 0;
 
 	for (RectangleWithTextAndFrames& rect : helpInformationPlayer1)
@@ -671,6 +733,16 @@ GamePlayers::GamePlayers(const sf::Vector2i & dim, const sf::Vector2f & SquareSi
 	helpInformationPlayer2[0].setString(langMan.getText("Press left mouse button to place the ship"));
 	helpInformationPlayer1[1].setString(langMan.getText("Press right mouse button to rotate the ship"));
 	helpInformationPlayer2[1].setString(langMan.getText("Press right mouse button to rotate the ship"));
+
+	helpBubble.setFont(handler.font_handler["Mecha"]);
+	helpBubble.setCharacterSize(helpBubbleCharacterSize);
+	helpBubble.setSize(helpBubbleSize);
+	helpBubble.setTextColor(sf::Color::Black);
+
+	helpBubble.setString(langMan.getText("Need help?"));
+	helpBubble.setPosition({ player2_setpoints.x + helpBubblePositionOffset.x, player2_setpoints.y + helpBubblePositionOffset.y });
+	helpBubble.setOrigin({ helpBubble.getSize().x, 0 });
+	helpBubble.setScale(0);
 }
 
 

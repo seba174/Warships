@@ -67,6 +67,15 @@
 
 ################################################################################
 # License for:
+# - bubble.png
+#===============================================================================
+# Credit Rawdanitsu (https://opengameart.org/content/comic-speech-balloons)
+# License CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+################################################################################
+
+
+################################################################################
+# License for:
 # - fire5C.png
 #===============================================================================
 # Credit Kenney (https://opengameart.org/content/smoke-particle-assets)

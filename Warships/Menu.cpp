@@ -115,7 +115,7 @@ Menu::Menu(const std::wstring & main_title, const sf::Vector2f & main_title_posi
 	SubHome.setInteriorColorAllButtons(buttonColor);
 
 	SubChooseGametype.construct(L"", langMan.getText("Solo Game") + L',' + langMan.getText("Player vs Player") + L',' + langMan.getText("Back"), submenuCharacterSize,
-		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, sf::Vector2f(button_size.x*1.1,button_size.y), space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
+		submenuCharacterSize, title_or1st_button_position, title_or1st_button_position, sf::Vector2f(button_size.x*1.1f,button_size.y), space_between_buttons, bounds_color, handler.font_handler["Mecha"]);
 	SubChooseGametype.setInteriorColorAllButtons(buttonColor);
 
 	SubOptions.construct(L"", langMan.getText("General") + L',' + langMan.getText("Graphics") + L',' + langMan.getText("Sound") + L',' + langMan.getText("Back"), submenuCharacterSize,

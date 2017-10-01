@@ -9,6 +9,7 @@
 #include "FinishMenu.h"
 #include "StatisticsMenu.h"
 #include "enumGameState.h"
+#include "HelpBubble.h"
 #include "RectangleWithTextAndFrames.h"
 
 
@@ -37,6 +38,7 @@ class GamePlayers
 	std::vector<RectangleWithTextAndFrames> helpInformationPlayer1, helpInformationPlayer2;
 	sf::RectangleShape helpButtonPlayer1, helpButtonPlayer2;
 	bool shouldDisplayHelpPlayer1, shouldDisplayHelpPlayer2;
+	HelpBubble helpBubble;
 
 	bool wasGameLogged;
 	bool playerFinishes;
@@ -45,14 +47,16 @@ class GamePlayers
 
 	std::shared_ptr<SimpleLogger> logger;
 
-	sf::Time lastFrameTime, utilityTime;
+	sf::Time lastFrameTime, utilityTime, utilityTime2;
 	GameTime gameTimer;
 
 	sf::Time pausedSetShipsTime = sf::seconds(2.3f);
 	sf::Time turnInfoTime = sf::seconds(0.65f);
 	sf::Time playerDelay = sf::seconds(0.5f);
 	sf::Time delayAtFinish = sf::seconds(0.4f);
-	sf::Clock utilityClock;
+	sf::Time helpBubbleAnimationTime{ sf::seconds(0.6f) };
+	sf::Time helpBubbleDisplayTime{ sf::seconds(2.0f) };
+	sf::Clock utilityClock, utilityClock2;
 
 		// FUNCTIONS
 	int whoStarts() const;
@@ -65,6 +69,10 @@ class GamePlayers
 	void updateBackgroundInformation();
 
 	void updatePlayersFinishInformations(LanguageManager& langMan);
+
+	void animateScalingHelpBubble(float endScale, float howMuchScaleInOneStep);
+
+	void animateDisappearingHelpBubble(const sf::Time& dt);
 
 public:
 

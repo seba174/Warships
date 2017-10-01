@@ -11,6 +11,7 @@
 #include "enumGameState.h"
 #include "RectangleWithTextAndFrames.h"
 #include "enumLevelsDifficulty.h"
+#include "HelpBubble.h"
 #include "AI.h"
 
 class Input;
@@ -46,6 +47,7 @@ class GamePlayerVsAI
 	std::vector<RectangleWithTextAndFrames> helpInformationPlayer1, helpInformationPlayer2;
 	sf::RectangleShape helpButtonPlayer1, helpButtonPlayer2;
 	bool shouldDisplayHelpPlayer1, shouldDisplayHelpPlayer2;
+	HelpBubble helpBubble;
 
 	gamePlayersState currentState;
 
@@ -56,6 +58,8 @@ class GamePlayerVsAI
 	sf::Time turnInfoTime = sf::seconds(0.65f);
 	sf::Time playerDelay = sf::seconds(0.5f);
 	sf::Time AIDelay = sf::seconds(0.9f);
+	sf::Time helpBubbleAnimationTime{ sf::seconds(0.6f) };
+	sf::Time helpBubbleDisplayTime{ sf::seconds(2.0f) };
 	sf::Clock utilityClock, utilityClock2;
 
 
@@ -70,6 +74,10 @@ class GamePlayerVsAI
 	void updateBackgroundInformation();
 
 	void updatePlayersFinishInformations(LanguageManager& langMan);
+
+	void animateScalingHelpBubble(float endScale, float howMuchScaleInOneStep);
+
+	void animateDisappearingHelpBubble(const sf::Time& dt);
 
 public:
 
