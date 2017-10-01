@@ -13,6 +13,8 @@ private:
 
 	static void addElement(const std::string& textureName, const std::string& texturePath, TextureHandler& instance);
 
+	std::map<std::string, std::string> initializationInfo;
+
 public:
 	
 	// returnsTHE ONLY EXISTING object for handling Textures
@@ -22,5 +24,7 @@ public:
 
 	std::map<std::string, sf::Texture> texture_handler;
 
-	void static setSmooth(bool shouldSet);
+	static void setSmooth(bool shouldSet);
+
+	static sf::Texture& getTextureWithInitialization(const std::string& textureName);
 };

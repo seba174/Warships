@@ -139,21 +139,29 @@ int main()
 			hit.setTexture(&textures.texture_handler["fire5"]);
 			switch (mapSize)
 			{
-			case 8:
+			case 8: 
 			{
-				boardForPlayer1.setTexture(&textures.texture_handler["mapTexture8x8"]);
-				boardForPlayer2.setTexture(&textures.texture_handler["mapTexture8x8"]);
-			} break;
+				const sf::Texture* texture = &textures.getTextureWithInitialization("mapTexture8x8");
+				boardForPlayer1.setTexture(texture);
+				boardForPlayer2.setTexture(texture);
+				break;
+			}
+
 			case 10:
 			{
-				boardForPlayer1.setTexture(&textures.texture_handler["mapTexture10x10"]);
-				boardForPlayer2.setTexture(&textures.texture_handler["mapTexture10x10"]);
-			} break;
+				const sf::Texture* texture = &textures.getTextureWithInitialization("mapTexture10x10");
+				boardForPlayer1.setTexture(texture);
+				boardForPlayer2.setTexture(texture);
+				break;
+			}
+
 			case 12:
 			{
-				boardForPlayer1.setTexture(&textures.texture_handler["mapTexture12x12"]);
-				boardForPlayer2.setTexture(&textures.texture_handler["mapTexture12x12"]);
-			}break;
+				const sf::Texture* texture = &textures.getTextureWithInitialization("mapTexture12x12");
+				boardForPlayer1.setTexture(texture);
+				boardForPlayer2.setTexture(texture);
+				break;
+			}
 			}
 
 			rect.setTexture(&textures.texture_handler["crosshair"]);
@@ -270,11 +278,16 @@ int main()
 			switch (generalOpt.getMenuTextureNumber())
 			{
 			case 0:
-				menuTexture.setTexture(&textures.texture_handler["menuTexture0"]); break;
+				menuTexture.setTexture(&textures.getTextureWithInitialization("menuTexture0"));
+				break;
+
 			case 1:
-				menuTexture.setTexture(&textures.texture_handler["menuTexture1"]); break;
+				menuTexture.setTexture(&textures.getTextureWithInitialization("menuTexture1"));
+				break;
+
 			case 2:
-				menuTexture.setTexture(&textures.texture_handler["menuTexture2"]); break;
+				menuTexture.setTexture(&textures.getTextureWithInitialization("menuTexture2"));
+				break;
 			}
 
 			if ((wasFullScreenChanged && graphicsOpt.isFullScreenEnabled()) || (graphicsOpt.isFullScreenEnabled() && fullyLoad))
