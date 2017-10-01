@@ -83,7 +83,6 @@ LanguageManager::LanguageManager(enumLanguagesCodes code)
 		, lT(inT({ Tr(eLC::PL,L"Poniższe tekstury są na licencji Creative Commons: Uznanie autorstwa 3.0"), Tr(eLC::EN,L"Textures below are licensed under Creative Commons: By Attribution 3.0 License") }))));
 	
 	hashMap.insert(make_pair("For more information, please read LICENSE.txt file", lT(inT({ Tr(eLC::PL,L"Więcej informacji znajdziesz w pliku LICENSE.txt"), Tr(eLC::EN,L"For more information, please read LICENSE.txt file") }))));
-	
 }
 
 std::wstring LanguageManager::getText(const std::string & code) const

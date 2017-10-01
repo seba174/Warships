@@ -13,7 +13,9 @@ void TextureHandler::addElement(const std::string & textureName, const std::stri
 	if (!tmp.loadFromFile(texturePath))
 		std::cerr << error_message << std::endl;
 	else
-		instance.texture_handler.insert(make_pair(textureName, tmp));
+	{
+		instance.texture_handler.emplace(textureName, tmp);
+	}
 }
 
 TextureHandler & TextureHandler::getInstance()
@@ -27,9 +29,13 @@ TextureHandler & TextureHandler::getInstance()
 
 	if (initialize)
 	{
-		addElement("mapTexture8x8", "Textures/mapTexture8x8C.png", instance);
-		addElement("mapTexture10x10", "Textures/mapTexture10x10C.png", instance);
-		addElement("mapTexture12x12", "Textures/mapTexture12x12C.png", instance);
+		instance.initializationInfo.emplace("menuTexture0", "Textures/warshipsMenuSG10.jpg");
+		instance.initializationInfo.emplace("menuTexture1", "Textures/warshipsMenuSG5.png");
+		instance.initializationInfo.emplace("menuTexture2", "Textures/warshipsMenuSG8.png");
+		instance.initializationInfo.emplace("mapTexture8x8", "Textures/mapTexture8x8C.png");
+		instance.initializationInfo.emplace("mapTexture10x10", "Textures/mapTexture10x10C.png");
+		instance.initializationInfo.emplace("mapTexture12x12", "Textures/mapTexture12x12C.png");
+
 		addElement("big_body_final", "Textures/big_body_finalC.png", instance);
 		addElement("big_body_final_destroyed", "Textures/big_body_final_destroyedC.png", instance);
 		addElement("irregular2", "Textures/irregular2NewFinalC.png", instance);
@@ -44,10 +50,6 @@ TextureHandler & TextureHandler::getInstance()
 		addElement("irregular2_destroyed", "Textures/irregular2NewDestroyedFinalC.png", instance);
 		addElement("X", "Textures/X.png", instance);
 		addElement("fire5", "Textures/fire5C.png", instance);
-
-		addElement("menuTexture0", "Textures/warshipsMenuSG10.jpg", instance);
-		addElement("menuTexture1", "Textures/warshipsMenuSG5.png", instance);
-		addElement("menuTexture2", "Textures/warshipsMenuSG8.png", instance);
 		addElement("buttonInterior", "Textures/buttonInteriorC.png", instance);
 		addElement("logo", "Textures/logoSGC.png", instance);
 		addElement("cup", "Textures/trophyGold.png", instance);
@@ -66,6 +68,19 @@ void TextureHandler::setSmooth(bool shouldSet)
 	{
 		el.second.setSmooth(shouldSet);
 	}
+}
+
+sf::Texture& TextureHandler::getTextureWithInitialization(const std::string& textureName)
+{
+	TextureHandler& handler = getInstance();
+	// quit if texture is already present
+	if (handler.texture_handler.find(textureName) != handler.texture_handler.end())
+		return handler.texture_handler[textureName];
+
+	std::string texturePath{ handler.initializationInfo[textureName] };
+	addElement(textureName, texturePath, handler);
+
+	return handler.texture_handler[textureName];
 }
 
 
