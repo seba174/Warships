@@ -139,29 +139,46 @@ int main()
 			hit.setTexture(&textures.texture_handler["fire5"]);
 			switch (mapSize)
 			{
+<<<<<<< HEAD
 			case 8: 
 			{
+=======
+			case 8:
+>>>>>>> 0a48dba12a809c6c495ee162cbf4134ad8181c3e
 				const sf::Texture* texture = &textures.getTextureWithInitialization("mapTexture8x8");
 				boardForPlayer1.setTexture(texture);
 				boardForPlayer2.setTexture(texture);
 				break;
+<<<<<<< HEAD
 			}
 
 			case 10:
 			{
+=======
+
+			case 10:
+>>>>>>> 0a48dba12a809c6c495ee162cbf4134ad8181c3e
 				const sf::Texture* texture = &textures.getTextureWithInitialization("mapTexture10x10");
 				boardForPlayer1.setTexture(texture);
 				boardForPlayer2.setTexture(texture);
 				break;
+<<<<<<< HEAD
 			}
 
 			case 12:
 			{
+=======
+
+			case 12:
+>>>>>>> 0a48dba12a809c6c495ee162cbf4134ad8181c3e
 				const sf::Texture* texture = &textures.getTextureWithInitialization("mapTexture12x12");
 				boardForPlayer1.setTexture(texture);
 				boardForPlayer2.setTexture(texture);
 				break;
+<<<<<<< HEAD
 			}
+=======
+>>>>>>> 0a48dba12a809c6c495ee162cbf4134ad8181c3e
 			}
 
 			rect.setTexture(&textures.texture_handler["crosshair"]);
