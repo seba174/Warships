@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "multipleTextFrame.h"
+#include "MultipleTextFrame.h"
 
 
 void MultipleTextFrame::draw(sf::RenderTarget & target, sf::RenderStates states) const

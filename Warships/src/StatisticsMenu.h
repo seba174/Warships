@@ -1,5 +1,5 @@
 #pragma once
-#include "multipleTextFrame.h"
+#include "MultipleTextFrame.h"
 #include "playersInformations.h"
 #include "OptionsSubMenu.h"
 
