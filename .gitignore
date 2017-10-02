@@ -4,20 +4,10 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 
-
-Setup1/
 /Setup1/
-/SFMLv2/Logs
-/SFMLv2/Config
 /Warships/Logs
 /Warships/Config
-/Warships/RCa01188
-/Warships/RCa05256
-/Warships/RCa06188
-/Warships/RCa08848
-/Warships/RCb01188
-/Warships/RCb08848
-/Warships/RCc01188
+/Warships/srcIcon
 
 ## Code::Blocks
 /Warships/bin/
@@ -32,21 +22,11 @@ lib/
 /Warships/lib
 ##
 
-/Warships/Warships1.aps
-/Warships/Warships1.rc
-/Warships/Warships.aps
-/Warships/Warships.rc
-logoSG.ico
 *.vcxproj
 *.vcxproj.filters
 *.sln
-resource.h
-resource1.h
 /Warships/Warships.vcxproj
 /Warships/Warships.vcxproj.filters
-/SFMLv2/SFMLv2.vcxproj
-/SFMLv2/SFMLv2.vcxproj.filters
-
 
 
 # User-specific files
